@@ -85,6 +85,8 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Saltar al siguiente (`jumpToNext()`): al completar un ejercicio desde la lista, destello en la tarjeta
   (`.just-done`), scroll suave al siguiente pendiente y entrada con barrido de luz + etiqueta "SIGUE ▶" (`.up-next`).
   Desde el modal no salta. Con `prefers-reduced-motion` salta sin animación.
+- Duración (`r2k.times.v1`): `{ fecha: { a: ms 1.ª serie, b: ms última } }`, solo al marcar el día de hoy
+  (`stampTime`). Se ve junto a la fecha ("⏱ 34 min"), en la celebración y en 📅. Va en el respaldo como `tiempos`.
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -103,6 +105,5 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Logros con emojis animados: Noto Animated Emoji de Google (CC BY 4.0, dar crédito), WebP/GIF sin fondo.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
 - Rachas 🔥: días/semanas seguidas completadas, en 📅 Semana y como logro ("Racha de 5 días"). Sale del registro.
-- Duración real del entreno: de la primera a la última serie del día ("Hoy: 72 min"), visible en el historial.
 - Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
   en el celular.

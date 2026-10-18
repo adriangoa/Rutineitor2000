@@ -29,6 +29,8 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
   el día, celebración con confeti. Las frases y emojis están en [`data/logros.json`](data/logros.json):
   agrega las tuyas.
 - Al completar un ejercicio en la lista, esta se desliza sola al siguiente que te falta.
+- Junto a la fecha ves cuánto llevas entrenando (⏱, de la primera a la última serie que marcas hoy);
+  también sale al completar el día y en 📅.
 - En el modal de cada ejercicio, el botón 📝 sirve para anotar si lo pudiste hacer: ✅ Lo hice ·
   🔧 Lo adapté · ❌ No se puede (con nota de qué cambiaste o por qué). Los 🔧/❌ dejan un puntito en la
   foto del ejercicio. Las notas van en **Exportar respaldo**: pásale ese archivo a Claude para ajustar la rutina.

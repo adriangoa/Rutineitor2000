@@ -166,6 +166,8 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
 .wk-cell b { display: block; font-family: var(--display); font-size: 16px; }
 .wk-cell span { font-family: var(--display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .wk-cell.full { background: var(--accent); color: var(--accent-ink); }
+.wk-cell small { display: block; font-size: 11px; font-weight: 600; opacity: 0.8; margin-top: 2px; }
+.party-time { font-family: var(--display); font-weight: 700; font-size: 16px; margin: -12px 0 20px; opacity: 0.85; }
 .hist-title { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
 .hist-row { display: grid; grid-template-columns: 1fr repeat(5, 28px); gap: 6px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; }
 .hist-dot { width: 28px; height: 28px; border-radius: 8px; background: var(--surface-2); position: relative; overflow: hidden; }

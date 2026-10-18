@@ -8,6 +8,7 @@ const THEME_KEY = 'r2k.theme';
 const SFX_KEY = 'r2k.sfx';
 const AB_KEY = 'r2k.ab.v1';
 const NOTES_KEY = 'r2k.notes.v1';
+const TIMES_KEY = 'r2k.times.v1';
 const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
@@ -79,11 +80,26 @@ function dayProgress(day, dateKey) {
   }
   return { total, done, pct: total ? done / total : 0 };
 }
+/* Duración real: hora de la primera y la última serie marcada del día (r2k.times.v1).
+   Solo se mide al marcar el día de hoy, para no inventar tiempos al ponerte al corriente. */
+let times = (() => { try { return JSON.parse(localStorage.getItem(TIMES_KEY)) || {}; } catch { return {}; } })();
+function stampTime(dateKey) {
+  if (dateKey !== ymd(new Date())) return;
+  const now = Date.now(), t = (times[dateKey] ||= { a: now, b: now });
+  t.b = now;
+  try { localStorage.setItem(TIMES_KEY, JSON.stringify(times)); } catch {}
+}
+function workoutMin(dateKey) {
+  const t = times[dateKey];
+  return t && t.b > t.a ? Math.max(1, Math.round((t.b - t.a) / 60000)) : 0;
+}
+
 function toggleSet(dateKey, ex, i) {
   const n = setsOf(ex);
   const day = (log[dateKey] ||= {});
   const arr = (day[ex.id] ||= Array(n).fill(0));
   arr[i] = arr[i] ? 0 : 1;
+  if (arr[i]) stampTime(dateKey);
   if (!arr.some(Boolean)) delete day[ex.id];
   if (!Object.keys(day).length) delete log[dateKey];
   saveLog();
@@ -141,7 +157,6 @@ function renderDay() {
   const day = dayView(state.dayIdx);
   const date = dateFor(state.dayIdx);
   const dateKey = ymd(date);
-  $('#dayDate').innerHTML = `${esc(fmtLong(date))} · ~${day.minutes} min <span class="wk-badge">Semana ${weekLetter()}</span>`;
   $('#dayTitle').textContent = day.focus;
 
   let html = '', n = 0;
@@ -164,7 +179,10 @@ function renderDay() {
 
 function updateProgress() {
   const day = dayView(state.dayIdx);
-  const p = dayProgress(day, ymd(dateFor(state.dayIdx)));
+  const date = dateFor(state.dayIdx), dateKey = ymd(date);
+  const p = dayProgress(day, dateKey);
+  const min = workoutMin(dateKey);
+  $('#dayDate').innerHTML = `${esc(fmtLong(date))} · ${min ? `⏱ ${min} min` : `~${day.minutes} min`} <span class="wk-badge">Semana ${weekLetter()}</span>`;
   $('#progFill').style.width = `${Math.round(p.pct * 100)}%`;
   $('#progText').textContent = `${p.done}/${p.total} series`;
   $('#doneMsg').hidden = p.done < p.total;
@@ -289,7 +307,8 @@ function renderWeek() {
   const now = days.map((d, i) => {
     const p = dayProgress(dayView(i), ymd(dateFor(i)));
     const pct = Math.round(p.pct * 100);
-    return `<button class="wk-cell${pct === 100 ? ' full' : ''}" data-goto="${i}"><b>${DAY_SHORT[i]}</b><span>${pct}%</span></button>`;
+    const min = workoutMin(ymd(dateFor(i)));
+    return `<button class="wk-cell${pct === 100 ? ' full' : ''}" data-goto="${i}"><b>${DAY_SHORT[i]}</b><span>${pct}%</span>${min ? `<small>⏱ ${min}′</small>` : ''}</button>`;
   }).join('');
   let rows = `<div class="hist-row"><span class="hist-head lbl">Semana</span>${DAY_SHORT.map((d) => `<span class="hist-head">${d}</span>`).join('')}</div>`;
   for (let w = -1; w >= -8; w--) {
@@ -309,7 +328,7 @@ function renderWeek() {
 
 /* ---------- Respaldo ---------- */
 function exportBackup() {
-  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides, notas: notes }, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides, notas: notes, tiempos: times }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `rutineitor-respaldo-${ymd(new Date())}.json`;
@@ -323,6 +342,10 @@ async function importBackup(file) {
     if (!data || data.app !== 'rutineitor2000' || typeof data.log !== 'object') throw new Error();
     for (const [date, exs] of Object.entries(data.log)) log[date] = { ...(log[date] || {}), ...exs };
     if (data.notas && typeof data.notas === 'object') { notes = { ...notes, ...data.notas }; saveNotes(); }
+    if (data.tiempos && typeof data.tiempos === 'object') {
+      times = { ...data.tiempos, ...times };
+      try { localStorage.setItem(TIMES_KEY, JSON.stringify(times)); } catch {}
+    }
     if (data.ab && typeof data.ab === 'object') {
       abOverrides = { ...abOverrides, ...data.ab };
       try { localStorage.setItem(AB_KEY, JSON.stringify(abOverrides)); } catch {}
@@ -602,6 +625,7 @@ function celebrate(kind) {
   p.innerHTML = `<div class="confetti">${confetti}</div>
     <div class="party-box"><span class="party-emoji">${emoji}</span>
     <p class="party-title flashy">${esc(L.titulo)}</p><p class="party-frase">${esc(frase)}</p>
+    ${workoutMin(ymd(dateFor(state.dayIdx))) ? `<p class="party-time">⏱ en ${workoutMin(ymd(dateFor(state.dayIdx)))} min</p>` : ''}
     <small>Toca para cerrar</small></div>`;
   showLayer(p);
   setTimeout(() => hideLayer(p), 6000);
