@@ -169,16 +169,28 @@ function openExercise(exId) {
     : '';
   const meta = ex.type === 'cardio'
     ? `<strong>${esc(ex.duration)}</strong>`
-    : `<strong>${ex.sets} series × ${esc(ex.reps)}</strong>${ex.variant ? ' · ' + esc(ex.variant) : ''}${ex.inv ? ` · Inventario #${ex.inv}` : ''}`;
+    : `<strong>${ex.sets} series × ${esc(ex.reps)}</strong>${ex.variant ? ' · ' + esc(ex.variant) : ''}`;
+  const g = groupOf(day, ex);
+  const pos = g ? g.indexOf(ex) : -1;
+  // Pie del modal: anterior/siguiente del día; en superserie, "siguiente" es el que sigue del grupo.
+  const k = day.exercises.indexOf(ex);
+  const prev = day.exercises[k - 1];
+  const next = g ? g[(pos + 1) % g.length] : day.exercises[k + 1];
   $('#sheetBody').innerHTML = `${img}
-    <h2 class="s-name"${img ? '' : ' style="margin-top:36px"'}>${esc(ex.name)}</h2>
+    ${g ? `<p class="ss-badge">Superserie ${esc(ex.ss)} · ${pos + 1} de ${g.length}</p>` : ''}
+    <h2 class="s-name"${img || g ? '' : ' style="margin-top:36px"'}>${esc(ex.name)}</h2>
     <p class="s-meta">${meta}</p>
     <ul class="tips">${(ex.tips || []).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
     <p class="s-sets-label">${ex.type === 'cardio' ? 'Marca al terminar' : 'Marca cada serie al terminarla'}</p>
-    <div class="sets">${setButtons(dateKey, ex)}</div>`;
+    <div class="sets">${setButtons(dateKey, ex)}</div>
+    <nav class="s-nav">
+      ${prev ? `<button class="s-prev" data-open="${prev.id}">Anterior<b>‹ ${esc(prev.name)}</b></button>` : '<span></span>'}
+      ${next ? `<button class="s-next${g ? ' ss' : ''}" data-open="${next.id}">${g ? 'Sigue en la superserie' : 'Siguiente'}<b>${esc(next.name)} ›</b></button>` : ''}
+    </nav>`;
   const sheet = $('#sheet');
   if (!sheet.open) sheet.showModal();
   sheet.scrollTop = 0;
+  renderRest();
   clearInterval(state.animTimer);
   if (ex.img) {
     let f = 0;
@@ -334,6 +346,8 @@ function renderRest() {
     b.classList.toggle('next', !!rest && rest.mode === 'next');
     b.innerHTML = rest ? restHTML() : '';
   });
+  // En el modal no repitas "Ahora: X" si el botón de la superserie ya lleva a X.
+  if (rest && rest.mode === 'next' && $('#sheetBody .s-next.ss')?.dataset.open === rest.exId) $('#sheetRest').hidden = true;
   if (rest && rest.mode === 'rest') { tickRest(); restTick = setInterval(tickRest, 250); }
 }
 function tickRest() {
@@ -416,6 +430,9 @@ function onSetClick(e) {
   toggleSet(dateKey, ex, +b.dataset.i);
   refreshCard(ex.id);
   afterMark(day, ex, !!marks(dateKey, ex)[+b.dataset.i]);
+  // En el modal de una superserie, resalta el botón para cambiar de ejercicio.
+  const nx = b.closest('#sheetBody')?.querySelector('.s-next.ss');
+  if (nx && rest && rest.mode === 'next') { nx.classList.remove('nudge'); void nx.offsetWidth; nx.classList.add('nudge'); }
   return true;
 }
 function bind() {
@@ -427,7 +444,10 @@ function bind() {
     if (onSetClick(e)) return;
     const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
   });
-  $('#sheetBody').addEventListener('click', onSetClick);
+  $('#sheetBody').addEventListener('click', (e) => {
+    if (onSetClick(e)) return;
+    const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
+  });
   $('#restBar').addEventListener('click', onRestClick);
   $('#sheetRest').addEventListener('click', onRestClick);
   $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) setTheme(b.dataset.themeSet); });

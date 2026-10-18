@@ -19,6 +19,7 @@ Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la 
   un tono suave y vibra, aunque la pantalla esté apagada. En una superserie no hay descanso entre
   ejercicios: la barra te dice cuál sigue, y el descanso arranca al terminar el último del grupo.
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
+  Abajo del modal puedes pasar al ejercicio anterior o al siguiente; en superserie, al que sigue del grupo.
 - ⋮ → **Tema**: Automático, Alto contraste o Synthwave.
 - ⋮ → **Mantener pantalla encendida**, por si el aviso de descanso no suena con la pantalla apagada.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
