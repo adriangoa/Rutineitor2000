@@ -90,3 +90,11 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
 - Rutina A/B alternando semanas: mismos días y grupos; la semana B usa otras variantes del inventario.
   Ya acordado con Adrián hacerla en una segunda tanda, proponiéndole la semana B antes de meterla.
+- Rachas 🔥: días/semanas seguidas completadas, en 📅 Semana y como logro ("Racha de 5 días"). Sale del registro.
+- Duración real del entreno: de la primera a la última serie del día ("Hoy: 72 min"), visible en el historial.
+- Cuenta regresiva: 3 bips suaves en los últimos 3 s del descanso (estilo salida de carrera de videojuego).
+- Saltar al siguiente ejercicio pendiente al completar uno, **con una transición vistosa** (Adrián pidió
+  "algo que se vea chingón"): p. ej. la tarjeta completada se encoge/brilla y la lista se desliza a la siguiente,
+  que entra con un destello. Respetar `prefers-reduced-motion`.
+- Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
+  en el celular.
