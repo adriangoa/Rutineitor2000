@@ -99,6 +99,17 @@
   <div id="restBar" class="rest rest-bar" role="timer" aria-live="off" hidden></div>
   <div id="trophy" class="trophy" popover="manual" role="status"></div>
   <div id="party" class="party" popover="manual" role="status"></div>
+  <dialog id="welcome" class="sheet welcome" aria-label="Bienvenida">
+    <div class="sheet-inner">
+      <div id="welcomeBody"></div>
+      <div class="wl-foot">
+        <span class="wl-dots" id="welcomeDots"></span>
+        <button id="welcomeSkip" class="install-later">Saltar</button>
+        <button id="welcomeNext" class="install-go">Siguiente</button>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="installHelp" class="sheet">
     <div class="sheet-inner">
       <button class="sheet-close icon-btn" data-close aria-label="Cerrar">

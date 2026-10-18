@@ -900,6 +900,12 @@ function bind() {
   $('#installLater').addEventListener('click', () => { snoozeInstall(); sfx('close'); });
   $('#installBtn').addEventListener('click', () => { startInstall(); sfx('tap'); });
   $('#shareBtn').addEventListener('click', () => { shareApp(); sfx('tap'); });
+  $('#welcomeNext').addEventListener('click', () => {
+    if (welcomeStep < WELCOME.length - 1) { welcomeStep++; renderWelcome(); sfx('move'); }
+    else $('#welcome').close();
+  });
+  $('#welcomeSkip').addEventListener('click', () => $('#welcome').close());
+  $('#welcome').addEventListener('close', () => { markWelcome(); setTimeout(maybeShowInstallBar, 700); });
   coverMQ.addEventListener('change', () => { state.coverEx = null; renderDay(); });
   $('#sheetRest').addEventListener('click', onRestClick);
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
@@ -998,6 +1004,36 @@ function showInstallHelp() {
   $('#installHelp').showModal();
 }
 
+/* ---------- Bienvenida ----------
+   Tres pantallas cortas la primera vez que abren la app. Si ya hay registros (alguien que ya la usaba),
+   se da por vista y no sale. Al cerrarla aparece, si aplica, el banner para instalar. */
+const WELCOME_KEY = 'r2k.welcome.v1';
+const WELCOME = [
+  { e: '💪', t: 'Esto es Rutineitor 2000',
+    p: 'Tu rutina de lunes a viernes. La app abre en el día de hoy: toca <b>1, 2, 3…</b> para marcar cada serie que termines.' },
+  { e: '⏱', t: 'Descanso y logros',
+    p: 'Al marcar una serie arranca el descanso y suena un aviso suave al terminar, aunque apagues la pantalla. Completa ejercicios para desbloquear logros 🏆 y cuida tu racha 🔥.' },
+  { e: '📝', t: 'Aprende y anota',
+    p: 'Toca la foto de un ejercicio para ver cómo se hace. Con 📝 anota si lo pudiste hacer. Tu registro se guarda solo en tu cel; en ⋮ puedes exportar un respaldo.' },
+];
+let welcomeStep = 0;
+const welcomeSeen = () => { try { return !!localStorage.getItem(WELCOME_KEY); } catch { return true; } };
+function markWelcome() { try { localStorage.setItem(WELCOME_KEY, '1'); } catch {} }
+function renderWelcome() {
+  const w = WELCOME[welcomeStep];
+  $('#welcomeBody').innerHTML = `<div class="wl-slide"><span class="wl-emoji">${w.e}</span><h2 class="wl-title">${w.t}</h2><p class="wl-text">${w.p}</p></div>`;
+  $('#welcomeDots').innerHTML = WELCOME.map((_, i) => `<i${i === welcomeStep ? ' class="on"' : ''}></i>`).join('');
+  $('#welcomeNext').textContent = welcomeStep === WELCOME.length - 1 ? '¡A darle!' : 'Siguiente';
+  $('#welcomeSkip').hidden = welcomeStep === WELCOME.length - 1;
+}
+function maybeWelcome() {
+  if (welcomeSeen()) return false;
+  if (Object.keys(log).length) { markWelcome(); return false; } // ya la usaba: no es nuevo
+  welcomeStep = 0; renderWelcome();
+  $('#welcome').showModal();
+  return true;
+}
+
 /* ---------- Compartir con un amigo ----------
    Menú nativo de compartir del cel (WhatsApp, etc.); si no existe, copia la liga. */
 async function shareApp() {
@@ -1056,7 +1092,7 @@ async function init() {
   renderRest();
   renderBackupBtn();
   renderInstallUI();
-  setTimeout(maybeShowInstallBar, 1500);
+  if (!maybeWelcome()) setTimeout(maybeShowInstallBar, 1500);
   registerSW();
   setTimeout(checkBackupReminder, 2500);
 }

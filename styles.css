@@ -595,6 +595,21 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 @keyframes cvNext { from { transform: translateX(40px); opacity: 0.3; } }
 @keyframes cvPrev { from { transform: translateX(-40px); opacity: 0.3; } }
 
+/* Bienvenida */
+.welcome .sheet-inner { padding-top: 26px; }
+.wl-slide { text-align: center; padding: 6px 6px 18px; animation: fade 0.3s ease-out; }
+.wl-emoji { display: block; font-size: 64px; line-height: 1; margin-bottom: 12px; animation: pop 0.6s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+.wl-title { font-family: var(--display); font-size: 25px; line-height: 1.15; margin: 0 0 10px; }
+.wl-text { margin: 0 auto; max-width: 34ch; color: var(--muted); font-size: 16px; line-height: 1.5; }
+.wl-text b { color: var(--ink); }
+.wl-foot { display: flex; align-items: center; gap: 10px; }
+.wl-dots { flex: 1; display: flex; gap: 6px; }
+.wl-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: width 0.2s ease; }
+.wl-dots i.on { width: 22px; border-radius: 4px; background: var(--accent); }
+.install-later[hidden] { display: none; }
+[data-theme="gb"] .wl-title { font-size: 15px; line-height: 1.5; }
+[data-theme="halloween"] .wl-title { font-family: var(--spooky); font-weight: 400; font-size: 30px; color: var(--accent); }
+
 /* Instalar como app */
 .menu-item[hidden] { display: none; }
 .install-bar {
