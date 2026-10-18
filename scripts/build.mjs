@@ -6,8 +6,9 @@
 import { createHash } from 'node:crypto';
 import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT = join(ROOT, '_site');
 const INCLUDE = ['index.html', 'styles.css', 'app.js', 'sw.js', 'manifest.webmanifest', 'data', 'images', 'icons'];
 
