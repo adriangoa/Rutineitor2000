@@ -22,17 +22,20 @@ App en vivo: https://adriangoa.github.io/Rutineitor2000/ (instalada en su Androi
 - Los ejercicios deben salir de **su inventario**: `referencia/inventario.json` (61 ejercicios, copia
   del Excel original "Rutina_Personalizada_y_Inventario_Gimnasio.xlsx"). No inventes ejercicios fuera de ahí.
 
-## Lógica de la rutina (v1)
+## Lógica de la rutina (v3, semanas A/B)
 Lun Pecho+Tríceps · Mar Espalda+Bíceps+Lumbar · Mié Hombro+Trapecio+Abdomen ·
 Jue Torso B (pecho/espalda con otras variantes, superseries) + brazos · Vie Pierna completa.
 Pecho cada 72–96 h, espalda/bíceps cada 48 h, hombro con 48 h tras el empuje del lunes.
+Semanas A y B alternadas desde el lunes 2026-10-19 (A): mismos días y grupos, la B con otras variantes
+del inventario (barra vs mancuerna, polea vs máquina, otro agarre). Adrián aún no confirma en el gym
+que todos los de la B se puedan hacer como están descritos.
 Al proponer cambios de ejercicios, respeta estos tiempos de recuperación y el límite de 60–90 min
 (~2.5 min por serie, cardio 15–20 min).
 
 ## Archivos
 | Archivo | Qué es |
 |---|---|
-| `data/routine.json` | La rutina (fuente de verdad). Subir `version` al cambiarla. |
+| `data/routine.json` | La rutina (fuente de verdad): `exercises` = semana A, `exercisesB` = semana B. Subir `version`. |
 | `index.html`, `styles.css`, `app.js` | Interfaz. Todo el JS en `app.js`, organizado por secciones comentadas. |
 | `sw.js` | Service worker (modo sin internet). |
 | `scripts/build.mjs` | Arma `_site/` para publicar: calcula versión por hash y lista de precache. |
@@ -74,6 +77,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Logros (`celebrate()`): popover al completar un ejercicio y celebración con confeti al completar el día.
   Frases y emojis en `data/logros.json` (al azar sin repetir la anterior). Con el modal abierto el
   popover se mueve dentro del `<dialog>`; si no, el modal lo vuelve inerte y tocarlo cerraría el modal.
+- Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
+  (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
+  lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
 - Descanso: al marcar una serie arranca un temporizador con el `rest` del ejercicio (90 s por omisión).
   En superserie solo arranca tras el último del grupo; antes muestra "Ahora: <siguiente>". Se guarda la
   hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto
@@ -88,8 +94,6 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 ## Ideas pendientes
 - Logros con emojis animados: Noto Animated Emoji de Google (CC BY 4.0, dar crédito), WebP/GIF sin fondo.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
-- Rutina A/B alternando semanas: mismos días y grupos; la semana B usa otras variantes del inventario.
-  Ya acordado con Adrián hacerla en una segunda tanda, proponiéndole la semana B antes de meterla.
 - Rachas 🔥: días/semanas seguidas completadas, en 📅 Semana y como logro ("Racha de 5 días"). Sale del registro.
 - Duración real del entreno: de la primera a la última serie del día ("Hoy: 72 min"), visible en el historial.
 - Cuenta regresiva: 3 bips suaves en los últimos 3 s del descanso (estilo salida de carrera de videojuego).
@@ -98,3 +102,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   que entra con un destello. Respetar `prefers-reduced-motion`.
 - Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
   en el celular.
+- Notas de "¿lo pude hacer?": 📝 sutil en el modal del ejercicio → ✅ Lo hice · 🔧 Lo adapté (nota) · ❌ No se
+  puede (nota). Puntito discreto en la tarjeta si está marcado 🔧/❌. Se incluye en Exportar respaldo para que
+  Claude lea el archivo y ajuste la rutina (quitar, adaptar, y a futuro proponer fuera del inventario).
+  Propuesto a Adrián; falta que confirme 📝 en el modal vs. un "modo revisión" en Opciones.

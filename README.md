@@ -1,7 +1,7 @@
 # Rutineitor 2000
 
 Rutina de gimnasio (lunes a viernes) como app web instalable en el celular.
-Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la memoria del teléfono.
+Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la memoria del teléfono.
 
 **App:** https://adriangoa.github.io/Rutineitor2000/
 
@@ -14,6 +14,8 @@ Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la 
 ## Uso
 
 - Abre directo en el día de hoy (sábado y domingo muestra la semana que viene).
+- **Semana A y semana B** se alternan solas: mismos días y músculos, distintas variantes de ejercicio.
+  La etiqueta junto a la fecha dice cuál toca. Si faltas una semana, cámbiala en 📅 → **Cambiar a A/B**.
 - Toca **1, 2, 3, 4** para marcar cada serie. El cardio se marca con un solo botón.
 - Al marcar una serie arranca el **descanso** (barra abajo, con −15 / +15 / Saltar). Al terminar suena
   un tono suave y vibra, aunque la pantalla esté apagada. En una superserie no hay descanso entre
@@ -50,6 +52,8 @@ Campos de cada ejercicio:
 | `sets`, `reps` | Series (número) y repeticiones (texto, ej. `"8–10"`, `"45 s"`). |
 | `img` | Carpeta dentro de `images/` con `0.webp` (inicio) y `1.webp` (final). |
 | `ss` | Superserie: ejercicios seguidos con la misma letra se agrupan. |
+| `exercises` / `exercisesB` | (En cada día) ejercicios de la semana A y de la semana B. Sin `exercisesB`, la B repite la A. |
+| `abInicio` | (Arriba del todo) lunes de la primera semana A; desde ahí se alternan. |
 | `rest` | Segundos de descanso tras cada serie (opcional, 90 por omisión). En superserie cuenta el del último. |
 | `tips` | Lista de notas de técnica. |
 | `type: "cardio"` + `duration` | Para bloques de cardio (un solo check). |

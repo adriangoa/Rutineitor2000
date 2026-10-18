@@ -6,6 +6,7 @@ const LOG_KEY = 'r2k.log.v1';
 const REST_KEY = 'r2k.rest.v1';
 const THEME_KEY = 'r2k.theme';
 const SFX_KEY = 'r2k.sfx';
+const AB_KEY = 'r2k.ab.v1';
 const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
@@ -37,8 +38,32 @@ function dateFor(dayIdx, weekOffset = 0) {
   d.setDate(d.getDate() + dayIdx + weekOffset * 7);
   return d;
 }
+const parseYmd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
 const fmtLong = (d) => { const s = d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }); return s[0].toUpperCase() + s.slice(1); };
 const fmtShort = (d) => d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+
+/* ---------- Semana A / B ----------
+   Las semanas se alternan desde routine.abInicio (lunes de la primera semana A).
+   Si cambias a mano una semana, se guarda en r2k.ab.v1 ({ "lunes": "A"|"B" }) y la
+   alternancia sigue desde ahí; las semanas anteriores no cambian (el historial cuadra). */
+let abOverrides = (() => { try { return JSON.parse(localStorage.getItem(AB_KEY)) || {}; } catch { return {}; } })();
+function weekLetter(w = 0) {
+  const mon = ymd(dateFor(0, w));
+  const refs = [[state.routine.abInicio, 'A'], ...Object.entries(abOverrides)].filter(([k]) => k && k <= mon).sort();
+  if (!refs.length) return 'A';
+  const [k, letter] = refs[refs.length - 1];
+  const weeks = Math.round((parseYmd(mon) - parseYmd(k)) / 604800000);
+  return (weeks % 2 === 0) === (letter === 'A') ? 'A' : 'B';
+}
+function setWeekLetter(letter) {
+  abOverrides[ymd(dateFor(0))] = letter;
+  try { localStorage.setItem(AB_KEY, JSON.stringify(abOverrides)); } catch {}
+}
+// El día con los ejercicios de la semana que toca (w = semanas desde la actual).
+function dayView(i, w = 0) {
+  const d = state.routine.days[i];
+  return weekLetter(w) === 'B' && d.exercisesB ? { ...d, exercises: d.exercisesB } : d;
+}
 
 /* ---------- Progreso ---------- */
 const setsOf = (ex) => (ex.type === 'cardio' ? 1 : ex.sets);
@@ -74,7 +99,7 @@ const CARDIO_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h
 function renderTabs() {
   const today = weekdayIdx();
   $('#tabs').innerHTML = state.routine.days.map((d, i) => {
-    const p = dayProgress(d, ymd(dateFor(i)));
+    const p = dayProgress(dayView(i), ymd(dateFor(i)));
     return `<button class="tab${i === today ? ' today' : ''}" role="tab" data-day="${i}" aria-selected="${i === state.dayIdx}">
       <span class="t-day">${DAY_SHORT[i]}</span><span class="t-focus">${esc(d.focus.split(/[ ,]/)[0])}</span>
       <span class="t-bar"><i style="width:${Math.round(p.pct * 100)}%"></i></span></button>`;
@@ -112,10 +137,10 @@ function cardHTML(ex, n, dateKey) {
 }
 
 function renderDay() {
-  const day = state.routine.days[state.dayIdx];
+  const day = dayView(state.dayIdx);
   const date = dateFor(state.dayIdx);
   const dateKey = ymd(date);
-  $('#dayDate').textContent = `${fmtLong(date)} · ~${day.minutes} min`;
+  $('#dayDate').innerHTML = `${esc(fmtLong(date))} · ~${day.minutes} min <span class="wk-badge">Semana ${weekLetter()}</span>`;
   $('#dayTitle').textContent = day.focus;
 
   let html = '', n = 0;
@@ -137,7 +162,7 @@ function renderDay() {
 }
 
 function updateProgress() {
-  const day = state.routine.days[state.dayIdx];
+  const day = dayView(state.dayIdx);
   const p = dayProgress(day, ymd(dateFor(state.dayIdx)));
   $('#progFill').style.width = `${Math.round(p.pct * 100)}%`;
   $('#progText').textContent = `${p.done}/${p.total} series`;
@@ -146,7 +171,7 @@ function updateProgress() {
 }
 
 function refreshCard(exId) {
-  const day = state.routine.days[state.dayIdx];
+  const day = dayView(state.dayIdx);
   const ex = day.exercises.find((e) => e.id === exId);
   const dateKey = ymd(dateFor(state.dayIdx));
   document.querySelectorAll(`.sets [data-ex="${exId}"]`).forEach((b) => {
@@ -162,7 +187,7 @@ function refreshCard(exId) {
 
 /* ---------- Detalle del ejercicio ---------- */
 function openExercise(exId) {
-  const day = state.routine.days[state.dayIdx];
+  const day = dayView(state.dayIdx);
   const ex = day.exercises.find((e) => e.id === exId);
   const dateKey = ymd(dateFor(state.dayIdx));
   const img = ex.img
@@ -207,26 +232,29 @@ function openExercise(exId) {
 function renderWeek() {
   const days = state.routine.days;
   const now = days.map((d, i) => {
-    const p = dayProgress(d, ymd(dateFor(i)));
+    const p = dayProgress(dayView(i), ymd(dateFor(i)));
     const pct = Math.round(p.pct * 100);
     return `<button class="wk-cell${pct === 100 ? ' full' : ''}" data-goto="${i}"><b>${DAY_SHORT[i]}</b><span>${pct}%</span></button>`;
   }).join('');
   let rows = `<div class="hist-row"><span class="hist-head lbl">Semana</span>${DAY_SHORT.map((d) => `<span class="hist-head">${d}</span>`).join('')}</div>`;
   for (let w = -1; w >= -8; w--) {
     const cells = days.map((d, i) => {
-      const pct = Math.round(dayProgress(d, ymd(dateFor(i, w))).pct * 100);
+      const pct = Math.round(dayProgress(dayView(i, w), ymd(dateFor(i, w))).pct * 100);
       return `<span class="hist-dot" title="${pct}%"><i style="height:${pct}%"></i></span>`;
     }).join('');
-    rows += `<div class="hist-row"><span>${fmtShort(dateFor(0, w))}</span>${cells}</div>`;
+    rows += `<div class="hist-row"><span>${fmtShort(dateFor(0, w))} <small>${weekLetter(w)}</small></span>${cells}</div>`;
   }
-  $('#weekBody').innerHTML = `<p class="hist-title">Esta semana (desde el ${fmtShort(dateFor(0))})</p>
+  const L = weekLetter(), other = L === 'A' ? 'B' : 'A';
+  $('#weekBody').innerHTML = `<div class="ab-row"><span>Esta semana toca <b class="wk-badge">Semana ${L}</b></span>
+      <button class="ab-switch" data-ab="${other}">Cambiar a ${other}</button></div>
+    <p class="hist-title">Esta semana (desde el ${fmtShort(dateFor(0))})</p>
     <div class="week-now">${now}</div><p class="hist-title">Semanas anteriores</p>${rows}`;
-  $('#week').showModal();
+  if (!$('#week').open) $('#week').showModal();
 }
 
 /* ---------- Respaldo ---------- */
 function exportBackup() {
-  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log }, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `rutineitor-respaldo-${ymd(new Date())}.json`;
@@ -239,6 +267,10 @@ async function importBackup(file) {
     const data = JSON.parse(await file.text());
     if (!data || data.app !== 'rutineitor2000' || typeof data.log !== 'object') throw new Error();
     for (const [date, exs] of Object.entries(data.log)) log[date] = { ...(log[date] || {}), ...exs };
+    if (data.ab && typeof data.ab === 'object') {
+      abOverrides = { ...abOverrides, ...data.ab };
+      try { localStorage.setItem(AB_KEY, JSON.stringify(abOverrides)); } catch {}
+    }
     saveLog(); renderDay();
     toast('Respaldo importado');
   } catch { toast('Ese archivo no es un respaldo válido'); }
@@ -330,7 +362,7 @@ function afterMark(day, ex, on) {
 
 function restHTML() {
   if (rest.mode === 'next') {
-    const ex = state.routine.days[rest.day].exercises.find((e) => e.id === rest.exId);
+    const ex = dayView(rest.day).exercises.find((e) => e.id === rest.exId);
     return `<button class="rest-go" data-rest="go">Ahora, sin descanso<b>${esc(ex.name)} ›</b></button>
       <button class="rest-btn" data-rest="skip" aria-label="Cerrar">✕</button>`;
   }
@@ -517,7 +549,7 @@ function toast(msg, onClick, ms = 2600) {
 function onSetClick(e) {
   const b = e.target.closest('.set');
   if (!b) return false;
-  const day = state.routine.days[state.dayIdx];
+  const day = dayView(state.dayIdx);
   const ex = day.exercises.find((x) => x.id === b.dataset.ex);
   const dateKey = ymd(dateFor(state.dayIdx));
   toggleSet(dateKey, ex, +b.dataset.i);
@@ -554,6 +586,11 @@ function bind() {
   $('#trophy').addEventListener('click', () => hideLayer($('#trophy')));
   $('#party').addEventListener('click', () => hideLayer($('#party')));
   $('#weekBody').addEventListener('click', (e) => {
+    const s = e.target.closest('[data-ab]');
+    if (s) {
+      setWeekLetter(s.dataset.ab); clearRest(); renderDay(); renderWeek(); sfx('tap');
+      return;
+    }
     const g = e.target.closest('[data-goto]'); if (!g) return;
     state.dayIdx = +g.dataset.goto; $('#week').close(); renderDay();
   });
