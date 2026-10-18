@@ -899,6 +899,7 @@ function bind() {
   $('#installGo').addEventListener('click', () => { startInstall(); sfx('tap'); });
   $('#installLater').addEventListener('click', () => { snoozeInstall(); sfx('close'); });
   $('#installBtn').addEventListener('click', () => { startInstall(); sfx('tap'); });
+  $('#shareBtn').addEventListener('click', () => { shareApp(); sfx('tap'); });
   coverMQ.addEventListener('change', () => { state.coverEx = null; renderDay(); });
   $('#sheetRest').addEventListener('click', onRestClick);
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
@@ -995,6 +996,19 @@ function showInstallHelp() {
   $('#installBody').innerHTML = `<ol class="install-steps">${steps.map((s) => `<li>${s}</li>`).join('')}</ol>`
     + (note ? `<p class="install-note">⚠️ ${note}</p>` : '');
   $('#installHelp').showModal();
+}
+
+/* ---------- Compartir con un amigo ----------
+   Menú nativo de compartir del cel (WhatsApp, etc.); si no existe, copia la liga. */
+async function shareApp() {
+  const url = new URL('./', location.href).href; // la raíz de la app, sin #/?
+  const data = { title: 'Rutineitor 2000', text: '💪 Mi app de rutina de gym. Ábrela y agrégala a tu pantalla de inicio:', url };
+  if (navigator.share) {
+    try { await navigator.share(data); } catch { /* canceló */ }
+    return;
+  }
+  try { await navigator.clipboard.writeText(url); toast('Liga copiada, pégala donde quieras'); }
+  catch { toast(url, null, 8000); }
 }
 
 /* ---------- Service worker (modo sin internet) ---------- */

@@ -43,6 +43,7 @@ los pasos según tu cel, también para iPhone.
 - 📱 En la **pantalla externa** del Razr (cel cerrado) la app muestra un ejercicio a la vez con botones
   grandes y flechas ‹ ›; avanza sola al completar cada uno.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
+- ⋮ → **Compartir con un amigo** manda la liga por WhatsApp o donde quieras.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
   el registro vive solo en tu celular. Si pasan 4 semanas sin respaldar, la app te lo recuerda al abrirla.
 
