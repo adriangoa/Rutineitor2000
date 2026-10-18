@@ -392,24 +392,6 @@ function setTheme(t) {
   applyTheme(t);
 }
 
-/* ---------- Pantalla encendida (respaldo, desde Opciones) ---------- */
-let wakeLock = null;
-async function toggleWake() {
-  const btn = $('#wakeBtn');
-  if (wakeLock) { await wakeLock.release(); wakeLock = null; btn.setAttribute('aria-pressed', 'false'); toast('La pantalla puede apagarse'); return; }
-  if (!('wakeLock' in navigator)) { toast('Tu navegador no permite mantener la pantalla encendida'); return; }
-  try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    btn.setAttribute('aria-pressed', 'true'); toast('Pantalla encendida mientras entrenas');
-    wakeLock.addEventListener('release', () => { if (document.visibilityState !== 'visible') return; wakeLock = null; btn.setAttribute('aria-pressed', 'false'); });
-  } catch { toast('No se pudo mantener la pantalla encendida'); }
-}
-document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible' && $('#wakeBtn').getAttribute('aria-pressed') === 'true') {
-    try { wakeLock = await navigator.wakeLock.request('screen'); } catch {}
-  }
-});
-
 /* ---------- Toast ---------- */
 let toastTimer;
 function toast(msg, onClick, ms = 2600) {
@@ -461,7 +443,6 @@ function bind() {
   });
   $('#weekBtn').addEventListener('click', renderWeek);
   $('#menuBtn').addEventListener('click', () => $('#menu').showModal());
-  $('#wakeBtn').addEventListener('click', toggleWake);
   $('#exportBtn').addEventListener('click', exportBackup);
   $('#importInput').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importBackup(f); e.target.value = ''; $('#menu').close(); });
   $('#resetBtn').addEventListener('click', () => {
