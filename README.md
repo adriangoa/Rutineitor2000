@@ -15,9 +15,12 @@ Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la 
 
 - Abre directo en el día de hoy (sábado y domingo muestra la semana que viene).
 - Toca **1, 2, 3, 4** para marcar cada serie. El cardio se marca con un solo botón.
+- Al marcar una serie arranca el **descanso** (barra abajo, con −15 / +15 / Saltar). Al terminar suena
+  un tono suave y vibra, aunque la pantalla esté apagada. En una superserie no hay descanso entre
+  ejercicios: la barra te dice cuál sigue, y el descanso arranca al terminar el último del grupo.
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
 - ⋮ → **Tema**: Automático, Alto contraste o Synthwave.
-- ☀ mantiene la pantalla encendida mientras entrenas.
+- ⋮ → **Mantener pantalla encendida**, por si el aviso de descanso no suena con la pantalla apagada.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
   el registro vive solo en tu celular.
@@ -42,6 +45,7 @@ Campos de cada ejercicio:
 | `sets`, `reps` | Series (número) y repeticiones (texto, ej. `"8–10"`, `"45 s"`). |
 | `img` | Carpeta dentro de `images/` con `0.webp` (inicio) y `1.webp` (final). |
 | `ss` | Superserie: ejercicios seguidos con la misma letra se agrupan. |
+| `rest` | Segundos de descanso tras cada serie (opcional, 90 por omisión). En superserie cuenta el del último. |
 | `tips` | Lista de notas de técnica. |
 | `type: "cardio"` + `duration` | Para bloques de cardio (un solo check). |
 

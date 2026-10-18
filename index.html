@@ -18,9 +18,6 @@
     <div class="top-row">
       <span class="brand">Rutineitor<b>2000</b></span>
       <div class="top-actions">
-        <button id="wakeBtn" class="icon-btn" aria-pressed="false" title="Mantener pantalla encendida" aria-label="Mantener pantalla encendida">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
-        </button>
         <button id="weekBtn" class="icon-btn" title="Semana" aria-label="Ver semana">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
         </button>
@@ -51,6 +48,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
       <div id="sheetBody"></div>
+      <div id="sheetRest" class="rest sheet-rest" hidden></div>
     </div>
   </dialog>
 
@@ -81,12 +79,14 @@
         <label class="menu-item">Importar respaldo<small>Restaura un archivo exportado antes</small>
           <input id="importInput" type="file" accept="application/json,.json" hidden>
         </label>
+        <button id="wakeBtn" class="menu-item" aria-pressed="false">Mantener pantalla encendida<small>Respaldo, por si el aviso de descanso no suena con la pantalla apagada</small></button>
         <button id="resetBtn" class="menu-item danger">Reiniciar este día<small>Desmarca todo lo del día que estás viendo</small></button>
       </div>
       <p id="versionText" class="version"></p>
     </div>
   </dialog>
 
+  <div id="restBar" class="rest rest-bar" role="timer" aria-live="off" hidden></div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="app.js"></script>

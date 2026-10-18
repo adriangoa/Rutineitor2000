@@ -65,6 +65,11 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
   contraste y `data-theme="synth"` synthwave en `<html>`. Colores en variables de `:root`. Se guarda en
   `r2k.theme` y un script en línea en `index.html` lo aplica antes de pintar (sin parpadeo).
+- Descanso: al marcar una serie arranca un temporizador con el `rest` del ejercicio (90 s por omisión).
+  En superserie solo arranca tras el último del grupo; antes muestra "Ahora: <siguiente>". Se guarda la
+  hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto
+  de Web Audio programado desde el inicio (suena con pantalla apagada y se mezcla con la música) + vibración.
+- "Mantener pantalla encendida" (Wake Lock) quedó escondido en ⋮ Opciones como respaldo del aviso.
 
 ## Probar
 - Rápido: `python3 -m http.server 8000` en la raíz y abrir http://localhost:8000
@@ -73,5 +78,6 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
-- Temporizador de descanso al marcar una serie (60–90 s aislamiento, 2 min compuestos).
-- Rutina A/B alternando semanas.
+- Rutina A/B alternando semanas: mismos días y grupos; la semana B usa otras variantes del inventario.
+  Ya acordado con Adrián hacerla en una segunda tanda, proponiéndole la semana B antes de meterla.
+- Confirmar en su Android que el tono suena con la pantalla apagada; si sí, quitar lo de pantalla encendida.

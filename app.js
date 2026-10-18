@@ -3,7 +3,9 @@
 
 const BUILD = 'dev'; // lo reemplaza scripts/build.mjs al publicar
 const LOG_KEY = 'r2k.log.v1';
+const REST_KEY = 'r2k.rest.v1';
 const THEME_KEY = 'r2k.theme';
+const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
 const $ = (s) => document.querySelector(s);
@@ -60,6 +62,9 @@ function toggleSet(dateKey, ex, i) {
   saveLog();
   if (navigator.vibrate) navigator.vibrate(arr[i] ? 18 : 8);
 }
+
+// Ejercicios de la misma superserie (son consecutivos en routine.json).
+function groupOf(day, ex) { return ex.ss ? day.exercises.filter((e) => e.ss === ex.ss) : null; }
 
 /* ---------- Render ---------- */
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -171,7 +176,9 @@ function openExercise(exId) {
     <ul class="tips">${(ex.tips || []).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
     <p class="s-sets-label">${ex.type === 'cardio' ? 'Marca al terminar' : 'Marca cada serie al terminarla'}</p>
     <div class="sets">${setButtons(dateKey, ex)}</div>`;
-  $('#sheet').showModal();
+  const sheet = $('#sheet');
+  if (!sheet.open) sheet.showModal();
+  sheet.scrollTop = 0;
   clearInterval(state.animTimer);
   if (ex.img) {
     let f = 0;
@@ -224,6 +231,138 @@ async function importBackup(file) {
   } catch { toast('Ese archivo no es un respaldo válido'); }
 }
 
+/* ---------- Descanso entre series ----------
+   Se guarda la hora de término (no los segundos restantes): si Android congela la
+   página con la pantalla apagada, al volver la cuenta sigue correcta. El sonido se
+   programa en el reloj de Web Audio desde que marcas la serie, que no depende de los
+   timers de JavaScript. Es un tono corto y suave: Chrome lo mezcla con tu música. */
+let rest = loadRest(); // { mode: 'rest', day, end, total } | { mode: 'next', day, exId }
+let restTick = null, audioCtx = null, chime = [];
+
+function loadRest() {
+  try {
+    const r = JSON.parse(localStorage.getItem(REST_KEY));
+    return r && (r.mode === 'next' || r.end > Date.now()) ? r : null;
+  } catch { return null; }
+}
+function saveRest() {
+  try { rest ? localStorage.setItem(REST_KEY, JSON.stringify(rest)) : localStorage.removeItem(REST_KEY); } catch {}
+}
+
+function audio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  audioCtx ||= new AC();
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  return audioCtx;
+}
+function scheduleChime(endMs) {
+  cancelChime();
+  const ctx = audio(); if (!ctx) return;
+  const t0 = ctx.currentTime + Math.max(0, (endMs - Date.now()) / 1000);
+  // "Ding-dong" grave (mi5 → do5), volumen bajo y con caída suave.
+  [[659.25, 0], [523.25, 0.32]].forEach(([freq, dt]) => {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0 + dt);
+    g.gain.linearRampToValueAtTime(0.32, t0 + dt + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + dt + 1.1);
+    o.connect(g).connect(ctx.destination);
+    o.start(t0 + dt); o.stop(t0 + dt + 1.2);
+    chime.push(o);
+  });
+}
+function cancelChime() {
+  chime.forEach((o) => { try { o.stop(); } catch {} });
+  chime = [];
+}
+function sleepAudio() { if (audioCtx && audioCtx.state === 'running') audioCtx.suspend().catch(() => {}); }
+
+const restSecsLeft = () => Math.max(0, Math.ceil((rest.end - Date.now()) / 1000));
+const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+function startRest(secs) {
+  rest = { mode: 'rest', day: state.dayIdx, end: Date.now() + secs * 1000, total: secs };
+  scheduleChime(rest.end);
+  saveRest(); renderRest();
+}
+function adjustRest(delta) {
+  rest.end += delta * 1000;
+  if (rest.end <= Date.now()) { clearRest(); return; }
+  rest.total = Math.max(rest.total, restSecsLeft());
+  scheduleChime(rest.end);
+  saveRest(); renderRest();
+}
+function clearRest() {
+  rest = null; cancelChime(); sleepAudio();
+  saveRest(); renderRest();
+}
+
+// Qué hacer después de marcar una serie.
+function afterMark(day, ex, on) {
+  if (!on) return;
+  const g = groupOf(day, ex);
+  if (g && g.indexOf(ex) < g.length - 1) {
+    rest = { mode: 'next', day: state.dayIdx, exId: g[g.indexOf(ex) + 1].id };
+    cancelChime(); saveRest(); renderRest();
+    return;
+  }
+  const p = dayProgress(day, ymd(dateFor(state.dayIdx)));
+  if (ex.type === 'cardio' || p.done >= p.total) { clearRest(); return; }
+  startRest((g ? g[g.length - 1] : ex).rest || DEFAULT_REST);
+}
+
+function restHTML() {
+  if (rest.mode === 'next') {
+    const ex = state.routine.days[rest.day].exercises.find((e) => e.id === rest.exId);
+    return `<button class="rest-go" data-rest="go">Ahora, sin descanso<b>${esc(ex.name)} ›</b></button>
+      <button class="rest-btn" data-rest="skip" aria-label="Cerrar">✕</button>`;
+  }
+  return `<div class="rest-info"><span class="rest-label">Descanso</span><span class="rest-time"></span></div>
+    <button class="rest-btn" data-rest="-15">−15</button>
+    <button class="rest-btn" data-rest="15">+15</button>
+    <button class="rest-btn" data-rest="skip">Saltar</button>
+    <span class="rest-track"><i class="rest-fill"></i></span>`;
+}
+function renderRest() {
+  clearInterval(restTick);
+  const boxes = [$('#restBar'), $('#sheetRest')];
+  document.body.classList.toggle('resting', !!rest);
+  boxes.forEach((b) => {
+    b.hidden = !rest;
+    b.classList.remove('over');
+    b.classList.toggle('next', !!rest && rest.mode === 'next');
+    b.innerHTML = rest ? restHTML() : '';
+  });
+  if (rest && rest.mode === 'rest') { tickRest(); restTick = setInterval(tickRest, 250); }
+}
+function tickRest() {
+  const left = restSecsLeft();
+  document.querySelectorAll('.rest-time').forEach((t) => { t.textContent = mmss(left); });
+  document.querySelectorAll('.rest-fill').forEach((f) => { f.style.width = `${(left / rest.total) * 100}%`; });
+  if (left > 0) return;
+  clearInterval(restTick);
+  if (navigator.vibrate) navigator.vibrate([180, 90, 180]);
+  document.querySelectorAll('.rest').forEach((b) => b.classList.add('over'));
+  document.querySelectorAll('.rest-label').forEach((l) => { l.textContent = '¡Listo! Siguiente serie'; });
+  const done = rest;
+  setTimeout(() => {
+    if (rest !== done) return;
+    rest = null; saveRest(); renderRest(); sleepAudio();
+  }, 5000);
+}
+function onRestClick(e) {
+  const b = e.target.closest('[data-rest]'); if (!b) return;
+  const a = b.dataset.rest;
+  if (a === 'skip') clearRest();
+  else if (a === 'go') {
+    const { day, exId } = rest;
+    clearRest();
+    if (day !== state.dayIdx) { state.dayIdx = day; renderDay(); }
+    openExercise(exId);
+  } else adjustRest(+a);
+}
+
 /* ---------- Tema ---------- */
 const THEME_BG = { hc: '#000000', synth: '#12061f' };
 function applyTheme(t) {
@@ -239,7 +378,7 @@ function setTheme(t) {
   applyTheme(t);
 }
 
-/* ---------- Pantalla encendida ---------- */
+/* ---------- Pantalla encendida (respaldo, desde Opciones) ---------- */
 let wakeLock = null;
 async function toggleWake() {
   const btn = $('#wakeBtn');
@@ -273,8 +412,10 @@ function onSetClick(e) {
   if (!b) return false;
   const day = state.routine.days[state.dayIdx];
   const ex = day.exercises.find((x) => x.id === b.dataset.ex);
-  toggleSet(ymd(dateFor(state.dayIdx)), ex, +b.dataset.i);
+  const dateKey = ymd(dateFor(state.dayIdx));
+  toggleSet(dateKey, ex, +b.dataset.i);
   refreshCard(ex.id);
+  afterMark(day, ex, !!marks(dateKey, ex)[+b.dataset.i]);
   return true;
 }
 function bind() {
@@ -287,6 +428,8 @@ function bind() {
     const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
   });
   $('#sheetBody').addEventListener('click', onSetClick);
+  $('#restBar').addEventListener('click', onRestClick);
+  $('#sheetRest').addEventListener('click', onRestClick);
   $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) setTheme(b.dataset.themeSet); });
   $('#weekBody').addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
@@ -343,6 +486,7 @@ async function init() {
   bind();
   try { applyTheme(localStorage.getItem(THEME_KEY) || 'auto'); } catch { applyTheme('auto'); }
   renderDay();
+  renderRest();
   registerSW();
 }
 init();
