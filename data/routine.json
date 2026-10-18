@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "nota": "Fuente de la rutina. 'inv' = número en el inventario original. 'img' = carpeta en images/. 'ss' = letra de superserie (mismo valor = alternar sin descanso).",
+  "days": [
+    {
+      "id": "lun",
+      "name": "Lunes",
+      "focus": "Pecho y Tríceps",
+      "minutes": 75,
+      "exercises": [
+        { "id": "press-inclinado", "inv": 2, "name": "Press inclinado", "variant": "Mancuerna o máquina", "sets": 4, "reps": "8–10", "img": "Incline_Dumbbell_Press",
+          "tips": ["Banco a 30–45°.", "Baja hasta que los codos queden un poco por debajo del banco.", "Escápulas juntas y pecho alto todo el tiempo."] },
+        { "id": "chest-press-iso", "inv": 3, "name": "Chest Press Isolateral Hammer", "sets": 4, "reps": "10", "img": "Leverage_Chest_Press",
+          "tips": ["Ajusta el asiento para que las manijas queden a la altura media del pecho.", "Empuja sin despegar la espalda del respaldo.", "Controla la bajada (2 s)."] },
+        { "id": "peck-deck", "inv": 4, "name": "Peck Deck", "sets": 3, "reps": "12–15", "img": "Butterfly",
+          "tips": ["Codos ligeramente flexionados y fijos.", "Junta al frente y aprieta 1 s.", "Abre hasta sentir estiramiento, sin pasarte."] },
+        { "id": "fondos", "inv": 7, "name": "Fondos asistidos / máquina", "sets": 3, "reps": "10–12", "img": "Dip_Machine",
+          "tips": ["Torso ligeramente inclinado al frente para más pecho.", "Baja hasta que el codo llegue a ~90°.", "Hombros lejos de las orejas."] },
+        { "id": "copa", "inv": 36, "name": "Copa con mancuerna a 2 manos", "sets": 3, "reps": "12", "img": "Seated_Triceps_Press",
+          "tips": ["Sentado con espalda apoyada si puedes.", "Codos apuntando al frente, sin abrirlos.", "Baja la mancuerna detrás de la nuca y extiende completo."] },
+        { "id": "polea-v", "inv": 35, "name": "Extensión en polea con barra V", "sets": 3, "reps": "15", "img": "Triceps_Pushdown_-_V-Bar_Attachment",
+          "tips": ["Codos pegados al cuerpo, solo se mueve el antebrazo.", "Bloquea abajo 1 s.", "Sube hasta ~90° sin que los codos se vayan al frente."] },
+        { "id": "cardio-lun", "type": "cardio", "name": "Cardio: elíptica o escaladora", "duration": "15–20 min",
+          "tips": ["Ritmo en el que puedas hablar con frases cortas.", "Si la escaladora, no te recargues en los barandales."] }
+      ]
+    },
+    {
+      "id": "mar",
+      "name": "Martes",
+      "focus": "Espalda y Bíceps",
+      "minutes": 65,
+      "exercises": [
+        { "id": "jalon-abierto", "inv": 10, "name": "Jalón al frente, agarre abierto", "sets": 4, "reps": "10", "img": "Wide-Grip_Lat_Pulldown",
+          "tips": ["Lleva la barra a la parte alta del pecho.", "Piensa en bajar los codos, no en jalar con las manos.", "Sin balancear el torso."] },
+        { "id": "remo-sentado", "inv": 13, "name": "Remo sentado, agarre cerrado", "sets": 4, "reps": "10–12", "img": "Seated_Cable_Rows",
+          "tips": ["Espalda recta, pecho fuera.", "Jala al ombligo y junta escápulas.", "Estira los brazos completos sin redondear la espalda."] },
+        { "id": "remo-apoyo", "inv": 16, "name": "Remo con apoyo al pecho", "sets": 3, "reps": "10", "img": "Leverage_Iso_Row",
+          "tips": ["Pecho pegado al apoyo todo el tiempo.", "Jala con los codos hacia atrás.", "Pausa 1 s atrás."] },
+        { "id": "pullover-soga", "inv": 12, "name": "Pull over en polea alta con soga", "sets": 3, "reps": "15", "img": "Rope_Straight-Arm_Pulldown",
+          "tips": ["Brazos casi rectos, ligera inclinación del torso.", "Lleva la soga hasta los muslos.", "Siente el dorsal, no el tríceps."] },
+        { "id": "hiperextension", "inv": 17, "name": "Hiperextensión lumbar", "sets": 3, "reps": "12–15", "img": "Hyperextensions_Back_Extensions",
+          "tips": ["Sube solo hasta quedar en línea recta, no te arquees de más.", "Movimiento lento y controlado.", "Aprieta glúteo arriba."] },
+        { "id": "curl-z", "inv": 27, "name": "Curl con barra Z", "sets": 3, "reps": "10–12", "img": "EZ-Bar_Curl",
+          "tips": ["Codos fijos a los costados.", "Sin impulso de cadera.", "Baja en 2–3 s."] },
+        { "id": "curl-martillo", "inv": 31, "name": "Curl martillo", "sets": 3, "reps": "12", "img": "Hammer_Curls",
+          "tips": ["Agarre neutro (palmas viéndose).", "Alterna o simultáneo, sin girar la muñeca.", "Codos quietos."] }
+      ]
+    },
+    {
+      "id": "mie",
+      "name": "Miércoles",
+      "focus": "Hombro, Trapecio y Abdomen",
+      "minutes": 65,
+      "exercises": [
+        { "id": "press-militar", "inv": 19, "name": "Press militar con mancuerna, sentado", "sets": 4, "reps": "8–10", "img": "Seated_Dumbbell_Press",
+          "tips": ["Respaldo casi vertical.", "Baja las mancuernas a la altura de las orejas.", "No arquees la zona lumbar."] },
+        { "id": "laterales", "inv": 21, "name": "Elevación lateral con mancuerna", "sets": 4, "reps": "12–15", "img": "Side_Lateral_Raise",
+          "tips": ["Sube hasta la altura del hombro, no más.", "Codo ligeramente flexionado y un poco más alto que la muñeca.", "Peso ligero, cero impulso."] },
+        { "id": "rear-delt", "inv": 23, "name": "Rear Delt Fly en máquina", "sets": 3, "reps": "15", "img": "Reverse_Machine_Flyes",
+          "tips": ["Pecho pegado al respaldo.", "Abre los brazos hacia atrás con codos suaves.", "No juntes escápulas de más: es hombro, no espalda."] },
+        { "id": "face-pull", "inv": 26, "name": "Face pulls con soga", "sets": 3, "reps": "15", "img": "Face_Pull",
+          "tips": ["Polea a la altura de la cara o más alta.", "Jala hacia la frente separando las puntas de la soga.", "Termina con los puños a los lados de la cabeza."] },
+        { "id": "shrugs", "inv": 18, "name": "Encogimientos (shrugs)", "sets": 3, "reps": "12–15", "img": "Dumbbell_Shrug",
+          "tips": ["Sube los hombros hacia las orejas en línea recta.", "Pausa 1 s arriba.", "No gires los hombros."] },
+        { "id": "crunch-maquina", "inv": 58, "name": "Crunch en máquina", "sets": 3, "reps": "15–20", "img": "Ab_Crunch_Machine",
+          "tips": ["Enrolla la columna, no jales con los brazos.", "Exhala al contraer.", "Regresa lento."] },
+        { "id": "piernas-colgado", "inv": 59, "name": "Elevación de piernas colgado", "sets": 3, "reps": "Al fallo", "img": "Hanging_Leg_Raise",
+          "tips": ["Evita balancearte.", "Sube las rodillas o piernas y enrolla la pelvis arriba.", "Baja controlado."] },
+        { "id": "plancha", "inv": 60, "name": "Plancha", "sets": 3, "reps": "45 s", "img": "Plank",
+          "tips": ["Cuerpo en línea recta de cabeza a talones.", "Aprieta abdomen y glúteos.", "No dejes caer la cadera."] }
+      ]
+    },
+    {
+      "id": "jue",
+      "name": "Jueves",
+      "focus": "Torso B y Brazos",
+      "minutes": 70,
+      "exercises": [
+        { "id": "dominadas", "inv": 9, "name": "Dominadas (libres o asistidas)", "sets": 4, "reps": "8–10", "img": "Pullups", "ss": "A",
+          "tips": ["Empieza colgado con brazos extendidos.", "Sube hasta pasar la barbilla de la barra.", "Baja completo y controlado."] },
+        { "id": "press-horizontal", "inv": 1, "name": "Press horizontal (barra o mancuerna)", "sets": 4, "reps": "8–10", "img": "Dumbbell_Bench_Press", "ss": "A",
+          "tips": ["Escápulas juntas y pies firmes en el piso.", "Baja a la parte media del pecho.", "Codos a ~45° del torso, no abiertos a 90°."] },
+        { "id": "remo-vikingo", "inv": 14, "name": "Remo vikingo (barra T)", "sets": 3, "reps": "10", "img": "T-Bar_Row_with_Handle", "ss": "B",
+          "tips": ["Torso inclinado ~45°, espalda neutra.", "Jala hacia el abdomen.", "Rodillas ligeramente flexionadas."] },
+        { "id": "crossover", "inv": 6, "name": "Crossover en poleas", "sets": 3, "reps": "12–15", "img": "Cable_Crossover", "ss": "B",
+          "tips": ["Un pie adelante para estabilidad.", "Junta las manos al frente con codos suaves.", "Abre hasta sentir estiramiento del pecho."] },
+        { "id": "remo-1-brazo", "inv": 15, "name": "Remo con mancuerna a un brazo", "sets": 3, "reps": "10", "img": "One-Arm_Dumbbell_Row",
+          "tips": ["Mano y rodilla apoyadas en el banco.", "Lleva la mancuerna hacia la cadera.", "Sin girar el torso."] },
+        { "id": "curl-predicador", "inv": 30, "name": "Curl predicador", "sets": 3, "reps": "12", "img": "Preacher_Curl", "ss": "C",
+          "tips": ["Axilas pegadas al borde del banco.", "Baja casi hasta extender, sin rebotar.", "Sube sin despegar los brazos del cojín."] },
+        { "id": "press-frances", "inv": 37, "name": "Press francés", "sets": 3, "reps": "12", "img": "EZ-Bar_Skullcrusher", "ss": "C",
+          "tips": ["Barra Z, acostado.", "Codos apuntando al techo, fijos.", "Baja hacia la frente y extiende."] },
+        { "id": "cardio-jue", "type": "cardio", "name": "Cardio: elíptica o escaladora", "duration": "15–20 min",
+          "tips": ["Ritmo en el que puedas hablar con frases cortas.", "Si la escaladora, no te recargues en los barandales."] }
+      ]
+    },
+    {
+      "id": "vie",
+      "name": "Viernes",
+      "focus": "Pierna completa",
+      "minutes": 80,
+      "exercises": [
+        { "id": "extension-pierna", "inv": 41, "name": "Extensión de pierna", "variant": "Calentamiento", "sets": 3, "reps": "15", "img": "Leg_Extensions",
+          "tips": ["Rodilla alineada con el eje de la máquina.", "Pausa 1 s arriba.", "Peso moderado: es para calentar."] },
+        { "id": "sentadilla", "inv": 43, "name": "Sentadilla Smith o Hack", "sets": 4, "reps": "8–10", "img": "Smith_Machine_Squat",
+          "tips": ["Pies a la anchura de hombros, un poco al frente en Smith.", "Baja al menos a paralelo.", "Rodillas en dirección de las puntas."] },
+        { "id": "rumano", "inv": 54, "name": "Peso muerto rumano", "sets": 4, "reps": "10", "img": "Romanian_Deadlift",
+          "tips": ["Cadera hacia atrás, rodillas apenas flexionadas.", "Barra pegada a las piernas.", "Baja hasta sentir estiramiento en femoral, espalda neutra."] },
+        { "id": "leg-press", "inv": 42, "name": "Leg Press", "sets": 4, "reps": "12", "img": "Leg_Press",
+          "tips": ["Espalda baja pegada al respaldo.", "Baja hasta ~90° de rodilla.", "No bloquees las rodillas arriba."] },
+        { "id": "curl-femoral", "inv": 47, "name": "Curl femoral sentado", "sets": 3, "reps": "12", "img": "Seated_Leg_Curl",
+          "tips": ["Ajusta el rodillo arriba de los tobillos.", "Aprieta 1 s abajo.", "Regresa lento."] },
+        { "id": "hip-thrust", "inv": 51, "name": "Hip Thrust", "sets": 3, "reps": "12", "img": "Barbell_Hip_Thrust",
+          "tips": ["Espalda alta apoyada en el banco.", "Mentón hacia el pecho.", "Arriba: cadera en línea con torso, aprieta glúteo 1 s."] },
+        { "id": "abduccion", "inv": 49, "name": "Abducción en máquina", "sets": 3, "reps": "15", "img": "Thigh_Abductor", "ss": "D",
+          "tips": ["Abre controlado y pausa afuera.", "Torso ligeramente inclinado al frente para más glúteo."] },
+        { "id": "aduccion", "inv": 50, "name": "Aducción en máquina", "sets": 3, "reps": "15", "img": "Thigh_Adductor", "ss": "D",
+          "tips": ["Cierra hasta juntar y aprieta.", "Abre sin forzar el estiramiento."] },
+        { "id": "pantorrilla", "inv": 56, "name": "Pantorrilla de pie", "sets": 4, "reps": "15", "img": "Standing_Calf_Raises",
+          "tips": ["Baja el talón completo para estirar.", "Sube en punta y pausa 1 s.", "Sin rebotar."] }
+      ]
+    }
+  ]
+}

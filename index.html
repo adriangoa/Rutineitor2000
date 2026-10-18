@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rutineitor 2000</title>
+  <meta name="description" content="Rutina de gimnasio semanal con seguimiento, funciona sin internet.">
+  <meta name="theme-color" content="#0d0e0b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f3f3ee" media="(prefers-color-scheme: light)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-row">
+      <span class="brand">Rutineitor<b>2000</b></span>
+      <div class="top-actions">
+        <button id="wakeBtn" class="icon-btn" aria-pressed="false" title="Mantener pantalla encendida" aria-label="Mantener pantalla encendida">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
+        </button>
+        <button id="weekBtn" class="icon-btn" title="Semana" aria-label="Ver semana">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+        </button>
+        <button id="menuBtn" class="icon-btn" title="Opciones" aria-label="Opciones">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav id="tabs" class="tabs" role="tablist" aria-label="Días"></nav>
+  </header>
+
+  <main id="main">
+    <section class="day-head">
+      <p id="dayDate" class="day-date"></p>
+      <h1 id="dayTitle" class="day-title"></h1>
+      <div class="progress">
+        <div class="progress-bar"><span id="progFill"></span></div>
+        <span id="progText" class="progress-text"></span>
+      </div>
+    </section>
+    <ol id="list" class="list"></ol>
+    <p id="doneMsg" class="done-msg" hidden>Día completo. Buen trabajo.</p>
+  </main>
+
+  <dialog id="sheet" class="sheet">
+    <div class="sheet-inner">
+      <button class="sheet-close icon-btn" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div id="sheetBody"></div>
+    </div>
+  </dialog>
+
+  <dialog id="week" class="sheet">
+    <div class="sheet-inner">
+      <button class="sheet-close icon-btn" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 class="sheet-title">Tu progreso</h2>
+      <div id="weekBody"></div>
+    </div>
+  </dialog>
+
+  <dialog id="menu" class="sheet">
+    <div class="sheet-inner">
+      <button class="sheet-close icon-btn" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 class="sheet-title">Opciones</h2>
+      <div class="menu-list">
+        <button id="exportBtn" class="menu-item">Exportar respaldo<small>Descarga un archivo con todo tu registro</small></button>
+        <label class="menu-item">Importar respaldo<small>Restaura un archivo exportado antes</small>
+          <input id="importInput" type="file" accept="application/json,.json" hidden>
+        </label>
+        <button id="resetBtn" class="menu-item danger">Reiniciar este día<small>Desmarca todo lo del día que estás viendo</small></button>
+      </div>
+      <p id="versionText" class="version"></p>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
