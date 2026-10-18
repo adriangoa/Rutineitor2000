@@ -112,3 +112,10 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
+- Tema "Temporada": opción en el selector que despliega la lista de temas de temporada + "Automático por
+  fecha" (elige el del mes; si no hay, el normal). Empezar con Halloween (negro/morado/naranja, telarañas,
+  murciélagos, 🎃 en la barra, frases y emojis propios en logros.json, confeti de temporada; fuente tipo
+  Creepster opcional). Modular: Adrián pedirá uno nuevo cada mes. Pendiente que confirme detalles.
+- Pantalla externa del Razr 50: la app puede abrirse ahí (Ajustes → Pantalla externa → Apps); viewport
+  ~400×400 CSS px. Idea: "modo portada" por media query (un ejercicio a la vez, botones grandes, descanso
+  grande, flechas ‹ ›). Primero Adrián confirma que abre y pasa el tamaño detectado.
