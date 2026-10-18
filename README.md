@@ -37,6 +37,8 @@ Funciona **sin internet**: se descarga una vez (~3.5 MB) y después abre desde l
 - En el modal de cada ejercicio, el botón 📝 sirve para anotar si lo pudiste hacer: ✅ Lo hice ·
   🔧 Lo adapté · ❌ No se puede (con nota de qué cambiaste o por qué). Los 🔧/❌ dejan un puntito en la
   foto del ejercicio. Las notas van en **Exportar respaldo**: pásale ese archivo a Claude para ajustar la rutina.
+- 📱 En la **pantalla externa** del Razr (cel cerrado) la app muestra un ejercicio a la vez con botones
+  grandes y flechas ‹ ›; avanza sola al completar cada uno.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
   el registro vive solo en tu celular. Si pasan 4 semanas sin respaldar, la app te lo recuerda al abrirla.

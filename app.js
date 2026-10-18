@@ -188,6 +188,7 @@ function updateProgress() {
   $('#progText').textContent = `${p.done}/${p.total} series`;
   $('#doneMsg').hidden = p.done < p.total;
   renderTabs();
+  renderCover();
 }
 
 function refreshCard(exId) {
@@ -541,6 +542,9 @@ function renderRest() {
   });
   // En el modal no repitas "Ahora: X" si el botón de la superserie ya lleva a X.
   if (rest && rest.mode === 'next' && $('#sheetBody .s-next.ss')?.dataset.open === rest.exId) $('#sheetRest').hidden = true;
+  // En la portada la superserie ya cambia sola de ejercicio: el aviso "Ahora: X" sobra.
+  if (rest && rest.mode === 'next' && coverMQ.matches) $('#restBar').hidden = true;
+  document.body.classList.toggle('resting', !$('#restBar').hidden);
   if (rest && rest.mode === 'rest') { tickRest(); restTick = setInterval(tickRest, 250); }
 }
 function tickRest() {
@@ -570,8 +574,83 @@ function onRestClick(e) {
     const { day, exId } = rest;
     clearRest();
     if (day !== state.dayIdx) { state.dayIdx = day; renderDay(); }
-    openExercise(exId);
+    if (coverMQ.matches) coverShow(exId, 1); else openExercise(exId);
   } else adjustRest(+a);
+}
+
+/* ---------- Modo portada (pantalla externa del Razr) ----------
+   Se activa en pantallas muy bajitas (la externa mide 469 × 318; el cel abierto nunca baja de 411 de alto).
+   Un ejercicio a la vez con botones grandes, flechas ‹ › y avance automático. */
+const coverMQ = matchMedia('(max-height: 360px)');
+function coverDay() { return dayView(state.dayIdx); }
+const coverPending = (e, dateKey) => marks(dateKey, e).filter(Boolean).length < setsOf(e);
+function coverCurrent() {
+  const day = coverDay(), dateKey = ymd(dateFor(state.dayIdx));
+  return day.exercises.find((e) => e.id === state.coverEx)
+    || day.exercises.find((e) => coverPending(e, dateKey)) || day.exercises[day.exercises.length - 1];
+}
+function renderCover(dir = 0) {
+  if (!coverMQ.matches) return;
+  const day = coverDay(), date = dateFor(state.dayIdx), dateKey = ymd(date);
+  const p = dayProgress(day, dateKey);
+  const ex = coverCurrent();
+  state.coverEx = ex.id;
+  const k = day.exercises.indexOf(ex), g = groupOf(day, ex);
+  const head = `<div class="cv-head"><b>${DAY_SHORT[state.dayIdx]} · ${esc(day.focus)}</b><span class="wk-badge">${weekLetter()}</span>
+    <span class="cv-prog"><i style="width:${Math.round(p.pct * 100)}%"></i></span><span class="cv-count">${p.done}/${p.total}</span></div>`;
+  if (p.done >= p.total) {
+    const min = workoutMin(dateKey), sd = streakDays();
+    $('#cover').innerHTML = `${head}<div class="cv-done"><span>🏆</span><b>Día completo</b>
+      <small>${min ? `⏱ ${min} min` : ''}${min && sd >= 2 ? ' · ' : ''}${sd >= 2 ? `🔥 ${sd} días seguidos` : ''}</small></div>`;
+    return;
+  }
+  const img = ex.type === 'cardio'
+    ? `<div class="cv-img cardio">${CARDIO_ICON}</div>`
+    : `<button class="cv-img" data-cv-flip aria-label="Ver posición final"><img src="images/${ex.img}/0.webp" alt=""><img class="f1" src="images/${ex.img}/1.webp" alt=""></button>`;
+  const meta = ex.type === 'cardio' ? esc(ex.duration) : `${ex.sets} × ${esc(ex.reps)}${ex.variant ? ' · ' + esc(ex.variant) : ''}`;
+  $('#cover').innerHTML = `${head}
+    <div class="cv-main">
+      <button class="cv-nav" data-cv-nav="-1" aria-label="Ejercicio anterior"${k === 0 ? ' disabled' : ''}>‹</button>
+      <div class="cv-card${dir ? (dir > 0 ? ' in-next' : ' in-prev') : ''}">
+        ${img}
+        <div class="cv-info">
+          ${g ? `<span class="ss-badge">Superserie ${esc(ex.ss)} · ${g.indexOf(ex) + 1} de ${g.length}</span>` : `<span class="cv-num">${k + 1} de ${day.exercises.length}</span>`}
+          <span class="cv-name">${esc(ex.name)}</span>
+          <span class="cv-meta">${meta}</span>
+        </div>
+        <div class="cv-sets sets">${setButtons(dateKey, ex)}</div>
+      </div>
+      <button class="cv-nav" data-cv-nav="1" aria-label="Ejercicio siguiente"${k === day.exercises.length - 1 ? ' disabled' : ''}>›</button>
+    </div>`;
+}
+function coverShow(exId, dir = 1) { state.coverEx = exId; renderCover(dir); }
+// Después de marcar una serie en la portada: en superserie alterna al que sigue del grupo con series
+// pendientes; si el ejercicio quedó completo, pasa al siguiente pendiente del día.
+function coverAfterMark(ex, on) {
+  if (!on) return;
+  const day = coverDay(), dateKey = ymd(dateFor(state.dayIdx));
+  const g = groupOf(day, ex);
+  let target = null;
+  if (g) {
+    const i = g.indexOf(ex);
+    target = [...g.slice(i + 1), ...g.slice(0, i)].find((e) => coverPending(e, dateKey));
+  }
+  if (!target && !coverPending(ex, dateKey)) {
+    const k = day.exercises.indexOf(ex);
+    target = [...day.exercises.slice(k + 1), ...day.exercises.slice(0, k)].find((e) => coverPending(e, dateKey));
+  }
+  if (target && target !== ex) setTimeout(() => coverShow(target.id, 1), reduceMotion() ? 0 : 600);
+}
+function onCoverClick(e) {
+  if (onSetClick(e)) return;
+  const n = e.target.closest('[data-cv-nav]');
+  if (n) {
+    const day = coverDay(), k = day.exercises.findIndex((x) => x.id === state.coverEx) + +n.dataset.cvNav;
+    if (day.exercises[k]) { coverShow(day.exercises[k].id, +n.dataset.cvNav); sfx('move'); }
+    return;
+  }
+  const f = e.target.closest('[data-cv-flip]');
+  if (f) f.classList.toggle('show1');
 }
 
 /* ---------- Tema ---------- */
@@ -777,6 +856,7 @@ function onSetClick(e) {
   const day = dayView(state.dayIdx);
   const ex = day.exercises.find((x) => x.id === b.dataset.ex);
   const dateKey = ymd(dateFor(state.dayIdx));
+  const inCover = !!b.closest('#cover'); // antes de redibujar (la portada se redibuja al marcar)
   toggleSet(dateKey, ex, +b.dataset.i);
   refreshCard(ex.id);
   const on = !!marks(dateKey, ex)[+b.dataset.i];
@@ -789,6 +869,7 @@ function onSetClick(e) {
     if (b.closest('#list')) jumpToNext(day, ex, dateKey);
   }
   afterMark(day, ex, on);
+  if (inCover) coverAfterMark(ex, on);
   // En el modal de una superserie, resalta el botón para cambiar de ejercicio.
   const nx = b.closest('#sheetBody')?.querySelector('.s-next.ss');
   if (nx && rest && rest.mode === 'next') { nx.classList.remove('nudge'); void nx.offsetWidth; nx.classList.add('nudge'); }
@@ -814,6 +895,8 @@ function bind() {
     saveNotes();
   });
   $('#restBar').addEventListener('click', onRestClick);
+  $('#cover').addEventListener('click', onCoverClick);
+  coverMQ.addEventListener('change', () => { state.coverEx = null; renderDay(); });
   $('#sheetRest').addEventListener('click', onRestClick);
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
   $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));

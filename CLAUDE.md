@@ -106,6 +106,11 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
   Adrián pedirá uno nuevo cada mes: entrada en `SEASONS` + bloque CSS + (opcional) frases y emojis animados.
   Hecho: halloween (octubre).
+- Modo portada (pantalla externa del Razr 50: 469×318 CSS px, dpr 2.25; abierto 411×916, dpr 2.625):
+  `@media (max-height: 360px)` oculta encabezado y lista y muestra `#cover` (`renderCover`): un ejercicio a la
+  vez, botones grandes, flechas ‹ ›, avance automático (`coverAfterMark`; en superserie alterna dentro del grupo).
+  Se redibuja en `updateProgress`. En portada no se muestra la barra "Ahora: X" de superserie.
+  La línea "Pantalla: …" de Opciones sirve para medir.
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -121,6 +126,3 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
-- Pantalla externa del Razr 50: la app puede abrirse ahí (Ajustes → Pantalla externa → Apps); viewport
-  ~400×400 CSS px. Idea: "modo portada" por media query (un ejercicio a la vez, botones grandes, descanso
-  grande, flechas ‹ ›). Primero Adrián confirma que abre y pasa el tamaño detectado.

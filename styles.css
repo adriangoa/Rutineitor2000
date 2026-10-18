@@ -533,6 +533,68 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 [data-theme="gb"] .party small { color: var(--muted); font-family: var(--display); font-size: 8px; }
 [data-theme="gb"] .confetti i { border-radius: 0; width: 8px; height: 8px; }
 
+/* Modo portada: pantalla externa del Razr (469 × 318). Solo en pantallas muy bajitas. */
+.cover { display: none; }
+@media (max-height: 360px) {
+  .top, main { display: none; }
+  body, body.resting { padding-bottom: 0; }
+  .cover {
+    display: flex; flex-direction: column; gap: 8px; height: 100vh; height: 100dvh;
+    padding: calc(6px + env(safe-area-inset-top)) 8px 8px;
+  }
+  body.resting .cover { padding-bottom: 76px; }
+  .cv-head { display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
+  .cv-head b { overflow: hidden; text-overflow: ellipsis; font-family: var(--display); font-size: 15px; }
+  .cv-head .wk-badge { margin: 0; }
+  .cv-prog { flex: 1; min-width: 40px; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+  .cv-prog i { display: block; height: 100%; background: var(--accent); }
+  .cv-count { font-family: var(--display); font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .cv-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 34px 1fr 34px; gap: 6px; }
+  .cv-nav {
+    border: 1px solid var(--line); background: var(--surface); border-radius: 14px; cursor: pointer;
+    font-size: 30px; line-height: 1; color: var(--ink); padding: 0;
+  }
+  .cv-nav:disabled { opacity: 0.25; }
+  .cv-card {
+    min-width: 0; display: grid; grid-template-columns: 92px 1fr; grid-template-rows: auto 1fr; gap: 6px 10px;
+    align-items: center; padding: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  }
+  .cv-card.in-next { animation: cvNext 0.45s cubic-bezier(0.2, 1.3, 0.4, 1); }
+  .cv-card.in-prev { animation: cvPrev 0.45s cubic-bezier(0.2, 1.3, 0.4, 1); }
+  .cv-img { position: relative; width: 92px; height: 92px; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: var(--img-bg); cursor: pointer; }
+  .cv-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
+  .cv-img img.f1 { opacity: 0; }
+  .cv-img.show1 img.f1 { opacity: 1; }
+  .cv-img.cardio { display: grid; place-items: center; background: var(--surface-2); color: var(--accent); }
+  .cv-img.cardio svg { width: 40px; height: 40px; }
+  .cv-info { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .cv-info .ss-badge { align-self: flex-start; margin: 0; font-size: 11px; padding: 2px 8px; }
+  .cv-num { font-size: 12px; color: var(--muted); }
+  .cv-name { font-weight: 700; font-size: 17px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .cv-meta { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cv-sets { grid-column: 1 / -1; align-self: center; justify-content: center; gap: 10px; }
+  .cv-sets .set:not(.wide) { width: 58px; height: 58px; font-size: 21px; }
+  .cv-sets .set.wide { height: 58px; padding: 0 28px; border-radius: 29px; font-size: 18px; }
+  .cv-done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; }
+  .cv-done span { font-size: 56px; line-height: 1; }
+  .cv-done b { font-family: var(--display); font-size: 26px; }
+  .cv-done small { color: var(--muted); font-size: 14px; }
+  .rest-bar { left: 8px; right: 8px; bottom: 6px; }
+  .rest-time { font-size: 26px; }
+  .trophy { top: 6px; }
+  .party-emoji { font-size: 64px; }
+  .party-title { font-size: 30px; margin: 8px 0 4px; }
+  .party-frase { font-size: 16px; margin-bottom: 10px; }
+  .party-time, .party-streak { margin: 0 0 8px; font-size: 14px; }
+  .party-box { padding: 12px; }
+  [data-theme="gb"] .cv-card, [data-theme="gb"] .cv-nav, [data-theme="gb"] .cv-img { border-radius: 0; border: 3px solid var(--ink); }
+  [data-theme="gb"] .cv-head b { font-size: 10px; }
+  [data-theme="gb"] .cv-name { font-size: 15px; }
+  [data-theme="halloween"] .cv-head b { font-family: var(--spooky); font-weight: 400; font-size: 20px; color: var(--accent); }
+}
+@keyframes cvNext { from { transform: translateX(40px); opacity: 0.3; } }
+@keyframes cvPrev { from { transform: translateX(-40px); opacity: 0.3; } }
+
 /* Selector: botón de temporada y su lista */
 .seg button.wide { grid-column: 1 / -1; }
 .seg.season-pick { margin-top: -10px; }
