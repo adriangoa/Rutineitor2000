@@ -1,0 +1,652 @@
+{
+ "nota": "Inventario de ejercicios de Adrián (fuente: Excel original). img = carpeta sugerida de free-exercise-db; las imágenes ya convertidas están en referencia/imagenes/.",
+ "ejercicios": [
+  {
+   "inv": 1,
+   "grupo": "Pectoral",
+   "ejercicio": "Press de Pecho Horizontal (Barra / Mancuerna / Máquina / Smith)",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor (porción media/esternal)",
+   "img": "Dumbbell_Bench_Press",
+   "img_alternativas": [
+    "Barbell_Bench_Press_-_Medium_Grip",
+    "Machine_Bench_Press",
+    "Smith_Machine_Bench_Press"
+   ]
+  },
+  {
+   "inv": 2,
+   "grupo": "Pectoral",
+   "ejercicio": "Press de Pecho Inclinado (Barra / Mancuerna / Máquina / Smith)",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor (porción clavicular/superior)",
+   "img": "Incline_Dumbbell_Press",
+   "img_alternativas": [
+    "Barbell_Incline_Bench_Press_-_Medium_Grip",
+    "Leverage_Incline_Chest_Press",
+    "Smith_Machine_Incline_Bench_Press"
+   ]
+  },
+  {
+   "inv": 3,
+   "grupo": "Pectoral",
+   "ejercicio": "Chest Press Isolateral Hammer Strength",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor y deltoides anterior",
+   "img": "Leverage_Chest_Press",
+   "img_alternativas": []
+  },
+  {
+   "inv": 4,
+   "grupo": "Pectoral",
+   "ejercicio": "Peck Fly / Peck Deck (Máquina)",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor (enfoque interno)",
+   "img": "Butterfly",
+   "img_alternativas": []
+  },
+  {
+   "inv": 5,
+   "grupo": "Pectoral",
+   "ejercicio": "Cristos / Aperturas con Mancuernas (Horizontal / Inclinado)",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor (estiramiento de fibras)",
+   "img": "Dumbbell_Flyes",
+   "img_alternativas": [
+    "Incline_Dumbbell_Flyes"
+   ]
+  },
+  {
+   "inv": 6,
+   "grupo": "Pectoral",
+   "ejercicio": "Cross Over / Crossover en Poleas (Polea Alta / Baja)",
+   "enfoque": "Pecho",
+   "musculos": "Pectoral mayor y menor",
+   "img": "Cable_Crossover",
+   "img_alternativas": [
+    "Low_Cable_Crossover"
+   ]
+  },
+  {
+   "inv": 7,
+   "grupo": "Pectoral",
+   "ejercicio": "Fondos en Paralelas / Sentado / Asistido / Máquina",
+   "enfoque": "Pecho / Tríceps",
+   "musculos": "Pectoral inferior y tríceps braquial",
+   "img": "Dips_-_Chest_Version",
+   "img_alternativas": [
+    "Dip_Machine"
+   ]
+  },
+  {
+   "inv": 8,
+   "grupo": "Pectoral",
+   "ejercicio": "Flexiones / Lagartijas (Piso / Banco)",
+   "enfoque": "Pecho / Tríceps",
+   "musculos": "Pectoral mayor, tríceps y core",
+   "img": "Pushups",
+   "img_alternativas": [
+    "Incline_Push-Up"
+   ]
+  },
+  {
+   "inv": 9,
+   "grupo": "Espalda",
+   "ejercicio": "Dominadas Libres / Asistidas (Agarre Abierto / Cerrado)",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho, redondo mayor y bíceps",
+   "img": "Pullups",
+   "img_alternativas": [
+    "Chin-Up",
+    "Band_Assisted_Pull-Up"
+   ]
+  },
+  {
+   "inv": 10,
+   "grupo": "Espalda",
+   "ejercicio": "Jalón / Polea al Frente (Agarre Abierto / Cerrado / Manos Juntas)",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho y trapecio inferior",
+   "img": "Wide-Grip_Lat_Pulldown",
+   "img_alternativas": [
+    "Close-Grip_Front_Lat_Pulldown",
+    "V-Bar_Pulldown"
+   ]
+  },
+  {
+   "inv": 11,
+   "grupo": "Espalda",
+   "ejercicio": "Lat Pulldown Convergente",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho y amplitud de espalda",
+   "img": "Wide-Grip_Lat_Pulldown",
+   "img_alternativas": [
+    "One_Arm_Lat_Pulldown"
+   ]
+  },
+  {
+   "inv": 12,
+   "grupo": "Espalda",
+   "ejercicio": "Pull Down / Pull Over con Polea Alta (Barra / Soga)",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho y serrato anterior",
+   "img": "Rope_Straight-Arm_Pulldown",
+   "img_alternativas": [
+    "Straight-Arm_Pulldown"
+   ]
+  },
+  {
+   "inv": 13,
+   "grupo": "Espalda",
+   "ejercicio": "Remo Sentado con Máquina / Polea (Agarre Abierto / Cerrado)",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho, romboides y trapecio medio",
+   "img": "Seated_Cable_Rows",
+   "img_alternativas": []
+  },
+  {
+   "inv": 14,
+   "grupo": "Espalda",
+   "ejercicio": "Remo de Piso / Vikingo (Barra T)",
+   "enfoque": "Espalda",
+   "musculos": "Espalda media y grosor dorsal",
+   "img": "T-Bar_Row_with_Handle",
+   "img_alternativas": [
+    "Lying_T-Bar_Row"
+   ]
+  },
+  {
+   "inv": 15,
+   "grupo": "Espalda",
+   "ejercicio": "Remo Flexionado / Inclinado (Barra / Mancuerna)",
+   "enfoque": "Espalda",
+   "musculos": "Romboides, trapecio y dorsal ancho",
+   "img": "Bent_Over_Barbell_Row",
+   "img_alternativas": [
+    "One-Arm_Dumbbell_Row",
+    "Bent_Over_Two-Dumbbell_Row"
+   ]
+  },
+  {
+   "inv": 16,
+   "grupo": "Espalda",
+   "ejercicio": "Remo con Apoyo al Pecho (Hammer Strength / Máquina)",
+   "enfoque": "Espalda",
+   "musculos": "Dorsal ancho y aislamiento sin carga lumbar",
+   "img": "Leverage_Iso_Row",
+   "img_alternativas": [
+    "Leverage_High_Row"
+   ]
+  },
+  {
+   "inv": 17,
+   "grupo": "Espalda",
+   "ejercicio": "Hiperextensión Lumbar / Extensión de Espina (Máquina / Banco)",
+   "enfoque": "Espalda Baja",
+   "musculos": "Erectores de la columna y glúteos",
+   "img": "Hyperextensions_Back_Extensions",
+   "img_alternativas": []
+  },
+  {
+   "inv": 18,
+   "grupo": "Espalda",
+   "ejercicio": "Encogimientos de Hombro / Shrugs (Mancuerna / Barra)",
+   "enfoque": "Trapecio",
+   "musculos": "Trapecio superior",
+   "img": "Dumbbell_Shrug",
+   "img_alternativas": [
+    "Barbell_Shrug"
+   ]
+  },
+  {
+   "inv": 19,
+   "grupo": "Hombro",
+   "ejercicio": "Press Militar (Barra / Mancuerna / Smith)",
+   "enfoque": "Hombro",
+   "musculos": "Deltoides anterior y tríceps",
+   "img": "Seated_Dumbbell_Press",
+   "img_alternativas": [
+    "Standing_Military_Press",
+    "Smith_Machine_Overhead_Shoulder_Press"
+   ]
+  },
+  {
+   "inv": 20,
+   "grupo": "Hombro",
+   "ejercicio": "Press de Hombro con Máquina / Shoulder Press Isolateral",
+   "enfoque": "Hombro",
+   "musculos": "Deltoides anterior y lateral",
+   "img": "Leverage_Shoulder_Press",
+   "img_alternativas": [
+    "Machine_Shoulder_Military_Press"
+   ]
+  },
+  {
+   "inv": 21,
+   "grupo": "Hombro",
+   "ejercicio": "Elevación / Levantamiento Lateral (Mancuerna / Polea / Máquina)",
+   "enfoque": "Hombro",
+   "musculos": "Deltoides lateral (anchura)",
+   "img": "Side_Lateral_Raise",
+   "img_alternativas": [
+    "One-Arm_Side_Laterals"
+   ]
+  },
+  {
+   "inv": 22,
+   "grupo": "Hombro",
+   "ejercicio": "Elevación Frontal (Mancuerna / Barra / Polea / Disco)",
+   "enfoque": "Hombro",
+   "musculos": "Deltoides anterior",
+   "img": "Front_Dumbbell_Raise",
+   "img_alternativas": [
+    "Front_Plate_Raise",
+    "Front_Cable_Raise"
+   ]
+  },
+  {
+   "inv": 23,
+   "grupo": "Hombro",
+   "ejercicio": "Apertura Posterior / Rear Delt Fly (Máquina / Mancuerna / Polea)",
+   "enfoque": "Hombro Posterior",
+   "musculos": "Deltoides posterior y romboides",
+   "img": "Reverse_Machine_Flyes",
+   "img_alternativas": [
+    "Cable_Rear_Delt_Fly"
+   ]
+  },
+  {
+   "inv": 24,
+   "grupo": "Hombro",
+   "ejercicio": "Pájaros / Lateral Inclinada con Mancuerna",
+   "enfoque": "Hombro Posterior",
+   "musculos": "Deltoides posterior",
+   "img": "Seated_Bent-Over_Rear_Delt_Raise",
+   "img_alternativas": [
+    "Reverse_Flyes"
+   ]
+  },
+  {
+   "inv": 25,
+   "grupo": "Hombro",
+   "ejercicio": "Remo de Pie con Polea / Barra (Upright Row)",
+   "enfoque": "Hombro / Trapecio",
+   "musculos": "Deltoides lateral y trapecio",
+   "img": "Upright_Cable_Row",
+   "img_alternativas": [
+    "Upright_Barbell_Row"
+   ]
+  },
+  {
+   "inv": 26,
+   "grupo": "Hombro",
+   "ejercicio": "Face Pulls con Soga en Polea Alta",
+   "enfoque": "Hombro Posterior",
+   "musculos": "Deltoides posterior, manguito rotador y trapecio medio",
+   "img": "Face_Pull",
+   "img_alternativas": []
+  },
+  {
+   "inv": 27,
+   "grupo": "Bíceps",
+   "ejercicio": "Flexión / Curl de Bíceps con Barra (Recta / Z / W)",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial (ambas cabezas)",
+   "img": "EZ-Bar_Curl",
+   "img_alternativas": [
+    "Barbell_Curl"
+   ]
+  },
+  {
+   "inv": 28,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl de Bíceps con Mancuernas (Alternado / Simultáneo)",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial",
+   "img": "Dumbbell_Alternate_Bicep_Curl",
+   "img_alternativas": [
+    "Dumbbell_Bicep_Curl"
+   ]
+  },
+  {
+   "inv": 29,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl de Bíceps en Máquina / Isolateral",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial (tensión constante)",
+   "img": "Machine_Bicep_Curl",
+   "img_alternativas": []
+  },
+  {
+   "inv": 30,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl Predicador / Banco Scott (Barra / Mancuerna / Máquina)",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial (cabeza corta)",
+   "img": "Preacher_Curl",
+   "img_alternativas": [
+    "Machine_Preacher_Curls",
+    "One_Arm_Dumbbell_Preacher_Curl"
+   ]
+  },
+  {
+   "inv": 31,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl Martillo (Mancuerna / Cuerda en Polea)",
+   "enfoque": "Bíceps / Antebrazo",
+   "musculos": "Braquial anterior y braquiorradial",
+   "img": "Hammer_Curls",
+   "img_alternativas": [
+    "Cable_Hammer_Curls_-_Rope_Attachment"
+   ]
+  },
+  {
+   "inv": 32,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl Concentrado con Mancuerna",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial (pico)",
+   "img": "Concentration_Curls",
+   "img_alternativas": []
+  },
+  {
+   "inv": 33,
+   "grupo": "Bíceps",
+   "ejercicio": "Curl de Bíceps en Polea (Baja / Alta)",
+   "enfoque": "Bíceps",
+   "musculos": "Bíceps braquial",
+   "img": "Standing_Biceps_Cable_Curl",
+   "img_alternativas": [
+    "High_Cable_Curls"
+   ]
+  },
+  {
+   "inv": 34,
+   "grupo": "Antebrazo",
+   "ejercicio": "Flexión / Extensión de Muñecas & Giros con Mancuerna",
+   "enfoque": "Antebrazo",
+   "musculos": "Flexores y extensores de la muñeca",
+   "img": "Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench",
+   "img_alternativas": [
+    "Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench"
+   ]
+  },
+  {
+   "inv": 35,
+   "grupo": "Tríceps",
+   "ejercicio": "Extensión / Empujón con Polea (Barra V / Recta / Cuerda / 1 Mano)",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial (cabeza lateral y media)",
+   "img": "Triceps_Pushdown_-_V-Bar_Attachment",
+   "img_alternativas": [
+    "Triceps_Pushdown",
+    "Triceps_Pushdown_-_Rope_Attachment"
+   ]
+  },
+  {
+   "inv": 36,
+   "grupo": "Tríceps",
+   "ejercicio": "Copa con Mancuerna a Una / Dos Manos",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial (cabeza larga)",
+   "img": "Seated_Triceps_Press",
+   "img_alternativas": [
+    "Triceps_Overhead_Extension_with_Rope"
+   ]
+  },
+  {
+   "inv": 37,
+   "grupo": "Tríceps",
+   "ejercicio": "Press Francés (Barra Z / Mancuernas / Polea - Parado / Acostado)",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial",
+   "img": "EZ-Bar_Skullcrusher",
+   "img_alternativas": [
+    "Lying_Triceps_Press",
+    "Cable_Lying_Triceps_Extension"
+   ]
+  },
+  {
+   "inv": 38,
+   "grupo": "Tríceps",
+   "ejercicio": "Extensión de Tríceps con Máquina / Press Tríceps",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial",
+   "img": "Machine_Triceps_Extension",
+   "img_alternativas": []
+  },
+  {
+   "inv": 39,
+   "grupo": "Tríceps",
+   "ejercicio": "Fondos Agarre Cerrado (Paralelas / Banco / Máquina / Asistido)",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial y pectoral",
+   "img": "Dips_-_Triceps_Version",
+   "img_alternativas": [
+    "Bench_Dips"
+   ]
+  },
+  {
+   "inv": 40,
+   "grupo": "Tríceps",
+   "ejercicio": "Patada de Mula (Mancuerna / Polea)",
+   "enfoque": "Tríceps",
+   "musculos": "Tríceps braquial (contracción final)",
+   "img": "Tricep_Dumbbell_Kickback",
+   "img_alternativas": []
+  },
+  {
+   "inv": 41,
+   "grupo": "Pierna / Cuádriceps",
+   "ejercicio": "Extensión de Pierna con Máquina",
+   "enfoque": "Cuádriceps",
+   "musculos": "Cuádriceps (recto femoral y vastos)",
+   "img": "Leg_Extensions",
+   "img_alternativas": []
+  },
+  {
+   "inv": 42,
+   "grupo": "Pierna / Cuádriceps",
+   "ejercicio": "Leg Press / Prensa de Pierna (Horizontal / Inclinada / Olímpica / Slide)",
+   "enfoque": "Cuádriceps / Glúteo",
+   "musculos": "Cuádriceps, glúteo mayor y aductores",
+   "img": "Leg_Press",
+   "img_alternativas": []
+  },
+  {
+   "inv": 43,
+   "grupo": "Pierna / Cuádriceps",
+   "ejercicio": "Sentadilla (Libre / Barra / Mancuerna / Hack / Smith / Goblet)",
+   "enfoque": "Pierna Global",
+   "musculos": "Cuádriceps, glúteos y core",
+   "img": "Smith_Machine_Squat",
+   "img_alternativas": [
+    "Hack_Squat",
+    "Barbell_Squat",
+    "Goblet_Squat"
+   ]
+  },
+  {
+   "inv": 44,
+   "grupo": "Pierna / Cuádriceps",
+   "ejercicio": "Sentadilla Jump / Propio cuerpo",
+   "enfoque": "Pierna Global",
+   "musculos": "Cuádriceps y potencia explosiva",
+   "img": "Freehand_Jump_Squat",
+   "img_alternativas": [
+    "Bodyweight_Squat"
+   ]
+  },
+  {
+   "inv": 45,
+   "grupo": "Pierna / Cuádriceps",
+   "ejercicio": "Desplante (Específico / Caminando / Smith / Mancuerna / Box)",
+   "enfoque": "Pierna / Glúteo",
+   "musculos": "Cuádriceps, glúteos e isquiotibiales",
+   "img": "Dumbbell_Lunges",
+   "img_alternativas": [
+    "Barbell_Walking_Lunge",
+    "Bodyweight_Walking_Lunge"
+   ]
+  },
+  {
+   "inv": 46,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Curl / Flexión de Pierna Acostado (Máquina)",
+   "enfoque": "Femoral",
+   "musculos": "Isquiotibiales (bíceps femoral, semitendinoso)",
+   "img": "Lying_Leg_Curls",
+   "img_alternativas": []
+  },
+  {
+   "inv": 47,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Curl / Flexión de Pierna Sentado (Máquina)",
+   "enfoque": "Femoral",
+   "musculos": "Isquiotibiales",
+   "img": "Seated_Leg_Curl",
+   "img_alternativas": []
+  },
+  {
+   "inv": 48,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Curl / Flexión de Pierna de Pie / Hincado (Máquina / Polea)",
+   "enfoque": "Femoral",
+   "musculos": "Isquiotibiales",
+   "img": "Standing_Leg_Curl",
+   "img_alternativas": []
+  },
+  {
+   "inv": 49,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Abducción de Pierna (Máquina / Polea Baja)",
+   "enfoque": "Glúteo",
+   "musculos": "Glúteo medio y menor",
+   "img": "Thigh_Abductor",
+   "img_alternativas": []
+  },
+  {
+   "inv": 50,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Aducción de Pierna (Máquina / Polea Baja)",
+   "enfoque": "Aductores",
+   "musculos": "Aductor mayor, largo y corto",
+   "img": "Thigh_Adductor",
+   "img_alternativas": []
+  },
+  {
+   "inv": 51,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Hip Thrust / Elevación de Pelvis (Máquina / Barra / Smith)",
+   "enfoque": "Glúteo",
+   "musculos": "Glúteo mayor",
+   "img": "Barbell_Hip_Thrust",
+   "img_alternativas": [
+    "Barbell_Glute_Bridge"
+   ]
+  },
+  {
+   "inv": 52,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Patada / Extensión de Cadera (Máquina / Polea Baja / Polainas)",
+   "enfoque": "Glúteo",
+   "musculos": "Glúteo mayor",
+   "img": "Glute_Kickback",
+   "img_alternativas": [
+    "One-Legged_Cable_Kickback"
+   ]
+  },
+  {
+   "inv": 53,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Multi-Hip (Máquina Multifuncional de Cadera)",
+   "enfoque": "Glúteo / Cadera",
+   "musculos": "Aductores, abductores y flexores de cadera",
+   "img": "Cable_Hip_Adduction",
+   "img_alternativas": [
+    "One-Legged_Cable_Kickback"
+   ]
+  },
+  {
+   "inv": 54,
+   "grupo": "Femoral / Glúteo",
+   "ejercicio": "Peso Muerto (Barra / Mancuerna / Rumano)",
+   "enfoque": "Cadena Posterior",
+   "musculos": "Isquiotibiales, glúteos y erectores espinales",
+   "img": "Romanian_Deadlift",
+   "img_alternativas": [
+    "Barbell_Deadlift"
+   ]
+  },
+  {
+   "inv": 55,
+   "grupo": "Pantorrilla",
+   "ejercicio": "Costurera / Flexión Plantar Sentado (Aparato)",
+   "enfoque": "Pantorrilla",
+   "musculos": "Sóleo",
+   "img": "Seated_Calf_Raise",
+   "img_alternativas": []
+  },
+  {
+   "inv": 56,
+   "grupo": "Pantorrilla",
+   "ejercicio": "Flexión Plantar de Pie (Aparato / Peso Libre / Smith)",
+   "enfoque": "Pantorrilla",
+   "musculos": "Gastrocnemio (gemelos)",
+   "img": "Standing_Calf_Raises",
+   "img_alternativas": []
+  },
+  {
+   "inv": 57,
+   "grupo": "Pantorrilla",
+   "ejercicio": "Pantorrilla en Leg Press / Prensa",
+   "enfoque": "Pantorrilla",
+   "musculos": "Gastrocnemio y sóleo",
+   "img": "Calf_Press_On_The_Leg_Press_Machine",
+   "img_alternativas": []
+  },
+  {
+   "inv": 58,
+   "grupo": "Abdomen / Core",
+   "ejercicio": "Exprimidas / Crunch Abdominal (Piso / Banco Inclinado / Máquina)",
+   "enfoque": "Abdomen",
+   "musculos": "Recto abdominal",
+   "img": "Ab_Crunch_Machine",
+   "img_alternativas": [
+    "Crunches",
+    "Decline_Crunch"
+   ]
+  },
+  {
+   "inv": 59,
+   "grupo": "Abdomen / Core",
+   "ejercicio": "Silla Vertical / Elevación de Piernas Colgado",
+   "enfoque": "Abdomen",
+   "musculos": "Abdomen inferior y flexores de cadera",
+   "img": "Hanging_Leg_Raise",
+   "img_alternativas": [
+    "Knee_Hip_Raise_On_Parallel_Bars"
+   ]
+  },
+  {
+   "inv": 60,
+   "grupo": "Abdomen / Core",
+   "ejercicio": "Plancha / Plancha X / Oblicuos (Bicicleta)",
+   "enfoque": "Core",
+   "musculos": "Transverso del abdomen y oblicuos",
+   "img": "Plank",
+   "img_alternativas": [
+    "Air_Bike"
+   ]
+  },
+  {
+   "inv": 61,
+   "grupo": "Funcional",
+   "ejercicio": "Circuitos Funcionales: Burpees, Jumping Jacks, Climbers, Tagain",
+   "enfoque": "Cardio / Funcional",
+   "musculos": "Resistencia cardiovascular y acondicionamiento total",
+   "img": "Mountain_Climbers",
+   "img_alternativas": []
+  }
+ ]
+}

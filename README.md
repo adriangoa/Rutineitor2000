@@ -27,6 +27,10 @@ Todo está en [`data/routine.json`](data/routine.json). Edita, haz commit y push
 GitHub Actions publica solo. La próxima vez que abras la app con señal, aparece
 "Hay una versión nueva · Toca para actualizar". Si no cambió nada, no descarga nada.
 
+Para cambiar un ejercicio por otro de tu inventario, búscalo en `referencia/inventario.json`.
+Su campo `img` dice qué carpeta de imágenes usar; si no está en `images/`, muévela desde
+`referencia/imagenes/`.
+
 Campos de cada ejercicio:
 
 | Campo | Qué es |
@@ -55,7 +59,9 @@ Para simular la versión publicada: `node scripts/build.mjs` y sirve la carpeta 
 ```
 index.html, styles.css, app.js   interfaz
 data/routine.json                 la rutina
-images/<Ejercicio>/0.webp, 1.webp imágenes (dominio público, ver images/CREDITOS.md)
+images/<Ejercicio>/0.webp, 1.webp imágenes de la rutina actual (dominio público, ver images/CREDITOS.md)
+referencia/inventario.json        tus 61 ejercicios + qué imagen le toca a cada uno
+referencia/imagenes/              imágenes del resto del inventario (no se publican)
 sw.js                             modo sin internet
 manifest.webmanifest, icons/      instalación como app
 scripts/build.mjs                 calcula la versión y la lista de archivos al publicar
