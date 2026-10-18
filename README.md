@@ -11,6 +11,9 @@ Funciona **sin internet**: se descarga una vez (~3.5 MB) y después abre desde l
 2. Menú ⋮ → **Agregar a la pantalla principal** → **Instalar**.
 3. Ábrela una vez desde el ícono. Desde ahí funciona en modo avión.
 
+Si la abres desde el navegador, la app misma te ofrece instalarla (en Chrome de un toque) o te muestra
+los pasos según tu cel, también para iPhone.
+
 ## Uso
 
 - Abre directo en el día de hoy (sábado y domingo muestra la semana que viene).

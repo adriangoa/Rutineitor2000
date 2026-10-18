@@ -106,6 +106,10 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
   Adrián pedirá uno nuevo cada mes: entrada en `SEASONS` + bloque CSS + (opcional) frases y emojis animados.
   Hecho: halloween (octubre).
+- Instalar como app: si no está en modo standalone, banner abajo (`#installBar`) tras 1.5 s; "Ahora no" lo
+  pospone 7 días (`r2k.install.v1`). Con `beforeinstallprompt` (Chrome/Android) instala de un toque; si no, o si
+  falla, `showInstallHelp()` muestra pasos para Chrome Android, Samsung Internet, iPhone (con nota: sin vibración
+  y el aviso de descanso podría no sonar con pantalla apagada) u otros. "Instalar app" en ⋮ solo si no está instalada.
 - Modo portada (pantalla externa del Razr 50: 469×318 CSS px, dpr 2.25; abierto 411×916, dpr 2.625):
   `@media (max-height: 360px)` oculta encabezado y lista y muestra `#cover` (`renderCover`): un ejercicio a la
   vez, botones grandes, flechas ‹ ›, avance automático (`coverAfterMark`; en superserie alterna dentro del grupo).

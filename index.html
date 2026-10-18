@@ -85,6 +85,7 @@
         <label class="menu-item">Importar respaldo<small>Restaura un archivo exportado antes</small>
           <input id="importInput" type="file" accept="application/json,.json" hidden>
         </label>
+        <button id="installBtn" class="menu-item" hidden>Instalar app<small>Agrégala a tu pantalla de inicio y úsala sin internet</small></button>
         <button id="sfxBtn" class="menu-item" aria-pressed="true">Efectos de sonido<small></small></button>
         <button id="resetBtn" class="menu-item danger">Reiniciar este día<small>Desmarca todo lo del día que estás viendo</small></button>
       </div>
@@ -97,6 +98,21 @@
   <div id="restBar" class="rest rest-bar" role="timer" aria-live="off" hidden></div>
   <div id="trophy" class="trophy" popover="manual" role="status"></div>
   <div id="party" class="party" popover="manual" role="status"></div>
+  <dialog id="installHelp" class="sheet">
+    <div class="sheet-inner">
+      <button class="sheet-close icon-btn" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 class="sheet-title">Instalar Rutineitor</h2>
+      <div id="installBody"></div>
+    </div>
+  </dialog>
+
+  <div id="installBar" class="install-bar" hidden>
+    <span>📲 Instala Rutineitor para usarla <b>sin internet</b></span>
+    <button id="installGo" class="install-go">Instalar</button>
+    <button id="installLater" class="install-later">Ahora no</button>
+  </div>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="app.js"></script>

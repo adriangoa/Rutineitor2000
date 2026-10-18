@@ -896,6 +896,9 @@ function bind() {
   });
   $('#restBar').addEventListener('click', onRestClick);
   $('#cover').addEventListener('click', onCoverClick);
+  $('#installGo').addEventListener('click', () => { startInstall(); sfx('tap'); });
+  $('#installLater').addEventListener('click', () => { snoozeInstall(); sfx('close'); });
+  $('#installBtn').addEventListener('click', () => { startInstall(); sfx('tap'); });
   coverMQ.addEventListener('change', () => { state.coverEx = null; renderDay(); });
   $('#sheetRest').addEventListener('click', onRestClick);
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
@@ -930,6 +933,69 @@ function bind() {
   });
 }
 function resetArm() { const b = $('#resetBtn'); b.classList.remove('armed'); b.firstChild.textContent = 'Reiniciar este día'; }
+
+/* ---------- Instalar como app ----------
+   Si la abren desde el navegador (no instalada) sale un banner abajo. En Chrome/Android el botón
+   lanza la instalación nativa (beforeinstallprompt); si no se puede, muestra los pasos según el navegador. */
+const INSTALL_KEY = 'r2k.install.v1';
+const UA = navigator.userAgent;
+const isIOS = /iphone|ipad|ipod/i.test(UA) || (/Macintosh/.test(UA) && navigator.maxTouchPoints > 1);
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; });
+window.addEventListener('appinstalled', () => {
+  installPrompt = null; $('#installBar').hidden = true; renderInstallUI();
+  toast('¡Listo! Ábrela desde tu pantalla de inicio');
+});
+function renderInstallUI() { $('#installBtn').hidden = isStandalone(); }
+function installSnoozed() {
+  try { return (JSON.parse(localStorage.getItem(INSTALL_KEY)) || {}).until > Date.now(); } catch { return false; }
+}
+function maybeShowInstallBar() {
+  if (isStandalone() || installSnoozed()) return;
+  $('#installBar').hidden = false;
+}
+function snoozeInstall() { // "Ahora no": no vuelve a salir en 7 días
+  try { localStorage.setItem(INSTALL_KEY, JSON.stringify({ until: Date.now() + 7 * 86400000 })); } catch {}
+  $('#installBar').hidden = true;
+}
+async function startInstall() {
+  $('#installBar').hidden = true;
+  if ($('#menu').open) $('#menu').close();
+  if (installPrompt) {
+    const p = installPrompt;
+    installPrompt = null; // solo se puede usar una vez
+    try {
+      await p.prompt();
+      if ((await p.userChoice).outcome !== 'accepted') snoozeInstall();
+      return;
+    } catch { /* si el navegador no deja lanzarla, mostramos los pasos */ }
+  }
+  showInstallHelp();
+}
+function showInstallHelp() {
+  const android = /Android/i.test(UA), samsung = /SamsungBrowser/i.test(UA);
+  const chrome = /Chrome\//.test(UA) && !/EdgA|OPR|SamsungBrowser|Firefox/.test(UA);
+  let steps, note = '';
+  if (isIOS) {
+    steps = ['Toca el botón <b>Compartir</b> (el cuadrito con la flecha hacia arriba; en Safari está abajo y en Chrome arriba a la derecha).',
+      'Elige <b>Agregar a inicio</b>. Si no aparece, desliza la lista hacia abajo o ábrela en Safari.',
+      'Toca <b>Agregar</b> y ábrela desde el ícono nuevo.'];
+    note = 'En iPhone la app funciona, pero iOS no permite vibración en apps web y el aviso de fin de descanso podría no sonar con la pantalla apagada.';
+  } else if (samsung) {
+    steps = ['Toca el menú <b>☰</b> (abajo a la derecha).', 'Elige <b>Agregar página a</b> → <b>Pantalla de inicio</b>.', 'Ábrela desde el ícono nuevo.'];
+  } else if (android && chrome) {
+    steps = ['Toca el menú <b>⋮</b> (arriba a la derecha).', 'Elige <b>Agregar a la pantalla principal</b> → <b>Instalar</b>.',
+      'Ábrela una vez desde el ícono: desde ahí funciona sin internet.'];
+  } else if (android) {
+    steps = ['Abre esta liga en <b>Chrome</b>.', 'En Chrome: menú <b>⋮</b> → <b>Agregar a la pantalla principal</b> → <b>Instalar</b>.'];
+  } else {
+    steps = ['Ábrela en tu celular: con <b>Chrome</b> en Android o <b>Safari</b> en iPhone.', 'Desde el menú del navegador, agrégala a tu pantalla de inicio.'];
+  }
+  $('#installBody').innerHTML = `<ol class="install-steps">${steps.map((s) => `<li>${s}</li>`).join('')}</ol>`
+    + (note ? `<p class="install-note">⚠️ ${note}</p>` : '');
+  $('#installHelp').showModal();
+}
 
 /* ---------- Service worker (modo sin internet) ---------- */
 function registerSW() {
@@ -975,6 +1041,8 @@ async function init() {
   renderDay();
   renderRest();
   renderBackupBtn();
+  renderInstallUI();
+  setTimeout(maybeShowInstallBar, 1500);
   registerSW();
   setTimeout(checkBackupReminder, 2500);
 }
