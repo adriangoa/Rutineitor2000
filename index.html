@@ -88,6 +88,8 @@
         <button id="installBtn" class="menu-item" hidden>Instalar app<small>Agrégala a tu pantalla de inicio y úsala sin internet</small></button>
         <button id="shareBtn" class="menu-item">Compartir con un amigo<small>Manda la liga por WhatsApp o donde quieras</small></button>
         <button id="sfxBtn" class="menu-item" aria-pressed="true">Efectos de sonido<small></small></button>
+        <button id="genBtn" class="menu-item">Generar nueva rutina<small>Mismos días y músculos, otros ejercicios del inventario</small></button>
+        <button id="origBtn" class="menu-item" hidden>Volver a la rutina original<small>Deja la rutina generada y regresa a la original</small></button>
         <button id="resetBtn" class="menu-item danger">Reiniciar este día<small>Desmarca todo lo del día que estás viendo</small></button>
       </div>
       <p id="versionText" class="version"></p>
@@ -106,6 +108,22 @@
         <span class="wl-dots" id="welcomeDots"></span>
         <button id="welcomeSkip" class="install-later">Saltar</button>
         <button id="welcomeNext" class="install-go">Siguiente</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="genDialog" class="sheet">
+    <div class="sheet-inner">
+      <button class="sheet-close icon-btn" data-close aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <h2 class="sheet-title">Nueva rutina</h2>
+      <p class="gen-intro">Mismos días y grupos musculares, con otros ejercicios del inventario. Revísala y úsala, o sortea otra.</p>
+      <div class="seg gen-tabs" id="genTabs"><button data-gen-week="A">Semana A</button><button data-gen-week="B">Semana B</button></div>
+      <div id="genBody"></div>
+      <div class="gen-foot">
+        <button id="genAgain" class="ab-switch">🔄 Otra</button>
+        <button id="genUse" class="install-go">Usar esta rutina</button>
       </div>
     </div>
   </dialog>

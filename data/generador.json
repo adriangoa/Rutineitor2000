@@ -1,0 +1,54 @@
+{
+  "nota": "Huecos de cada día para 'Generar nueva rutina'. Cada hueco elige uno de 'de' (ids de ejercicios de routine.json, semana A o B). 'ss' = letra de superserie para ese hueco. El orden de los huecos es el orden del día (compuestos primero). Las imágenes de todos estos ejercicios deben seguir publicadas en images/.",
+  "dias": {
+    "lun": [
+      { "de": ["press-inclinado", "press-inclinado-maquina", "press-barra"] },
+      { "de": ["chest-press-iso", "press-barra", "press-horizontal", "press-inclinado-maquina"] },
+      { "de": ["peck-deck", "aperturas-inclinadas", "crossover-baja", "crossover"] },
+      { "de": ["fondos", "crossover-baja", "crossover", "aperturas-inclinadas"] },
+      { "de": ["copa", "ext-triceps-maquina", "press-frances"] },
+      { "de": ["polea-v", "polea-cuerda"] },
+      { "de": ["cardio-lun"] }
+    ],
+    "mar": [
+      { "de": ["jalon-abierto", "chin-up", "dominadas", "jalon-cerrado"] },
+      { "de": ["remo-sentado", "remo-barra", "remo-1-brazo"] },
+      { "de": ["remo-apoyo", "remo-alto", "remo-t-acostado", "remo-vikingo"] },
+      { "de": ["pullover-soga", "pulldown-recta"] },
+      { "de": ["hiperextension"] },
+      { "de": ["curl-z", "curl-alterno", "curl-predicador"] },
+      { "de": ["curl-martillo", "curl-martillo-cuerda", "curl-concentrado"] }
+    ],
+    "mie": [
+      { "de": ["press-militar", "shoulder-press-maquina"] },
+      { "de": ["laterales", "lateral-una-mano"] },
+      { "de": ["rear-delt", "pajaros"] },
+      { "de": ["face-pull", "remo-menton"] },
+      { "de": ["shrugs", "shrugs-barra"] },
+      { "de": ["crunch-maquina", "crunch-declinado"] },
+      { "de": ["piernas-colgado", "rodillas-paralelas"] },
+      { "de": ["plancha", "bicicleta"] }
+    ],
+    "jue": [
+      { "ss": "A", "de": ["dominadas", "jalon-cerrado", "chin-up", "jalon-abierto"] },
+      { "ss": "A", "de": ["press-horizontal", "press-inclinado-b", "press-barra", "chest-press-iso"] },
+      { "ss": "B", "de": ["remo-vikingo", "remo-t-acostado", "remo-apoyo", "remo-alto"] },
+      { "ss": "B", "de": ["crossover", "peck-deck-b", "aperturas-inclinadas", "crossover-baja"] },
+      { "de": ["remo-1-brazo", "jalon-una-mano", "remo-sentado"] },
+      { "ss": "C", "de": ["curl-predicador", "curl-concentrado", "curl-alterno"] },
+      { "ss": "C", "de": ["press-frances", "fondos-banco", "copa"] },
+      { "de": ["cardio-jue"] }
+    ],
+    "vie": [
+      { "de": ["extension-pierna"] },
+      { "de": ["sentadilla", "sentadilla-hack"] },
+      { "de": ["rumano", "peso-muerto"] },
+      { "de": ["leg-press", "desplantes"] },
+      { "de": ["curl-femoral", "curl-femoral-acostado"] },
+      { "de": ["hip-thrust", "patada-gluteo"] },
+      { "ss": "D", "de": ["abduccion"] },
+      { "ss": "D", "de": ["aduccion"] },
+      { "de": ["pantorrilla", "pantorrilla-sentado"] }
+    ]
+  }
+}

@@ -113,6 +113,12 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   y el aviso de descanso podría no sonar con pantalla apagada) u otros. "Instalar app" en ⋮ solo si no está instalada.
 - Bienvenida (`maybeWelcome`): 3 pantallas la primera vez (`r2k.welcome.v1`); si ya hay registros se da por
   vista (usuarios existentes no la ven). Al cerrarla sale el banner de instalar si aplica.
+- Generar nueva rutina (`generateRoutine`): mismos 5 días y grupos; `data/generador.json` define los huecos de
+  cada día (ids de routine.json A/B, orden y superseries). Sortea A y B sin repetir ejercicio en la semana
+  (`exKey` = inv+img) ni dos variantes del mismo inv en un día, y procura que B difiera de A. Se guarda completa
+  en `r2k.custom.v1` y `applyCustom` la sobrepone a `state.baseRoutine` (todo lo demás usa `dayView`). Quien
+  la genera deja de recibir cambios de la original hasta "Volver a la rutina original". Al quitar ejercicios de
+  routine.json, revisa generador.json (y que sus imágenes sigan publicadas).
 - Compartir (`shareApp`): `navigator.share` con la raíz de la app; si no existe, copia la liga.
 - Modo portada (pantalla externa del Razr 50: 469×318 CSS px, dpr 2.25; abierto 411×916, dpr 2.625):
   `@media (max-height: 360px)` oculta encabezado y lista y muestra `#cover` (`renderCover`): un ejercicio a la

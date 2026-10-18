@@ -520,7 +520,7 @@ function afterMark(day, ex, on) {
 
 function restHTML() {
   if (rest.mode === 'next') {
-    const ex = dayView(rest.day).exercises.find((e) => e.id === rest.exId);
+    const ex = dayView(rest.day).exercises.find((e) => e.id === rest.exId) || { name: '' };
     return `<button class="rest-go" data-rest="go">Ahora, sin descanso<b>${esc(ex.name)} ›</b></button>
       <button class="rest-btn" data-rest="skip" aria-label="Cerrar">✕</button>`;
   }
@@ -900,6 +900,11 @@ function bind() {
   $('#installLater').addEventListener('click', () => { snoozeInstall(); sfx('close'); });
   $('#installBtn').addEventListener('click', () => { startInstall(); sfx('tap'); });
   $('#shareBtn').addEventListener('click', () => { shareApp(); sfx('tap'); });
+  $('#genBtn').addEventListener('click', openGenerator);
+  $('#genAgain').addEventListener('click', () => { draft = generateRoutine(); renderDraft(); sfx('move'); });
+  $('#genUse').addEventListener('click', useDraft);
+  $('#genTabs').addEventListener('click', (e) => { const b = e.target.closest('[data-gen-week]'); if (b) { draftWeek = b.dataset.genWeek; renderDraft(); sfx('tap'); } });
+  $('#origBtn').addEventListener('click', backToOriginal);
   $('#welcomeNext').addEventListener('click', () => {
     if (welcomeStep < WELCOME.length - 1) { welcomeStep++; renderWelcome(); sfx('move'); }
     else $('#welcome').close();
@@ -939,7 +944,10 @@ function bind() {
     delete log[ymd(dateFor(state.dayIdx))]; saveLog(); renderDay(); $('#menu').close(); toast('Día reiniciado');
   });
 }
-function resetArm() { const b = $('#resetBtn'); b.classList.remove('armed'); b.firstChild.textContent = 'Reiniciar este día'; }
+function resetArm() {
+  const b = $('#resetBtn'); b.classList.remove('armed'); b.firstChild.textContent = 'Reiniciar este día';
+  const o = $('#origBtn'); o.classList.remove('armed'); o.firstChild.textContent = 'Volver a la rutina original';
+}
 
 /* ---------- Instalar como app ----------
    Si la abren desde el navegador (no instalada) sale un banner abajo. En Chrome/Android el botón
@@ -1034,6 +1042,85 @@ function maybeWelcome() {
   return true;
 }
 
+/* ---------- Generar nueva rutina ----------
+   Mismos días y grupos que la original: por cada "hueco" de data/generador.json se sortea un ejercicio,
+   para la semana A y la B. Sin repetir ejercicio en la semana ni dos variantes del mismo (inv) en un día,
+   y procurando que la B no repita a la A. Se guarda completa en el cel (r2k.custom.v1) y reemplaza a la
+   original solo aquí; "Volver a la rutina original" la borra. */
+const CUSTOM_KEY = 'r2k.custom.v1';
+let generator = null, draft = null, draftWeek = 'A';
+const exKey = (e) => `${e.inv}:${e.img || e.id}`; // mismo ejercicio aunque tenga otro id (p. ej. con superserie)
+function catalog() {
+  const m = new Map();
+  for (const d of state.baseRoutine.days) for (const e of [...d.exercises, ...(d.exercisesB || [])]) if (!m.has(e.id)) m.set(e.id, e);
+  return m;
+}
+const randomOf = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function generateWeek(avoid = new Set()) {
+  const cat = catalog(), used = new Set(), week = {};
+  for (const d of state.baseRoutine.days) {
+    const invs = new Set();
+    week[d.id] = (generator.dias[d.id] || []).map((slot) => {
+      const opts = slot.de.map((id) => cat.get(id)).filter(Boolean);
+      const free = (e) => !used.has(exKey(e)) && !(e.inv && invs.has(e.inv));
+      // Preferencia: libre y distinto de la otra semana → libre → cualquiera.
+      const pick = randomOf([opts.filter((e) => free(e) && !avoid.has(exKey(e))), opts.filter(free), opts].find((p) => p.length));
+      used.add(exKey(pick));
+      if (pick.inv) invs.add(pick.inv);
+      const ex = { ...pick };
+      if (slot.ss) { ex.ss = slot.ss; delete ex.rest; } else delete ex.ss; // en superserie cuenta el descanso por omisión
+      return ex;
+    });
+  }
+  return { week, used };
+}
+function generateRoutine() {
+  const a = generateWeek(), b = generateWeek(a.used);
+  return { creado: ymd(new Date()), A: a.week, B: b.week };
+}
+function loadCustom() { try { return JSON.parse(localStorage.getItem(CUSTOM_KEY)); } catch { return null; } }
+function applyCustom(c) {
+  const base = state.baseRoutine;
+  state.custom = c;
+  state.routine = c
+    ? { ...base, days: base.days.map((d) => ({ ...d, exercises: c.A[d.id] || d.exercises, exercisesB: c.B[d.id] || d.exercisesB })) }
+    : base;
+  $('#versionText').textContent = `Rutina v${base.version}${c ? ` · generada el ${fmtShort(parseYmd(c.creado))}` : ''} · build ${BUILD}`;
+  $('#origBtn').hidden = !c;
+}
+function renderDraft() {
+  document.querySelectorAll('[data-gen-week]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.genWeek === draftWeek));
+  $('#genBody').innerHTML = state.baseRoutine.days.map((d, i) => `<div class="gen-day">
+      <b>${DAY_SHORT[i]} · ${esc(d.focus)}</b>
+      <ol>${draft[draftWeek][d.id].map((e) => `<li>${esc(e.name)}${e.ss ? ` <span class="gen-ss">SS ${esc(e.ss)}</span>` : ''}</li>`).join('')}</ol>
+    </div>`).join('');
+}
+async function openGenerator() {
+  if ($('#menu').open) $('#menu').close();
+  try { generator ||= await (await fetch('data/generador.json')).json(); }
+  catch { toast('No se pudo cargar el generador'); return; }
+  draft = generateRoutine(); draftWeek = 'A';
+  renderDraft();
+  $('#genDialog').showModal(); sfx('open');
+}
+function useDraft() {
+  try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(draft)); } catch { toast('No se pudo guardar la rutina'); return; }
+  applyCustom(draft);
+  clearRest(); state.coverEx = null;
+  renderDay();
+  $('#genDialog').close();
+  sfx('exercise'); toast('Rutina nueva lista 💪');
+}
+function backToOriginal() {
+  const b = $('#origBtn');
+  if (!b.classList.contains('armed')) { b.classList.add('armed'); b.firstChild.textContent = '¿Seguro? Toca otra vez'; return; }
+  try { localStorage.removeItem(CUSTOM_KEY); } catch {}
+  applyCustom(null);
+  clearRest(); state.coverEx = null;
+  renderDay(); $('#menu').close();
+  toast('Volviste a la rutina original');
+}
+
 /* ---------- Compartir con un amigo ----------
    Menú nativo de compartir del cel (WhatsApp, etc.); si no existe, copia la liga. */
 async function shareApp() {
@@ -1075,17 +1162,17 @@ function registerSW() {
 async function init() {
   try {
     const res = await fetch('data/routine.json');
-    state.routine = await res.json();
+    state.routine = state.baseRoutine = await res.json();
   } catch {
     $('#dayTitle').textContent = 'No se pudo cargar la rutina';
     return;
   }
   const wd = weekdayIdx();
   state.dayIdx = wd <= 4 ? wd : 0;
-  $('#versionText').textContent = `Rutina v${state.routine.version} · build ${BUILD}`;
   fetch('data/logros.json').then((r) => r.json()).then((d) => { state.logros = d; }).catch(() => {});
   if (!HTMLElement.prototype.showPopover) ['#trophy', '#party'].forEach((s) => { $(s).hidden = true; });
   bind();
+  applyCustom(loadCustom()); // rutina generada en este cel, si hay
   // Por omisión, tema de temporada según la fecha (si este mes no hay, se ve el normal).
   try { applyTheme(localStorage.getItem(THEME_KEY) || 'season-auto'); } catch { applyTheme('season-auto'); }
   renderSfxBtn();

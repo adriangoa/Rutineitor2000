@@ -45,6 +45,8 @@ los pasos según tu cel, también para iPhone. La primera vez, una bienvenida co
   grandes y flechas ‹ ›; avanza sola al completar cada uno.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Compartir con un amigo** manda la liga por WhatsApp o donde quieras.
+- ⋮ → **Generar nueva rutina**: misma estructura de 5 días, otros ejercicios del inventario. Ves una vista
+  previa (🔄 Otra para sortear de nuevo) y la usas; siempre puedes **volver a la rutina original**.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
   el registro vive solo en tu celular. Si pasan 4 semanas sin respaldar, la app te lo recuerda al abrirla.
 

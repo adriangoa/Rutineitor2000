@@ -595,6 +595,20 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 @keyframes cvNext { from { transform: translateX(40px); opacity: 0.3; } }
 @keyframes cvPrev { from { transform: translateX(-40px); opacity: 0.3; } }
 
+/* Generar nueva rutina */
+.gen-intro { margin: -8px 0 14px; color: var(--muted); font-size: 14px; }
+.gen-tabs { margin-bottom: 12px; }
+.gen-day { padding: 10px 0; border-top: 1px solid var(--line); }
+.gen-day b { font-family: var(--display); font-size: 16px; }
+.gen-day ol { margin: 6px 0 0; padding-left: 22px; display: flex; flex-direction: column; gap: 3px; font-size: 14.5px; }
+.gen-ss { font-size: 11px; font-weight: 700; color: var(--accent-text); background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; }
+.gen-foot {
+  position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: 10px;
+  margin-top: 8px; padding: 12px 0 2px; background: var(--surface); border-top: 1px solid var(--line);
+}
+.gen-foot .install-go { flex: 1; }
+[data-theme="gb"] .gen-ss { border-radius: 0; }
+
 /* Bienvenida */
 .welcome .sheet-inner { padding-top: 26px; }
 .wl-slide { text-align: center; padding: 6px 6px 18px; animation: fade 0.3s ease-out; }
