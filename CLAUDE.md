@@ -47,10 +47,13 @@ Al proponer cambios de ejercicios, respeta estos tiempos de recuperación y el l
 ## Cambiar o agregar un ejercicio
 1. Elige el ejercicio en `referencia/inventario.json` (campo `inv`).
 2. Usa su `img` (o una de `img_alternativas`). Si la carpeta no existe en `images/`, **muévela**
-   desde `referencia/imagenes/` a `images/` (git mv). Si quitas un ejercicio de la rutina, regresa su
-   carpeta a `referencia/imagenes/` para no publicar imágenes que nadie usa.
-3. Edita `data/routine.json` (campos documentados en README.md) y sube `version`.
+   desde `referencia/imagenes/` a `images/` (git mv). **Nunca quites carpetas de `images/`**, aunque
+   quites el ejercicio de la rutina: las rutinas generadas en otros cels pueden seguir usándolas (~15 KB c/u).
+3. Edita `data/routine.json` (campos documentados en README.md) y **sube `version`**: con eso, quien tenga
+   una rutina generada recibe el aviso "La rutina original se actualizó".
 4. No cambies el `id` de un ejercicio existente: el registro del usuario está guardado por `id`.
+5. Agrega el ejercicio nuevo a los huecos que le correspondan en `data/generador.json`, o el generador
+   no lo usará. Si quitas uno de routine.json, quítalo también de ahí (el generador solo usa ids existentes).
 Si hace falta una imagen que no esté en ningún lado: búscala en
 https://github.com/yuhonas/free-exercise-db (`exercises/<Id>/0.jpg` y `1.jpg`, dominio público) y
 conviértela a WebP, máximo 480 px de lado, calidad ~68.
@@ -117,8 +120,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   cada día (ids de routine.json A/B, orden y superseries). Sortea A y B sin repetir ejercicio en la semana
   (`exKey` = inv+img) ni dos variantes del mismo inv en un día, y procura que B difiera de A. Se guarda completa
   en `r2k.custom.v1` y `applyCustom` la sobrepone a `state.baseRoutine` (todo lo demás usa `dayView`). Quien
-  la genera deja de recibir cambios de la original hasta "Volver a la rutina original". Al quitar ejercicios de
-  routine.json, revisa generador.json (y que sus imágenes sigan publicadas).
+  la genera deja de recibir cambios de la original hasta "Volver a la rutina original". La rutina generada
+  guarda `base` (versión de routine.json al generarla); si la original sube de versión, al abrir sale una vez
+  "🆕 La rutina original se actualizó" (`checkRoutineUpdate`, recuerda la versión avisada en `avisado`).
 - Compartir (`shareApp`): `navigator.share` con la raíz de la app; si no existe, copia la liga.
 - Modo portada (pantalla externa del Razr 50: 469×318 CSS px, dpr 2.25; abierto 411×916, dpr 2.625):
   `@media (max-height: 360px)` oculta encabezado y lista y muestra `#cover` (`renderCover`): un ejercicio a la

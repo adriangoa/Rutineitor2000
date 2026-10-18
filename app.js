@@ -1076,9 +1076,19 @@ function generateWeek(avoid = new Set()) {
 }
 function generateRoutine() {
   const a = generateWeek(), b = generateWeek(a.used);
-  return { creado: ymd(new Date()), A: a.week, B: b.week };
+  return { creado: ymd(new Date()), base: state.baseRoutine.version, A: a.week, B: b.week };
 }
 function loadCustom() { try { return JSON.parse(localStorage.getItem(CUSTOM_KEY)); } catch { return null; } }
+function saveCustom(c) { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(c)); } catch {} }
+// Si la original subió de versión desde que se generó esta rutina, avisa una vez por versión.
+function checkRoutineUpdate() {
+  const c = state.custom, v = state.baseRoutine.version;
+  if (!c) return;
+  if (!c.base) { c.base = v; saveCustom(c); return; } // generada antes de que existiera este aviso
+  if (v <= c.base || c.avisado >= v || !$('#toast').hidden) return;
+  c.avisado = v; saveCustom(c);
+  toast('🆕 La rutina original se actualizó · Toca para ver opciones', () => $('#menuBtn').click(), 10000);
+}
 function applyCustom(c) {
   const base = state.baseRoutine;
   state.custom = c;
@@ -1183,5 +1193,6 @@ async function init() {
   if (!maybeWelcome()) setTimeout(maybeShowInstallBar, 1500);
   registerSW();
   setTimeout(checkBackupReminder, 2500);
+  setTimeout(checkRoutineUpdate, 3200);
 }
 init();

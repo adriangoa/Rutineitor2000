@@ -59,6 +59,8 @@ GitHub Actions publica solo. La próxima vez que abras la app con señal, aparec
 Para cambiar un ejercicio por otro de tu inventario, búscalo en `referencia/inventario.json`.
 Su campo `img` dice qué carpeta de imágenes usar; si no está en `images/`, muévela desde
 `referencia/imagenes/`.
+Si agregas un ejercicio nuevo, agrégalo también a [`data/generador.json`](data/generador.json) para que
+"Generar nueva rutina" lo pueda usar.
 
 Campos de cada ejercicio:
 
