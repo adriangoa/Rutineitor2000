@@ -1,7 +1,7 @@
 # Rutineitor 2000
 
 Rutina de gimnasio (lunes a viernes) como app web instalable en el celular.
-Funciona **sin internet**: se descarga una vez (~3 MB) y después abre desde la memoria del teléfono.
+Funciona **sin internet**: se descarga una vez (~3.5 MB) y después abre desde la memoria del teléfono.
 
 **App:** https://adriangoa.github.io/Rutineitor2000/
 
@@ -22,7 +22,8 @@ Funciona **sin internet**: se descarga una vez (~3 MB) y después abre desde la 
   ejercicios: la barra te dice cuál sigue, y el descanso arranca al terminar el último del grupo.
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
   Abajo del modal puedes pasar al ejercicio anterior o al siguiente; en superserie, al que sigue del grupo.
-- ⋮ → **Tema**: Automático, Alto contraste, Synthwave o Game Boy.
+- ⋮ → **Tema**: Automático, Alto contraste, Synthwave, Game Boy o 🎃 **Temporada** (Halloween por ahora;
+  "Automático por fecha" elige solo el del mes). Los temas de temporada traen sus propias frases de logro.
 - Sonidos retro al tocar botones, arpegio al completar un ejercicio y fanfarria al completar el día.
   Se apagan en ⋮ → **Efectos de sonido**.
 - Al completar un ejercicio baja un aviso de **logro desbloqueado** con una frase al azar; al completar

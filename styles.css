@@ -533,4 +533,77 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 [data-theme="gb"] .party small { color: var(--muted); font-family: var(--display); font-size: 8px; }
 [data-theme="gb"] .confetti i { border-radius: 0; width: 8px; height: 8px; }
 
+/* Selector: botón de temporada y su lista */
+.seg button.wide { grid-column: 1 / -1; }
+.seg.season-pick { margin-top: -10px; }
+.seg.season-pick[hidden] { display: none; }
+.seg.season-pick button small { display: block; font-size: 11px; font-weight: 500; opacity: 0.75; margin-top: 2px; }
+
+/* Tema de temporada: Halloween (fuente Creepster, licencia OFL en fonts/OFL-Creepster.txt) */
+@font-face {
+  font-family: "Creepster";
+  src: url("fonts/Creepster-latin.woff2") format("woff2");
+  font-display: swap;
+}
+:root[data-theme="halloween"] {
+  --bg: #0f0a14;
+  --surface: #1b1224;
+  --surface-2: #281a35;
+  --line: rgba(255, 122, 24, 0.2);
+  --ink: #f3e9da;
+  --muted: #a897b5;
+  --accent: #ff7a18;
+  --accent-text: #ff9a40;
+  --accent-ink: #1a0800;
+  --accent-soft: rgba(255, 122, 24, 0.16);
+  --danger: #ff4d6d;
+  --img-bg: #efe6d8;
+  --spooky: "Creepster", var(--text);
+  --confetti: #ff7a18 #8e44ec #9be564 #f3e9da #ff4d6d;
+  color-scheme: dark;
+}
+[data-theme="halloween"] body { background: radial-gradient(110% 55% at 50% 0%, #2a1340 0%, var(--bg) 60%) fixed var(--bg); }
+[data-theme="halloween"] .top { overflow: hidden; background: color-mix(in srgb, #160d20 92%, transparent); border-bottom-color: rgba(255, 122, 24, 0.4); }
+/* Murciélagos cruzando el encabezado */
+[data-theme="halloween"] .top::before, [data-theme="halloween"] .top::after {
+  content: "🦇"; position: absolute; left: -40px; top: 10px; font-size: 16px; pointer-events: none;
+  animation: bat 15s linear infinite;
+}
+[data-theme="halloween"] .top::after { top: 30px; font-size: 12px; animation-duration: 21s; animation-delay: 7s; }
+@keyframes bat {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(28vw, 10px); }
+  50% { transform: translate(55vw, -4px); }
+  75% { transform: translate(80vw, 8px); }
+  100% { transform: translate(calc(100vw + 80px), 0); }
+}
+[data-theme="halloween"] .brand b { font-family: var(--spooky); font-weight: 400; font-size: 21px; letter-spacing: 0.04em; text-shadow: 0 0 10px rgba(255, 122, 24, 0.7); }
+[data-theme="halloween"] .day-title,
+[data-theme="halloween"] .sheet-title,
+[data-theme="halloween"] .party-title,
+[data-theme="halloween"] .tr-text b { font-family: var(--spooky); font-weight: 400; font-style: normal; letter-spacing: 0.03em; }
+[data-theme="halloween"] .day-title { font-size: 40px; color: var(--accent); text-shadow: 0 0 18px rgba(255, 122, 24, 0.45); }
+[data-theme="halloween"] .tr-text b { font-size: 24px; }
+[data-theme="halloween"] .tab[aria-selected="true"] { background: linear-gradient(135deg, #ff7a18, #8e44ec); border-color: transparent; color: #fff; }
+[data-theme="halloween"] .tab[aria-selected="true"] .t-focus { color: rgba(255, 255, 255, 0.85); }
+[data-theme="halloween"] .tab.today::after { background: #9be564; box-shadow: 0 0 6px #9be564; }
+/* Calabaza montada en la barra de progreso */
+[data-theme="halloween"] .progress-bar { overflow: visible; }
+[data-theme="halloween"] .progress-bar span { position: relative; background: linear-gradient(90deg, #8e44ec, #ff7a18); border-radius: 4px; }
+[data-theme="halloween"] .progress-bar span::after { content: "🎃"; position: absolute; right: -11px; top: -8px; font-size: 18px; line-height: 1; }
+[data-theme="halloween"] .tab .t-bar i, [data-theme="halloween"] .rest-fill { background: linear-gradient(90deg, #8e44ec, #ff7a18); }
+[data-theme="halloween"] .set[aria-pressed="true"] { box-shadow: 0 0 12px rgba(255, 122, 24, 0.7); }
+/* Telaraña en la esquina de las tarjetas */
+[data-theme="halloween"] .card { position: relative; }
+[data-theme="halloween"] .card:not(.up-next)::before {
+  content: ""; position: absolute; top: 0; right: 0; width: 58px; height: 58px; pointer-events: none; opacity: 0.4;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60' fill='none' stroke='%23f3e9da' stroke-width='0.8'%3E%3Cpath d='M60 0L0 60M60 0L22 60M60 0L0 22M60 0L42 60M60 0L0 42'/%3E%3Cpath d='M47 0Q50 9 60 13M35 0Q40 19 60 25M23 0Q30 29 60 37M11 0Q20 40 60 49'/%3E%3C/svg%3E") no-repeat top right / contain;
+}
+[data-theme="halloween"] .card.done { border-color: rgba(255, 122, 24, 0.6); }
+[data-theme="halloween"] .group { border-color: rgba(142, 68, 236, 0.6); }
+[data-theme="halloween"] .rest { border-color: var(--accent); box-shadow: 0 0 18px rgba(255, 122, 24, 0.2); }
+[data-theme="halloween"] .rest.over { background: linear-gradient(90deg, #8e44ec, #ff7a18); color: #fff; }
+[data-theme="halloween"] .rest.over .rest-time, [data-theme="halloween"] .rest.over .rest-label { color: #fff; }
+[data-theme="halloween"] .streak { background: linear-gradient(120deg, rgba(142, 68, 236, 0.25), rgba(255, 122, 24, 0.18)); }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

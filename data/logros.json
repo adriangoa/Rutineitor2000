@@ -1,6 +1,6 @@
 {
-  "nota": "Frases y emojis de los logros. Agrega o quita lo que quieras; sale uno al azar. 'ejercicio' = al completar todas las series de un ejercicio; 'dia' = al completar el día. 'animados' = códigos de los emojis con versión animada en images/emoji/ (los demás se ven como emoji normal).",
-  "animados": ["1f3c6", "1f410", "1f451", "1f4a5", "1f4aa", "1f525", "1f60e", "1f624", "1f680", "1f918", "1f947", "1f98d", "1f9be", "26a1"],
+  "nota": "Frases y emojis de los logros. Agrega o quita lo que quieras; sale uno al azar. 'ejercicio' = al completar todas las series de un ejercicio; 'dia' = al completar el día. 'animados' = códigos de los emojis con versión animada en images/emoji/ (los demás se ven como emoji normal). 'temporadas' = frases y emojis que reemplazan a los normales mientras está activo ese tema de temporada.",
+  "animados": ["1f383", "1f3c6", "1f410", "1f451", "1f47b", "1f480", "1f4a5", "1f4aa", "1f525", "1f52e", "1f577", "1f608", "1f60e", "1f624", "1f680", "1f918", "1f947", "1f987", "1f98d", "1f9be", "26a1"],
   "ejercicio": {
     "titulo": "Logro desbloqueado",
     "emojis": ["🔥", "💪", "🏆", "🦍", "👑", "🚀", "😤", "🥇", "⚡", "🐐", "🦾", "💥", "🤘", "😎", "🏋️"],
@@ -42,5 +42,38 @@
       "Trofeo de platino desbloqueado",
       "Ni modo, eres un animal"
     ]
+  },
+  "temporadas": {
+    "halloween": {
+      "ejercicio": {
+        "titulo": "Logro maldito desbloqueado",
+        "emojis": ["🎃", "👻", "💀", "🦇", "🕷️", "😈", "🔮"],
+        "frases": [
+          "Estás más mamado que un zombie de gym",
+          "Ni los muertos levantan tanto",
+          "Trick or treat… o tríceps",
+          "Das más miedo que La Llorona, Rey",
+          "Ese pump está de terror",
+          "Monstruo de gym desbloqueado",
+          "Hasta el Coco te tiene miedo",
+          "Fierro maldito, cabrón",
+          "Músculos del más allá",
+          "Esta serie te la firmó el diablo",
+          "Boo! Un ejercicio menos",
+          "Te rifaste como calabaza en octubre"
+        ]
+      },
+      "dia": {
+        "titulo": "Rutina exorcizada",
+        "emojis": ["🎃", "💀", "👻", "😈"],
+        "frases": [
+          "Sobreviviste a la noche de brujas, Rey",
+          "Ni Michael Myers te para",
+          "Te ganaste un pan de muerto, carnal",
+          "Saliste vivo… tus músculos no",
+          "Hoy el que espantó fuiste tú"
+        ]
+      }
+    }
   }
 }

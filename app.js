@@ -575,16 +575,42 @@ function onRestClick(e) {
 }
 
 /* ---------- Tema ---------- */
-const THEME_BG = { hc: '#000000', synth: '#12061f', gb: '#5b3f8f' };
+/* Temas de temporada: cada uno es un tema CSS ([data-theme="<id>"]) y, opcional, frases y emojis
+   propios en logros.json → temporadas.<id>. Para agregar uno: entrada aquí + CSS + (opcional) frases.
+   "season-auto" elige el de la fecha actual según `months`; si no hay, usa el automático normal. */
+const SEASONS = {
+  halloween: { name: 'Halloween', icon: '🎃', months: [10], bg: '#0f0a14' },
+};
+const THEME_BG = { hc: '#000000', synth: '#12061f', gb: '#5b3f8f', ...Object.fromEntries(Object.entries(SEASONS).map(([k, s]) => [k, s.bg])) };
+const seasonForDate = (d = new Date()) => Object.keys(SEASONS).find((k) => SEASONS[k].months.includes(d.getMonth() + 1)) || null;
+const isSeasonChoice = (t) => t === 'season-auto' || !!SEASONS[t];
+let themeChoice = 'auto';
+// Temporada activa (la elegida o la de la fecha), para las frases de los logros.
+const activeSeason = () => { const t = themeChoice === 'season-auto' ? seasonForDate() : themeChoice; return SEASONS[t] ? t : null; };
+function renderSeasonPick() {
+  const now = seasonForDate();
+  $('#seasonPick').innerHTML = `<button data-theme-set="season-auto">Automático por fecha<small>${now ? `Ahora: ${SEASONS[now].icon} ${SEASONS[now].name}` : 'Este mes no hay tema; usa el normal'}</small></button>`
+    + Object.entries(SEASONS).map(([k, s]) => `<button data-theme-set="${k}">${s.icon} ${esc(s.name)}</button>`).join('');
+}
 function applyTheme(t) {
+  themeChoice = t;
   const root = document.documentElement;
-  if (THEME_BG[t]) root.dataset.theme = t; else delete root.dataset.theme;
+  const r = t === 'season-auto' ? seasonForDate() : t; // el tema que de verdad se pinta
+  if (THEME_BG[r]) root.dataset.theme = r; else delete root.dataset.theme;
+  // El script del <head> no conoce las fechas: le dejamos resuelto el tema automático de temporada.
+  try { localStorage.setItem(THEME_KEY + '.auto', THEME_BG[r] ? r : 'auto'); } catch {}
   const metas = document.querySelectorAll('meta[name="theme-color"]');
-  metas[0].content = THEME_BG[t] || '#0d0e0b';
-  metas[1].content = THEME_BG[t] || '#f3f3ee';
-  document.querySelectorAll('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.themeSet === (THEME_BG[t] ? t : 'auto')));
+  metas[0].content = THEME_BG[r] || '#0d0e0b';
+  metas[1].content = THEME_BG[r] || '#f3f3ee';
+  renderSeasonPick();
+  $('#seasonPick').hidden = !isSeasonChoice(t);
+  document.querySelectorAll('[data-theme-set]').forEach((b) => {
+    const v = b.dataset.themeSet;
+    b.setAttribute('aria-pressed', v === 'season' ? isSeasonChoice(t) : v === t || (v === 'auto' && !THEME_BG[t] && !isSeasonChoice(t)));
+  });
 }
 function setTheme(t) {
+  if (t === 'season') t = isSeasonChoice(themeChoice) ? themeChoice : 'season-auto';
   try { localStorage.setItem(THEME_KEY, t); } catch {}
   applyTheme(t);
 }
@@ -675,8 +701,11 @@ function emojiHTML(e) {
 }
 let trophyTimer;
 function celebrate(kind) {
-  const L = (state.logros || LOGROS_DEFAULT)[kind];
-  const emoji = pick(kind + 'e', L.emojis), frase = pick(kind + 'f', L.frases);
+  const season = activeSeason();
+  const base = (state.logros || LOGROS_DEFAULT)[kind];
+  // En temporada, sus frases/emojis/título reemplazan a los normales (si los tiene en logros.json).
+  const L = { ...base, ...(season && state.logros?.temporadas?.[season]?.[kind]) };
+  const emoji = pick(kind + 'e' + season, L.emojis), frase = pick(kind + 'f' + season, L.frases);
   if (navigator.vibrate) navigator.vibrate(kind === 'dia' ? [40, 60, 40, 60, 120] : [30, 50, 60]);
   if (kind === 'ejercicio') {
     const t = $('#trophy');
@@ -689,7 +718,9 @@ function celebrate(kind) {
   }
   hideLayer($('#trophy'));
   const sd = streakDays();
-  const colors = ['#ff2bd6', '#22e4ff', '#ffe259', '#d2fa3c', '#ff7a6b', '#8b3dff'];
+  // Colores del confeti: los del tema (--confetti en CSS) o los de siempre.
+  const themed = getComputedStyle(document.documentElement).getPropertyValue('--confetti').trim();
+  const colors = themed ? themed.split(/\s+/) : ['#ff2bd6', '#22e4ff', '#ffe259', '#d2fa3c', '#ff7a6b', '#8b3dff'];
   let confetti = '';
   for (let i = 0; i < 48; i++) {
     confetti += `<i style="left:${Math.random() * 100}%;background:${colors[i % colors.length]};animation-delay:${(Math.random() * 0.6).toFixed(2)}s;animation-duration:${(1.8 + Math.random() * 1.6).toFixed(2)}s;--x:${Math.round(Math.random() * 120 - 60)}px;--r:${Math.round(Math.random() * 720)}deg"></i>`;
@@ -784,7 +815,7 @@ function bind() {
   });
   $('#restBar').addEventListener('click', onRestClick);
   $('#sheetRest').addEventListener('click', onRestClick);
-  $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } });
+  ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
   $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));
   $('#trophy').addEventListener('click', () => hideLayer($('#trophy')));
   $('#party').addEventListener('click', () => hideLayer($('#party')));

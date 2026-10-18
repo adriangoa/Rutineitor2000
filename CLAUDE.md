@@ -67,8 +67,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - `BUILD` en `app.js` también lo reemplaza el build (se ve en ⋮ Opciones).
 - Rutas siempre relativas (el sitio vive en `/Rutineitor2000/`, con R mayúscula como el repo, no en la raíz).
 - Fuentes del sistema (`sans-serif-condensed` en Android) para no descargar fuentes. Única excepción:
-  `fonts/PressStart2P-latin.woff2` (12.5 KB, OFL, licencia en `fonts/OFL.txt`) solo para el tema Game Boy;
+  `fonts/PressStart2P-latin.woff2` (12.5 KB, OFL, licencia en `fonts/OFL-PressStart2P.txt`) solo para el tema Game Boy;
   el navegador la usa solo con ese tema y el build la precachea (los `.md`/`.txt` no se precachean).
+  Igual `fonts/Creepster-latin.woff2` (28 KB, OFL en `fonts/OFL-Creepster.txt`) para títulos del tema Halloween.
 - Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
   contraste, `data-theme="synth"` synthwave y `data-theme="gb"` Game Boy (pantalla verde, carcasa morada
   "Grape" del Game Boy Color, fuente pixelada) en `<html>`. Colores en variables de `:root`. Se guarda en
@@ -97,6 +98,12 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Recordatorio de respaldo (`r2k.backup.v1` = { last, nag }): al abrir, si pasaron 28 días desde el último
   respaldo (o desde el primer registro), toast con botón para exportar; máximo uno al día y sin tapar el de
   actualización. ⋮ Opciones muestra la fecha del último respaldo.
+- Temas de temporada (`SEASONS` en app.js: nombre, ícono, meses, color): botón "🎃 Temporada" en el selector
+  → lista con "Automático por fecha" (`season-auto`, elige por mes; si no hay, el normal) y cada temporada.
+  El script del `<head>` usa `r2k.theme.auto` (tema resuelto) para no parpadear. Frases/emojis/títulos de
+  temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
+  Adrián pedirá uno nuevo cada mes: entrada en `SEASONS` + bloque CSS + (opcional) frases y emojis animados.
+  Hecho: halloween (octubre).
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -112,10 +119,6 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
-- Tema "Temporada": opción en el selector que despliega la lista de temas de temporada + "Automático por
-  fecha" (elige el del mes; si no hay, el normal). Empezar con Halloween (negro/morado/naranja, telarañas,
-  murciélagos, 🎃 en la barra, frases y emojis propios en logros.json, confeti de temporada; fuente tipo
-  Creepster opcional). Modular: Adrián pedirá uno nuevo cada mes. Pendiente que confirme detalles.
 - Pantalla externa del Razr 50: la app puede abrirse ahí (Ajustes → Pantalla externa → Apps); viewport
   ~400×400 CSS px. Idea: "modo portada" por media query (un ejercicio a la vez, botones grandes, descanso
   grande, flechas ‹ ›). Primero Adrián confirma que abre y pasa el tamaño detectado.

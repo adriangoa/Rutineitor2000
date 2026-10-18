@@ -11,7 +11,7 @@
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
-  <script>try { var t = localStorage.getItem('r2k.theme'); if (t && t !== 'auto') document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script>try { var t = localStorage.getItem('r2k.theme'); if (t === 'season-auto') t = localStorage.getItem('r2k.theme.auto'); if (t && t !== 'auto') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
   <header class="top">
@@ -74,6 +74,9 @@
         <button data-theme-set="hc">Alto contraste</button>
         <button data-theme-set="synth">Synthwave</button>
         <button data-theme-set="gb">Game Boy</button>
+        <button data-theme-set="season" class="wide">🎃 Temporada</button>
+      </div>
+      <div class="seg season-pick" id="seasonPick" role="group" aria-label="Tema de temporada" hidden>
       </div>
       <div class="menu-list">
         <button id="exportBtn" class="menu-item">Exportar respaldo<small>Descarga un archivo con todo tu registro</small></button>
