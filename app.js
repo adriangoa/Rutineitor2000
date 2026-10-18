@@ -683,6 +683,11 @@ function registerSW() {
   navigator.serviceWorker.register('sw.js').then((reg) => {
     const offer = (w) => toast('Hay una versión nueva de tu rutina · Toca para actualizar', () => w.postMessage('skipWaiting'), 0);
     if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);
+    // Android "despierta" la app desde recientes sin recargarla: busca versión nueva al volver
+    // a primer plano (solo descarga sw.js; lo demás únicamente si de verdad cambió).
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') reg.update().catch(() => {});
+    });
     reg.addEventListener('updatefound', () => {
       const w = reg.installing;
       w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) offer(w); });
