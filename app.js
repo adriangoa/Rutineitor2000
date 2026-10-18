@@ -447,6 +447,62 @@ function setSfx(on) {
   sfx('tap');
 }
 
+/* ---------- Logros ----------
+   Al completar un ejercicio baja un aviso tipo "trofeo"; al completar el día, una
+   celebración a pantalla completa. Frases y emojis en data/logros.json, al azar.
+   Son popovers: viven en la "capa superior" del navegador, así se ven encima del modal. */
+const LOGROS_DEFAULT = {
+  ejercicio: { titulo: 'Logro desbloqueado', emojis: ['🔥'], frases: ['Ah, bárbaro'] },
+  dia: { titulo: 'Día completado', emojis: ['🏆'], frases: ['Eres leyenda, Rey'] },
+};
+const lastPick = {};
+function pick(key, arr) { // al azar, sin repetir el anterior
+  let i = Math.floor(Math.random() * arr.length);
+  if (arr.length > 1 && i === lastPick[key]) i = (i + 1) % arr.length;
+  lastPick[key] = i;
+  return arr[i];
+}
+function showLayer(el) {
+  // Con el modal abierto, todo lo de afuera es "inerte": tocar el aviso cerraría el modal.
+  // Por eso el aviso se mueve dentro del modal mientras esté abierto.
+  const host = $('#sheet').open ? $('#sheet') : document.body;
+  if (el.parentNode !== host) host.append(el);
+  if (el.showPopover) { if (el.matches(':popover-open')) el.hidePopover(); el.showPopover(); }
+  else el.hidden = false;
+}
+function hideLayer(el) {
+  if (el.hidePopover) { if (el.matches(':popover-open')) el.hidePopover(); }
+  else el.hidden = true;
+}
+let trophyTimer;
+function celebrate(kind) {
+  const L = (state.logros || LOGROS_DEFAULT)[kind];
+  const emoji = pick(kind + 'e', L.emojis), frase = pick(kind + 'f', L.frases);
+  if (navigator.vibrate) navigator.vibrate(kind === 'dia' ? [40, 60, 40, 60, 120] : [30, 50, 60]);
+  if (kind === 'ejercicio') {
+    const t = $('#trophy');
+    t.innerHTML = `<span class="tr-emoji">${emoji}</span>
+      <span class="tr-text"><small>🏆 ${esc(L.titulo)}</small><b class="flashy">${esc(frase)}</b></span>`;
+    showLayer(t);
+    clearTimeout(trophyTimer);
+    trophyTimer = setTimeout(() => hideLayer(t), 3200);
+    return;
+  }
+  hideLayer($('#trophy'));
+  const colors = ['#ff2bd6', '#22e4ff', '#ffe259', '#d2fa3c', '#ff7a6b', '#8b3dff'];
+  let confetti = '';
+  for (let i = 0; i < 48; i++) {
+    confetti += `<i style="left:${Math.random() * 100}%;background:${colors[i % colors.length]};animation-delay:${(Math.random() * 0.6).toFixed(2)}s;animation-duration:${(1.8 + Math.random() * 1.6).toFixed(2)}s;--x:${Math.round(Math.random() * 120 - 60)}px;--r:${Math.round(Math.random() * 720)}deg"></i>`;
+  }
+  const p = $('#party');
+  p.innerHTML = `<div class="confetti">${confetti}</div>
+    <div class="party-box"><span class="party-emoji">${emoji}</span>
+    <p class="party-title flashy">${esc(L.titulo)}</p><p class="party-frase">${esc(frase)}</p>
+    <small>Toca para cerrar</small></div>`;
+  showLayer(p);
+  setTimeout(() => hideLayer(p), 6000);
+}
+
 /* ---------- Toast ---------- */
 let toastTimer;
 function toast(msg, onClick, ms = 2600) {
@@ -470,6 +526,8 @@ function onSetClick(e) {
   const exDone = on && marks(dateKey, ex).filter(Boolean).length >= setsOf(ex);
   const p = dayProgress(day, dateKey);
   sfx(!on ? 'unmark' : p.done >= p.total ? 'day' : exDone ? 'exercise' : 'mark');
+  if (on && p.done >= p.total) celebrate('dia');
+  else if (exDone) celebrate('ejercicio');
   afterMark(day, ex, on);
   // En el modal de una superserie, resalta el botón para cambiar de ejercicio.
   const nx = b.closest('#sheetBody')?.querySelector('.s-next.ss');
@@ -493,6 +551,8 @@ function bind() {
   $('#sheetRest').addEventListener('click', onRestClick);
   $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } });
   $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));
+  $('#trophy').addEventListener('click', () => hideLayer($('#trophy')));
+  $('#party').addEventListener('click', () => hideLayer($('#party')));
   $('#weekBody').addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
     state.dayIdx = +g.dataset.goto; $('#week').close(); renderDay();
@@ -544,6 +604,8 @@ async function init() {
   const wd = weekdayIdx();
   state.dayIdx = wd <= 4 ? wd : 0;
   $('#versionText').textContent = `Rutina v${state.routine.version} · build ${BUILD}`;
+  fetch('data/logros.json').then((r) => r.json()).then((d) => { state.logros = d; }).catch(() => {});
+  if (!HTMLElement.prototype.showPopover) ['#trophy', '#party'].forEach((s) => { $(s).hidden = true; });
   bind();
   try { applyTheme(localStorage.getItem(THEME_KEY) || 'auto'); } catch { applyTheme('auto'); }
   renderSfxBtn();

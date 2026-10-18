@@ -68,6 +68,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Efectos de sonido (`sfx()` en `app.js`): onda cuadrada con Web Audio, sin archivos; melodías
   originales. Encendidos por omisión, interruptor en Opciones (`r2k.sfx` = "0" apagado). Comparten el
   `AudioContext` del descanso; `sfxBusyUntil` evita dormir el audio a media fanfarria.
+- Logros (`celebrate()`): popover al completar un ejercicio y celebración con confeti al completar el día.
+  Frases y emojis en `data/logros.json` (al azar sin repetir la anterior). Con el modal abierto el
+  popover se mueve dentro del `<dialog>`; si no, el modal lo vuelve inerte y tocarlo cerraría el modal.
 - Descanso: al marcar una serie arranca un temporizador con el `rest` del ejercicio (90 s por omisión).
   En superserie solo arranca tras el último del grupo; antes muestra "Ahora: <siguiente>". Se guarda la
   hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto
@@ -80,5 +83,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
+- Logros con emojis animados: Noto Animated Emoji de Google (CC BY 4.0, dar crédito), WebP/GIF sin fondo.
+  ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
 - Rutina A/B alternando semanas: mismos días y grupos; la semana B usa otras variantes del inventario.
   Ya acordado con Adrián hacerla en una segunda tanda, proponiéndole la semana B antes de meterla.

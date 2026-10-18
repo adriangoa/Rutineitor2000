@@ -1,0 +1,45 @@
+{
+  "nota": "Frases y emojis de los logros. Agrega o quita lo que quieras; sale uno al azar. 'ejercicio' = al completar todas las series de un ejercicio; 'dia' = al completar el día.",
+  "ejercicio": {
+    "titulo": "Logro desbloqueado",
+    "emojis": ["🔥", "💪", "🏆", "🦍", "👑", "🚀", "😤", "🥇", "⚡", "🐐", "🦾", "💥", "🤘", "😎", "🏋️"],
+    "frases": [
+      "Ah, bárbaro",
+      "Andas con todo, Rey",
+      "You did it, M4dafuka",
+      "Qué bestia, carnal",
+      "Ese músculo ya pidió perdón",
+      "Modo bestia: activado",
+      "No m4mes, qué serie",
+      "Pura p1nche disciplina",
+      "Yeah buddy! Light weight!",
+      "Estás mam4dísimo",
+      "El fierro no se levanta solo",
+      "Otro más pa'l costal",
+      "Eres una máquina, c@brón",
+      "Nivel: Ronnie Coleman",
+      "Esto no lo hace cualquier w3y",
+      "Ese pump está pesado",
+      "Ch1ngón. Siguiente",
+      "Te rifaste, campeón",
+      "Ni el Hulk, carnal",
+      "Mírate nomás, todo un tanque",
+      "F*ck yeah, bro",
+      "El espejo ya te tiene miedo"
+    ]
+  },
+  "dia": {
+    "titulo": "Día completado",
+    "emojis": ["🏆", "👑", "🐐", "🦍", "🔥"],
+    "frases": [
+      "Eres leyenda, Rey",
+      "Se acabó el día, no el hambre",
+      "GG, M4dafuka. Nos vemos mañana",
+      "Rutina aniquilada",
+      "Qué ch1ngón día, carnal",
+      "Hoy sí te ganaste los tacos",
+      "Trofeo de platino desbloqueado",
+      "Ni modo, eres un animal"
+    ]
+  }
+}

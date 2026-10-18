@@ -2,7 +2,7 @@
    Al publicar, scripts/build.mjs reemplaza VERSION y ASSETS. Si cambia cualquier
    archivo, cambia VERSION y el celular descarga la versión nueva una sola vez. */
 const VERSION = 'dev';
-const ASSETS = ['./', 'index.html', 'styles.css', 'app.js', 'data/routine.json', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const ASSETS = ['./', 'index.html', 'styles.css', 'app.js', 'data/routine.json', 'data/logros.json', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 const CACHE = `r2k-${VERSION}`;
 
 self.addEventListener('install', (e) => {
