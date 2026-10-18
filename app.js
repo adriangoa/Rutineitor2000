@@ -666,6 +666,13 @@ function hideLayer(el) {
   if (el.hidePopover) { if (el.matches(':popover-open')) el.hidePopover(); }
   else el.hidden = true;
 }
+// Emoji animado (Noto Animated Emoji, CC BY 4.0) si está en logros.json → "animados"; si no, el del sistema.
+const emojiCode = (e) => [...e].map((c) => c.codePointAt(0).toString(16)).filter((h) => h !== 'fe0f').join('_');
+function emojiHTML(e) {
+  const code = emojiCode(e);
+  if (!((state.logros && state.logros.animados) || []).includes(code)) return e;
+  return `<img class="anim-emoji" src="images/emoji/${code}.webp" alt="${esc(e)}" onerror="this.replaceWith(this.alt)">`;
+}
 let trophyTimer;
 function celebrate(kind) {
   const L = (state.logros || LOGROS_DEFAULT)[kind];
@@ -673,7 +680,7 @@ function celebrate(kind) {
   if (navigator.vibrate) navigator.vibrate(kind === 'dia' ? [40, 60, 40, 60, 120] : [30, 50, 60]);
   if (kind === 'ejercicio') {
     const t = $('#trophy');
-    t.innerHTML = `<span class="tr-emoji">${emoji}</span>
+    t.innerHTML = `<span class="tr-emoji">${emojiHTML(emoji)}</span>
       <span class="tr-text"><small>🏆 ${esc(L.titulo)}</small><b class="flashy">${esc(frase)}</b></span>`;
     showLayer(t);
     clearTimeout(trophyTimer);
@@ -689,7 +696,7 @@ function celebrate(kind) {
   }
   const p = $('#party');
   p.innerHTML = `<div class="confetti">${confetti}</div>
-    <div class="party-box"><span class="party-emoji">${emoji}</span>
+    <div class="party-box"><span class="party-emoji">${emojiHTML(emoji)}</span>
     <p class="party-title flashy">${esc(L.titulo)}</p><p class="party-frase">${esc(frase)}</p>
     ${workoutMin(ymd(dateFor(state.dayIdx))) ? `<p class="party-time">⏱ en ${workoutMin(ymd(dateFor(state.dayIdx)))} min</p>` : ''}
     ${sd >= 2 ? `<p class="party-streak">🔥 ${isMilestone(sd) ? `<span class="flashy">¡Racha de ${sd} días!</span>` : `${sd} días seguidos`}</p>` : ''}

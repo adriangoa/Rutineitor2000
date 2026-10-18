@@ -1,5 +1,6 @@
 {
-  "nota": "Frases y emojis de los logros. Agrega o quita lo que quieras; sale uno al azar. 'ejercicio' = al completar todas las series de un ejercicio; 'dia' = al completar el día.",
+  "nota": "Frases y emojis de los logros. Agrega o quita lo que quieras; sale uno al azar. 'ejercicio' = al completar todas las series de un ejercicio; 'dia' = al completar el día. 'animados' = códigos de los emojis con versión animada en images/emoji/ (los demás se ven como emoji normal).",
+  "animados": ["1f3c6", "1f410", "1f451", "1f4a5", "1f4aa", "1f525", "1f60e", "1f624", "1f680", "1f918", "1f947", "1f98d", "1f9be", "26a1"],
   "ejercicio": {
     "titulo": "Logro desbloqueado",
     "emojis": ["🔥", "💪", "🏆", "🦍", "👑", "🚀", "😤", "🥇", "⚡", "🐐", "🦾", "💥", "🤘", "😎", "🏋️"],

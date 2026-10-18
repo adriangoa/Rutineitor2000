@@ -342,6 +342,9 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 @keyframes drop { from { transform: translateY(-140%); opacity: 0; } }
 .tr-emoji { font-size: 40px; line-height: 1; animation: pop 0.6s 0.15s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
 @keyframes pop { from { transform: scale(0) rotate(-40deg); } 60% { transform: scale(1.35) rotate(10deg); } }
+.version.credit { margin-top: 6px; }
+.version.credit a { color: inherit; }
+.anim-emoji { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: middle; }
 .tr-text { display: flex; flex-direction: column; min-width: 0; }
 .tr-text small { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .tr-text b { font-size: 21px; line-height: 1.1; }

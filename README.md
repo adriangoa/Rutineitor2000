@@ -1,7 +1,7 @@
 # Rutineitor 2000
 
 Rutina de gimnasio (lunes a viernes) como app web instalable en el celular.
-Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la memoria del teléfono.
+Funciona **sin internet**: se descarga una vez (~3 MB) y después abre desde la memoria del teléfono.
 
 **App:** https://adriangoa.github.io/Rutineitor2000/
 
@@ -27,7 +27,7 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
   Se apagan en ⋮ → **Efectos de sonido**.
 - Al completar un ejercicio baja un aviso de **logro desbloqueado** con una frase al azar; al completar
   el día, celebración con confeti. Las frases y emojis están en [`data/logros.json`](data/logros.json):
-  agrega las tuyas.
+  agrega las tuyas. Los emojis con versión animada (lista `animados`) se mueven.
 - Al completar un ejercicio en la lista, esta se desliza sola al siguiente que te falta.
 - Junto a la fecha ves cuánto llevas entrenando (⏱, de la primera a la última serie que marcas hoy);
   también sale al completar el día y en 📅.

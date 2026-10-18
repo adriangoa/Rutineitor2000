@@ -79,6 +79,10 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Logros (`celebrate()`): popover al completar un ejercicio y celebración con confeti al completar el día.
   Frases y emojis en `data/logros.json` (al azar sin repetir la anterior). Con el modal abierto el
   popover se mueve dentro del `<dialog>`; si no, el modal lo vuelve inerte y tocarlo cerraría el modal.
+  Emojis animados: `images/emoji/<código>.webp` (Noto Emoji Animation, CC BY 4.0, crédito en Opciones y
+  `images/CREDITOS.md`), reducidos a 160 px, 1 de cada 2 cuadros, calidad 50, `minimize_size`, `alpha_quality=40`
+  (~40–110 KB c/u). Solo se usan los listados en `logros.json` → `animados`; los demás se ven como emoji normal.
+  Para agregar uno: bajar `https://fonts.gstatic.com/s/e/notoemoji/latest/<código>/512.webp` y convertir igual.
 - Notas por ejercicio (`r2k.notes.v1`): `{ id: { s: "ok"|"adapt"|"no", note, name, inv, fecha } }`. Botón 📝
   en el modal; puntito ámbar/rojo en la foto si es 🔧/❌. Van en el respaldo como `notas`: si Adrián pasa un
   respaldo, léelo y usa las notas para quitar o adaptar ejercicios (y a futuro proponer fuera del inventario).
@@ -108,5 +112,3 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   Application → Service Workers marcar "Offline" para probar sin internet.
 
 ## Ideas pendientes
-- Logros con emojis animados: Noto Animated Emoji de Google (CC BY 4.0, dar crédito), WebP/GIF sin fondo.
-  ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
