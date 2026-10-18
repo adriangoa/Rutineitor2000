@@ -18,7 +18,7 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
   La etiqueta junto a la fecha dice cuál toca. Si faltas una semana, cámbiala en 📅 → **Cambiar a A/B**.
 - Toca **1, 2, 3, 4** para marcar cada serie. El cardio se marca con un solo botón.
 - Al marcar una serie arranca el **descanso** (barra abajo, con −15 / +15 / Saltar). Al terminar suena
-  un tono suave y vibra, aunque la pantalla esté apagada. En una superserie no hay descanso entre
+  un tono suave y vibra, aunque la pantalla esté apagada; 3 bips cortos te avisan en los últimos 3 segundos. En una superserie no hay descanso entre
   ejercicios: la barra te dice cuál sigue, y el descanso arranca al terminar el último del grupo.
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
   Abajo del modal puedes pasar al ejercicio anterior o al siguiente; en superserie, al que sigue del grupo.

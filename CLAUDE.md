@@ -88,7 +88,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Descanso: al marcar una serie arranca un temporizador con el `rest` del ejercicio (90 s por omisión).
   En superserie solo arranca tras el último del grupo; antes muestra "Ahora: <siguiente>". Se guarda la
   hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto
-  de Web Audio programado desde el inicio (suena con pantalla apagada y se mezcla con la música; confirmado en su Android) + vibración.
+  de Web Audio programado desde el inicio, con 3 bips de cuenta regresiva antes (suena con pantalla apagada y se mezcla con la música; confirmado en su Android) + vibración.
 
 ## Probar
 - Rápido: `python3 -m http.server 8000` en la raíz y abrir http://localhost:8000
@@ -101,7 +101,6 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
 - Rachas 🔥: días/semanas seguidas completadas, en 📅 Semana y como logro ("Racha de 5 días"). Sale del registro.
 - Duración real del entreno: de la primera a la última serie del día ("Hoy: 72 min"), visible en el historial.
-- Cuenta regresiva: 3 bips suaves en los últimos 3 s del descanso (estilo salida de carrera de videojuego).
 - Saltar al siguiente ejercicio pendiente al completar uno, **con una transición vistosa** (Adrián pidió
   "algo que se vea chingón"): p. ej. la tarjeta completada se encoge/brilla y la lista se desliza a la siguiente,
   que entra con un destello. Respetar `prefers-reduced-motion`.

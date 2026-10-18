@@ -361,6 +361,19 @@ function scheduleChime(endMs) {
   cancelChime();
   const ctx = audio(); if (!ctx) return;
   const t0 = ctx.currentTime + Math.max(0, (endMs - Date.now()) / 1000);
+  // Cuenta regresiva: 3 bips cortos y suaves en los últimos 3 s (si alcanzan a sonar).
+  [3, 2, 1].forEach((s) => {
+    const t = t0 - s;
+    if (t <= ctx.currentTime + 0.05) return;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = 880;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.16, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    o.connect(g).connect(ctx.destination);
+    o.start(t); o.stop(t + 0.15);
+    chime.push(o);
+  });
   // "Ding-dong" grave (mi5 → do5), volumen bajo y con caída suave.
   [[659.25, 0], [523.25, 0.32]].forEach(([freq, dt]) => {
     const o = ctx.createOscillator(), g = ctx.createGain();
@@ -444,7 +457,10 @@ function renderRest() {
 }
 function tickRest() {
   const left = restSecsLeft();
-  document.querySelectorAll('.rest-time').forEach((t) => { t.textContent = mmss(left); });
+  document.querySelectorAll('.rest-time').forEach((t) => {
+    t.textContent = mmss(left);
+    t.classList.toggle('ending', left > 0 && left <= 3);
+  });
   document.querySelectorAll('.rest-fill').forEach((f) => { f.style.width = `${(left / rest.total) * 100}%`; });
   if (left > 0) return;
   clearInterval(restTick);
