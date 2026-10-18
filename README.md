@@ -26,7 +26,8 @@ los pasos según tu cel, también para iPhone. La primera vez, una bienvenida co
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
   Abajo del modal puedes pasar al ejercicio anterior o al siguiente; en superserie, al que sigue del grupo.
 - ⋮ → **Tema**: Automático, Alto contraste, Synthwave, Game Boy o 🎃 **Temporada** (Halloween por ahora;
-  "Automático por fecha" elige solo el del mes). Los temas de temporada traen sus propias frases de logro.
+  "Automático por fecha" elige solo el del mes; es el tema que sale de inicio). Los temas de temporada traen
+  sus propias frases de logro.
 - Sonidos retro al tocar botones, arpegio al completar un ejercicio y fanfarria al completar el día.
   Se apagan en ⋮ → **Efectos de sonido**.
 - Al completar un ejercicio baja un aviso de **logro desbloqueado** con una frase al azar; al completar

@@ -102,7 +102,8 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   actualización. ⋮ Opciones muestra la fecha del último respaldo.
 - Temas de temporada (`SEASONS` en app.js: nombre, ícono, meses, color): botón "🎃 Temporada" en el selector
   → lista con "Automático por fecha" (`season-auto`, elige por mes; si no hay, el normal) y cada temporada.
-  El script del `<head>` usa `r2k.theme.auto` (tema resuelto) para no parpadear. Frases/emojis/títulos de
+  **Tema por omisión: `season-auto`** (si nunca eligió tema). El script del `<head>` usa `r2k.theme.auto` (tema
+  resuelto la vez anterior) para no parpadear. Frases/emojis/títulos de
   temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
   Adrián pedirá uno nuevo cada mes: entrada en `SEASONS` + bloque CSS + (opcional) frases y emojis animados.
   Hecho: halloween (octubre).

@@ -1086,7 +1086,8 @@ async function init() {
   fetch('data/logros.json').then((r) => r.json()).then((d) => { state.logros = d; }).catch(() => {});
   if (!HTMLElement.prototype.showPopover) ['#trophy', '#party'].forEach((s) => { $(s).hidden = true; });
   bind();
-  try { applyTheme(localStorage.getItem(THEME_KEY) || 'auto'); } catch { applyTheme('auto'); }
+  // Por omisión, tema de temporada según la fecha (si este mes no hay, se ve el normal).
+  try { applyTheme(localStorage.getItem(THEME_KEY) || 'season-auto'); } catch { applyTheme('season-auto'); }
   renderSfxBtn();
   renderDay();
   renderRest();
