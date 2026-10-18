@@ -833,7 +833,11 @@ function bind() {
     d.addEventListener('close', () => { if (d.id === 'sheet') clearInterval(state.animTimer); resetArm(); sfx('close'); });
   });
   $('#weekBtn').addEventListener('click', () => { renderWeek(); sfx('open'); });
-  $('#menuBtn').addEventListener('click', () => { $('#menu').showModal(); sfx('open'); });
+  $('#menuBtn').addEventListener('click', () => {
+    // Tamaño útil de pantalla: sirve para ajustar el modo de la pantalla externa del Razr.
+    $('#screenText').textContent = `Pantalla: ${innerWidth} × ${innerHeight} · densidad ${devicePixelRatio}x`;
+    $('#menu').showModal(); sfx('open');
+  });
   $('#exportBtn').addEventListener('click', exportBackup);
   $('#importInput').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importBackup(f); e.target.value = ''; $('#menu').close(); });
   $('#resetBtn').addEventListener('click', () => {
