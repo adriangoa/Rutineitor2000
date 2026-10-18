@@ -77,6 +77,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Logros (`celebrate()`): popover al completar un ejercicio y celebración con confeti al completar el día.
   Frases y emojis en `data/logros.json` (al azar sin repetir la anterior). Con el modal abierto el
   popover se mueve dentro del `<dialog>`; si no, el modal lo vuelve inerte y tocarlo cerraría el modal.
+- Notas por ejercicio (`r2k.notes.v1`): `{ id: { s: "ok"|"adapt"|"no", note, name, inv, fecha } }`. Botón 📝
+  en el modal; puntito ámbar/rojo en la foto si es 🔧/❌. Van en el respaldo como `notas`: si Adrián pasa un
+  respaldo, léelo y usa las notas para quitar o adaptar ejercicios (y a futuro proponer fuera del inventario).
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -102,7 +105,3 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   que entra con un destello. Respetar `prefers-reduced-motion`.
 - Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
   en el celular.
-- Notas de "¿lo pude hacer?": 📝 sutil en el modal del ejercicio → ✅ Lo hice · 🔧 Lo adapté (nota) · ❌ No se
-  puede (nota). Puntito discreto en la tarjeta si está marcado 🔧/❌. Se incluye en Exportar respaldo para que
-  Claude lea el archivo y ajuste la rutina (quitar, adaptar, y a futuro proponer fuera del inventario).
-  Propuesto a Adrián; falta que confirme 📝 en el modal vs. un "modo revisión" en Opciones.

@@ -7,6 +7,7 @@ const REST_KEY = 'r2k.rest.v1';
 const THEME_KEY = 'r2k.theme';
 const SFX_KEY = 'r2k.sfx';
 const AB_KEY = 'r2k.ab.v1';
+const NOTES_KEY = 'r2k.notes.v1';
 const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
@@ -122,8 +123,8 @@ function cardHTML(ex, n, dateKey) {
   const m = marks(dateKey, ex);
   const done = m.filter(Boolean).length >= setsOf(ex);
   const thumb = ex.type === 'cardio'
-    ? `<div class="thumb cardio">${CARDIO_ICON}</div>`
-    : `<button class="thumb" data-open="${ex.id}" aria-label="Ver cómo se hace"><img src="images/${ex.img}/0.webp" alt="" loading="lazy" width="72" height="72"></button>`;
+    ? `<div class="thumb cardio">${CARDIO_ICON}${noteDot(ex)}</div>`
+    : `<button class="thumb" data-open="${ex.id}" aria-label="Ver cómo se hace"><img src="images/${ex.img}/0.webp" alt="" loading="lazy" width="72" height="72">${noteDot(ex)}</button>`;
   const meta = ex.type === 'cardio'
     ? `<strong>${esc(ex.duration)}</strong>`
     : `<strong>${ex.sets} × ${esc(ex.reps)}</strong>${ex.variant ? esc(ex.variant) : ''}`;
@@ -185,8 +186,58 @@ function refreshCard(exId) {
   updateProgress();
 }
 
+/* ---------- Notas: ¿lo pude hacer? ----------
+   Por ejercicio: s = 'ok' (lo hice) | 'adapt' (lo adapté) | 'no' (no se puede), más una nota.
+   Se guarda con nombre e inventario para que el respaldo exportado se entienda solo. */
+const NOTE_OPTS = [['ok', '✅', 'Lo hice'], ['adapt', '🔧', 'Lo adapté'], ['no', '❌', 'No se puede']];
+let notes = (() => { try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || {}; } catch { return {}; } })();
+function saveNotes() {
+  try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); }
+  catch { toast('No se pudo guardar la nota'); }
+}
+const noteEmoji = (ex) => { const n = notes[ex.id]; return n ? NOTE_OPTS.find((o) => o[0] === n.s)[1] : '📝'; };
+const noteDot = (ex) => {
+  const n = notes[ex.id];
+  return n && n.s !== 'ok' ? `<span class="note-dot ${n.s}" aria-label="${n.s === 'no' ? 'No se puede' : 'Adaptado'}"></span>` : '';
+};
+function notePanelHTML(ex) {
+  const n = notes[ex.id] || {};
+  return `<div class="note-panel" id="notePanel" hidden>
+    <p class="note-q">¿Pudiste hacerlo como está descrito?</p>
+    <div class="note-opts">${NOTE_OPTS.map(([s, e, t]) => `<button data-note="${s}" aria-pressed="${n.s === s}">${e} ${t}</button>`).join('')}</div>
+    <textarea id="noteText" rows="2" placeholder="¿Qué cambiaste o por qué no se pudo?"${n.s === 'adapt' || n.s === 'no' ? '' : ' hidden'}>${esc(n.note || '')}</textarea>
+  </div>`;
+}
+function setNote(ex, s) {
+  const prev = notes[ex.id];
+  if (prev && prev.s === s) delete notes[ex.id]; // tocar la misma opción otra vez la quita
+  else notes[ex.id] = { s, note: (prev && prev.note) || '', name: ex.name, inv: ex.inv ?? null, fecha: ymd(new Date()) };
+  saveNotes();
+  const n = notes[ex.id];
+  document.querySelectorAll('[data-note]').forEach((b) => b.setAttribute('aria-pressed', !!n && b.dataset.note === n.s));
+  $('#noteText').hidden = !n || n.s === 'ok';
+  if (!$('#noteText').hidden) $('#noteText').focus();
+  $('.note-btn').textContent = noteEmoji(ex);
+  renderDay(); // actualiza el puntito de la tarjeta
+}
+function onNoteClick(e) {
+  if (e.target.closest('[data-note-toggle]')) {
+    const p = $('#notePanel');
+    p.hidden = !p.hidden;
+    sfx(p.hidden ? 'close' : 'open');
+    if (!p.hidden) p.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return true;
+  }
+  const b = e.target.closest('[data-note]');
+  if (!b) return false;
+  setNote(dayView(state.dayIdx).exercises.find((x) => x.id === state.sheetEx), b.dataset.note);
+  sfx('tap');
+  return true;
+}
+
 /* ---------- Detalle del ejercicio ---------- */
 function openExercise(exId) {
+  state.sheetEx = exId;
   const day = dayView(state.dayIdx);
   const ex = day.exercises.find((e) => e.id === exId);
   const dateKey = ymd(dateFor(state.dayIdx));
@@ -204,8 +255,12 @@ function openExercise(exId) {
   const next = g ? g[(pos + 1) % g.length] : day.exercises[k + 1];
   $('#sheetBody').innerHTML = `${img}
     ${g ? `<p class="ss-badge">Superserie ${esc(ex.ss)} · ${pos + 1} de ${g.length}</p>` : ''}
-    <h2 class="s-name"${img || g ? '' : ' style="margin-top:36px"'}>${esc(ex.name)}</h2>
+    <div class="s-head"${img || g ? '' : ' style="margin-top:36px"'}>
+      <h2 class="s-name">${esc(ex.name)}</h2>
+      <button class="note-btn" data-note-toggle aria-label="Anotar si lo pudiste hacer">${noteEmoji(ex)}</button>
+    </div>
     <p class="s-meta">${meta}</p>
+    ${notePanelHTML(ex)}
     <ul class="tips">${(ex.tips || []).map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
     <p class="s-sets-label">${ex.type === 'cardio' ? 'Marca al terminar' : 'Marca cada serie al terminarla'}</p>
     <div class="sets">${setButtons(dateKey, ex)}</div>
@@ -254,7 +309,7 @@ function renderWeek() {
 
 /* ---------- Respaldo ---------- */
 function exportBackup() {
-  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides }, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides, notas: notes }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `rutineitor-respaldo-${ymd(new Date())}.json`;
@@ -267,6 +322,7 @@ async function importBackup(file) {
     const data = JSON.parse(await file.text());
     if (!data || data.app !== 'rutineitor2000' || typeof data.log !== 'object') throw new Error();
     for (const [date, exs] of Object.entries(data.log)) log[date] = { ...(log[date] || {}), ...exs };
+    if (data.notas && typeof data.notas === 'object') { notes = { ...notes, ...data.notas }; saveNotes(); }
     if (data.ab && typeof data.ab === 'object') {
       abOverrides = { ...abOverrides, ...data.ab };
       try { localStorage.setItem(AB_KEY, JSON.stringify(abOverrides)); } catch {}
@@ -576,8 +632,14 @@ function bind() {
     const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
   });
   $('#sheetBody').addEventListener('click', (e) => {
-    if (onSetClick(e)) return;
+    if (onNoteClick(e) || onSetClick(e)) return;
     const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
+  });
+  $('#sheetBody').addEventListener('input', (e) => {
+    const n = notes[state.sheetEx];
+    if (e.target.id !== 'noteText' || !n) return;
+    n.note = e.target.value; n.fecha = ymd(new Date());
+    saveNotes();
   });
   $('#restBar').addEventListener('click', onRestClick);
   $('#sheetRest').addEventListener('click', onRestClick);

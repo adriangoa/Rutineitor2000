@@ -189,6 +189,33 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* Notas: ¿lo pude hacer? */
+.s-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.s-head .s-name { flex: 1; }
+.note-btn {
+  flex: none; width: 40px; height: 40px; margin-top: 12px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface-2); font-size: 18px; line-height: 1;
+}
+.note-panel { background: var(--surface-2); border-radius: 14px; padding: 12px; margin: 0 0 16px; }
+.note-q { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.note-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.note-opts button {
+  padding: 10px 4px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.note-opts button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+#noteText {
+  display: block; width: 100%; margin-top: 8px; padding: 9px 10px; resize: vertical;
+  font: 16px/1.35 var(--text); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+#noteText[hidden] { display: none; }
+.note-dot { position: absolute; top: 4px; right: 4px; width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--surface); }
+.note-dot.adapt { background: #ffb020; }
+.note-dot.no { background: #ff4d4d; }
+[data-theme="gb"] .note-btn, [data-theme="gb"] .note-panel, [data-theme="gb"] .note-opts button,
+[data-theme="gb"] #noteText { border-radius: 0; border: 2px solid var(--ink); }
+[data-theme="gb"] .note-dot { border-radius: 0; border-color: var(--ink); }
+
 /* Semana A/B */
 .wk-badge {
   display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 6px; vertical-align: 1px;
