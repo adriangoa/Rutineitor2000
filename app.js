@@ -5,6 +5,7 @@ const BUILD = 'dev'; // lo reemplaza scripts/build.mjs al publicar
 const LOG_KEY = 'r2k.log.v1';
 const REST_KEY = 'r2k.rest.v1';
 const THEME_KEY = 'r2k.theme';
+const SFX_KEY = 'r2k.sfx';
 const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
@@ -188,7 +189,7 @@ function openExercise(exId) {
       ${next ? `<button class="s-next${g ? ' ss' : ''}" data-open="${next.id}">${g ? 'Sigue en la superserie' : 'Siguiente'}<b>${esc(next.name)} ›</b></button>` : ''}
     </nav>`;
   const sheet = $('#sheet');
-  if (!sheet.open) sheet.showModal();
+  if (!sheet.open) { sheet.showModal(); sfx('open'); } else sfx('move');
   sheet.scrollTop = 0;
   renderRest();
   clearInterval(state.animTimer);
@@ -288,7 +289,10 @@ function cancelChime() {
   chime.forEach((o) => { try { o.stop(); } catch {} });
   chime = [];
 }
-function sleepAudio() { if (audioCtx && audioCtx.state === 'running') audioCtx.suspend().catch(() => {}); }
+function sleepAudio() {
+  if (Date.now() < sfxBusyUntil) return; // no cortes un efecto que está sonando (se duerme al terminar)
+  if (audioCtx && audioCtx.state === 'running') audioCtx.suspend().catch(() => {});
+}
 
 const restSecsLeft = () => Math.max(0, Math.ceil((rest.end - Date.now()) / 1000));
 const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
@@ -368,6 +372,7 @@ function tickRest() {
 function onRestClick(e) {
   const b = e.target.closest('[data-rest]'); if (!b) return;
   const a = b.dataset.rest;
+  if (a !== 'go') sfx('tap');
   if (a === 'skip') clearRest();
   else if (a === 'go') {
     const { day, exId } = rest;
@@ -392,6 +397,56 @@ function setTheme(t) {
   applyTheme(t);
 }
 
+/* ---------- Efectos de sonido (estilo Game Boy) ----------
+   Onda cuadrada, como el canal de pulso del Game Boy, generada con Web Audio:
+   no hay archivos de audio. Cada sonido es una lista de [frecuencia Hz, duración s]
+   (frecuencia 0 = silencio). Melodías originales, volumen bajo para no tapar tu música. */
+const SFX = {
+  mark: [[1318.5, 0.045], [1760, 0.07]],
+  unmark: [[880, 0.045], [587.3, 0.08]],
+  tap: [[1568, 0.04]],
+  move: [[1046.5, 0.035], [1318.5, 0.05]],
+  open: [[784, 0.04], [1174.7, 0.07]],
+  close: [[1174.7, 0.04], [784, 0.07]],
+  exercise: [[523.3, 0.07], [659.3, 0.07], [784, 0.07], [1046.5, 0.07], [1318.5, 0.22]],
+  day: [[392, 0.09], [523.3, 0.09], [659.3, 0.09], [784, 0.18], [0, 0.05], [659.3, 0.09], [784, 0.09], [1046.5, 0.12], [1318.5, 0.12], [1568, 0.5]],
+};
+let sfxOn = (() => { try { return localStorage.getItem(SFX_KEY) !== '0'; } catch { return true; } })();
+let sfxSleep = null, sfxBusyUntil = 0;
+function sfx(name) {
+  if (!sfxOn) return;
+  const ctx = audio(); if (!ctx) return;
+  let t = ctx.currentTime + 0.01;
+  for (const [freq, dur] of SFX[name]) {
+    if (freq) {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'square'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.05, t);
+      g.gain.setValueAtTime(0.05, t + dur * 0.7);
+      g.gain.linearRampToValueAtTime(0, t + dur);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    }
+    t += dur;
+  }
+  // Duerme el audio al terminar, salvo que haya un descanso con su aviso programado.
+  const ms = (t - ctx.currentTime) * 1000;
+  sfxBusyUntil = Math.max(sfxBusyUntil, Date.now() + ms + 100);
+  clearTimeout(sfxSleep);
+  sfxSleep = setTimeout(() => { if (!rest || rest.mode !== 'rest') sleepAudio(); }, ms + 1500);
+}
+function renderSfxBtn() {
+  const b = $('#sfxBtn');
+  b.setAttribute('aria-pressed', sfxOn);
+  b.querySelector('small').textContent = sfxOn ? 'Activados · sonidos retro al tocar y al completar' : 'Desactivados';
+}
+function setSfx(on) {
+  sfxOn = on;
+  try { localStorage.setItem(SFX_KEY, on ? '1' : '0'); } catch {}
+  renderSfxBtn();
+  sfx('tap');
+}
+
 /* ---------- Toast ---------- */
 let toastTimer;
 function toast(msg, onClick, ms = 2600) {
@@ -411,7 +466,11 @@ function onSetClick(e) {
   const dateKey = ymd(dateFor(state.dayIdx));
   toggleSet(dateKey, ex, +b.dataset.i);
   refreshCard(ex.id);
-  afterMark(day, ex, !!marks(dateKey, ex)[+b.dataset.i]);
+  const on = !!marks(dateKey, ex)[+b.dataset.i];
+  const exDone = on && marks(dateKey, ex).filter(Boolean).length >= setsOf(ex);
+  const p = dayProgress(day, dateKey);
+  sfx(!on ? 'unmark' : p.done >= p.total ? 'day' : exDone ? 'exercise' : 'mark');
+  afterMark(day, ex, on);
   // En el modal de una superserie, resalta el botón para cambiar de ejercicio.
   const nx = b.closest('#sheetBody')?.querySelector('.s-next.ss');
   if (nx && rest && rest.mode === 'next') { nx.classList.remove('nudge'); void nx.offsetWidth; nx.classList.add('nudge'); }
@@ -420,7 +479,7 @@ function onSetClick(e) {
 function bind() {
   $('#tabs').addEventListener('click', (e) => {
     const t = e.target.closest('.tab'); if (!t) return;
-    state.dayIdx = +t.dataset.day; renderDay(); window.scrollTo({ top: 0 });
+    state.dayIdx = +t.dataset.day; renderDay(); window.scrollTo({ top: 0 }); sfx('move');
   });
   $('#list').addEventListener('click', (e) => {
     if (onSetClick(e)) return;
@@ -432,17 +491,18 @@ function bind() {
   });
   $('#restBar').addEventListener('click', onRestClick);
   $('#sheetRest').addEventListener('click', onRestClick);
-  $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) setTheme(b.dataset.themeSet); });
+  $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } });
+  $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));
   $('#weekBody').addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
     state.dayIdx = +g.dataset.goto; $('#week').close(); renderDay();
   });
   document.querySelectorAll('dialog').forEach((d) => {
     d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
-    d.addEventListener('close', () => { if (d.id === 'sheet') clearInterval(state.animTimer); resetArm(); });
+    d.addEventListener('close', () => { if (d.id === 'sheet') clearInterval(state.animTimer); resetArm(); sfx('close'); });
   });
-  $('#weekBtn').addEventListener('click', renderWeek);
-  $('#menuBtn').addEventListener('click', () => $('#menu').showModal());
+  $('#weekBtn').addEventListener('click', () => { renderWeek(); sfx('open'); });
+  $('#menuBtn').addEventListener('click', () => { $('#menu').showModal(); sfx('open'); });
   $('#exportBtn').addEventListener('click', exportBackup);
   $('#importInput').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) importBackup(f); e.target.value = ''; $('#menu').close(); });
   $('#resetBtn').addEventListener('click', () => {
@@ -486,6 +546,7 @@ async function init() {
   $('#versionText').textContent = `Rutina v${state.routine.version} · build ${BUILD}`;
   bind();
   try { applyTheme(localStorage.getItem(THEME_KEY) || 'auto'); } catch { applyTheme('auto'); }
+  renderSfxBtn();
   renderDay();
   renderRest();
   registerSW();

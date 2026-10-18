@@ -65,6 +65,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
   contraste y `data-theme="synth"` synthwave en `<html>`. Colores en variables de `:root`. Se guarda en
   `r2k.theme` y un script en línea en `index.html` lo aplica antes de pintar (sin parpadeo).
+- Efectos de sonido (`sfx()` en `app.js`): onda cuadrada con Web Audio, sin archivos; melodías
+  originales. Encendidos por omisión, interruptor en Opciones (`r2k.sfx` = "0" apagado). Comparten el
+  `AudioContext` del descanso; `sfxBusyUntil` evita dormir el audio a media fanfarria.
 - Descanso: al marcar una serie arranca un temporizador con el `rest` del ejercicio (90 s por omisión).
   En superserie solo arranca tras el último del grupo; antes muestra "Ahora: <siguiente>". Se guarda la
   hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto

@@ -21,6 +21,8 @@ Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la 
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
   Abajo del modal puedes pasar al ejercicio anterior o al siguiente; en superserie, al que sigue del grupo.
 - ⋮ → **Tema**: Automático, Alto contraste o Synthwave.
+- Sonidos retro al tocar botones, arpegio al completar un ejercicio y fanfarria al completar el día.
+  Se apagan en ⋮ → **Efectos de sonido**.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
   el registro vive solo en tu celular.
