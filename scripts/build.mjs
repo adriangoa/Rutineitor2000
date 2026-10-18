@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const OUT = join(ROOT, '_site');
-const INCLUDE = ['index.html', 'styles.css', 'app.js', 'sw.js', 'manifest.webmanifest', 'data', 'images', 'icons'];
+const INCLUDE = ['index.html', 'styles.css', 'app.js', 'sw.js', 'manifest.webmanifest', 'data', 'images', 'icons', 'fonts'];
 
 function walk(p) {
   return statSync(p).isDirectory() ? readdirSync(p).sort().flatMap((f) => walk(join(p, f))) : [p];
@@ -20,7 +20,7 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT);
 for (const item of INCLUDE) cpSync(join(ROOT, item), join(OUT, item), { recursive: true });
 
-const files = walk(OUT).map((f) => relative(OUT, f)).filter((f) => f !== 'sw.js' && !f.endsWith('.md'));
+const files = walk(OUT).map((f) => relative(OUT, f)).filter((f) => f !== 'sw.js' && !/\.(md|txt)$/.test(f)); // licencias y docs no se precachean
 const hash = createHash('sha256');
 for (const f of files) { hash.update(f); hash.update(readFileSync(join(OUT, f))); }
 const version = hash.digest('hex').slice(0, 10);

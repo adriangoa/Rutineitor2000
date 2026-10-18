@@ -383,7 +383,7 @@ function onRestClick(e) {
 }
 
 /* ---------- Tema ---------- */
-const THEME_BG = { hc: '#000000', synth: '#12061f' };
+const THEME_BG = { hc: '#000000', synth: '#12061f', gb: '#5b3f8f' };
 function applyTheme(t) {
   const root = document.documentElement;
   if (THEME_BG[t]) root.dataset.theme = t; else delete root.dataset.theme;

@@ -61,9 +61,12 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   muestra un toast "Toca para actualizar" (mensaje `skipWaiting`). En la primera visita no recarga.
 - `BUILD` en `app.js` también lo reemplaza el build (se ve en ⋮ Opciones).
 - Rutas siempre relativas (el sitio vive en `/rutineitor2000/`, no en la raíz).
-- Fuentes del sistema (`sans-serif-condensed` en Android) para no descargar fuentes.
+- Fuentes del sistema (`sans-serif-condensed` en Android) para no descargar fuentes. Única excepción:
+  `fonts/PressStart2P-latin.woff2` (12.5 KB, OFL, licencia en `fonts/OFL.txt`) solo para el tema Game Boy;
+  el navegador la usa solo con ese tema y el build la precachea (los `.md`/`.txt` no se precachean).
 - Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
-  contraste y `data-theme="synth"` synthwave en `<html>`. Colores en variables de `:root`. Se guarda en
+  contraste, `data-theme="synth"` synthwave y `data-theme="gb"` Game Boy (pantalla verde, carcasa morada
+  "Grape" del Game Boy Color, fuente pixelada) en `<html>`. Colores en variables de `:root`. Se guarda en
   `r2k.theme` y un script en línea en `index.html` lo aplica antes de pintar (sin parpadeo).
 - Efectos de sonido (`sfx()` en `app.js`): onda cuadrada con Web Audio, sin archivos; melodías
   originales. Encendidos por omisión, interruptor en Opciones (`r2k.sfx` = "0" apagado). Comparten el

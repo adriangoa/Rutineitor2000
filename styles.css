@@ -191,7 +191,7 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
 
 /* Menú: selector de tema */
 .menu-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
-.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 18px; }
+.seg { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 18px; }
 .seg button { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 11px 4px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .menu-item[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
@@ -358,5 +358,97 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 [data-theme="synth"] .rest.over { background: var(--sunset); color: #fff; }
 [data-theme="synth"] .rest.over .rest-time, [data-theme="synth"] .rest.over .rest-label { color: #fff; }
 [data-theme="synth"] .wk-cell.full { background: var(--sunset); color: #fff; }
+
+/* Tema: Game Boy (pantalla verde de 4 tonos, carcasa morada "Grape" del Game Boy Color,
+   botones de serie como los A/B y fuente pixelada Press Start 2P, licencia OFL en fonts/) */
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("fonts/PressStart2P-latin.woff2") format("woff2");
+  font-display: swap;
+}
+:root[data-theme="gb"] {
+  --bg: #9bbc0f;
+  --surface: #8bac0f;
+  --surface-2: #7d9d0d;
+  --line: #306230;
+  --ink: #0f380f;
+  --muted: #306230;
+  --accent: #9b2257;
+  --accent-text: #7a1a45;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(155, 34, 87, 0.15);
+  --danger: #7a1a45;
+  --img-bg: #e3efc0;
+  --shell: #5b3f8f;
+  --shell-dark: #2e1d4f;
+  --shell-ink: #ece2ff;
+  --display: "Press Start 2P", ui-monospace, monospace;
+  --r: 0px;
+  color-scheme: light;
+}
+[data-theme="gb"] .top { background: var(--shell); border-bottom: 4px solid var(--shell-dark); backdrop-filter: none; }
+[data-theme="gb"] .brand { color: var(--shell-ink); font-size: 11px; }
+[data-theme="gb"] .brand b { color: #ffd34e; }
+[data-theme="gb"] .top .icon-btn { color: var(--shell-ink); }
+[data-theme="gb"] .tab { background: #4a3175; border: 3px solid var(--shell-dark); border-radius: 0; color: var(--shell-ink); }
+[data-theme="gb"] .tab .t-day { font-size: 12px; margin: 3px 0 4px; }
+[data-theme="gb"] .tab .t-focus { color: #cbb8f0; }
+[data-theme="gb"] .tab .t-bar { background: var(--shell-dark); border-radius: 0; }
+[data-theme="gb"] .tab .t-bar i { background: #9bbc0f; }
+[data-theme="gb"] .tab.today::after { background: #ffd34e; border-radius: 0; }
+[data-theme="gb"] .tab[aria-selected="true"] { background: #9bbc0f; color: var(--ink); border-color: var(--shell-dark); }
+[data-theme="gb"] .tab[aria-selected="true"] .t-focus { color: var(--muted); }
+[data-theme="gb"] .tab[aria-selected="true"] .t-bar { background: #7d9d0d; }
+[data-theme="gb"] .tab[aria-selected="true"] .t-bar i { background: var(--ink); }
+[data-theme="gb"] .day-title { font-size: 18px; line-height: 1.4; }
+[data-theme="gb"] .progress-bar, [data-theme="gb"] .progress-bar span { border-radius: 0; }
+[data-theme="gb"] .progress-bar { border: 2px solid var(--ink); height: 12px; }
+[data-theme="gb"] .progress-text { font-size: 10px; }
+[data-theme="gb"] .card { border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--line); }
+[data-theme="gb"] .card.done { border-color: var(--accent); }
+[data-theme="gb"] .thumb { border-radius: 0; border: 2px solid var(--ink); }
+[data-theme="gb"] .c-num { font-size: 10px; }
+[data-theme="gb"] .c-meta strong { font-size: 11px; }
+[data-theme="gb"] .group { border: 3px dashed var(--ink); border-radius: 0; }
+[data-theme="gb"] .group-label b { font-size: 9px; }
+[data-theme="gb"] .set { font-size: 12px; border: 3px solid var(--line); }
+[data-theme="gb"] .set[aria-pressed="true"] { border-color: #5e1535; box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.25); }
+[data-theme="gb"] .set.wide { font-size: 10px; }
+[data-theme="gb"] .done-msg { font-size: 12px; line-height: 1.6; }
+[data-theme="gb"] .sheet { border-radius: 0; border-top: 4px solid var(--ink); }
+[data-theme="gb"] .sheet-title { font-size: 16px; }
+[data-theme="gb"] .anim { border-radius: 0; border: 3px solid var(--ink); }
+[data-theme="gb"] .s-name { font-size: 16px; line-height: 1.4; }
+[data-theme="gb"] .ss-badge { font-size: 9px; border-radius: 0; border: 2px solid var(--accent); }
+[data-theme="gb"] .tips li::before { border-radius: 0; background: var(--ink); }
+[data-theme="gb"] .s-next.ss { border-radius: 0; border-width: 2px; }
+[data-theme="gb"] .menu-item, [data-theme="gb"] .seg button { border-radius: 0; border: 2px solid var(--ink); }
+[data-theme="gb"] .wk-cell, [data-theme="gb"] .hist-dot { border-radius: 0; }
+[data-theme="gb"] .wk-cell b { font-size: 11px; }
+[data-theme="gb"] .wk-cell span { font-size: 13px; }
+[data-theme="gb"] .rest { background: var(--shell); color: var(--shell-ink); border: 3px solid var(--shell-dark); border-radius: 0; }
+[data-theme="gb"] .rest-label, [data-theme="gb"] .rest-go { color: #cbb8f0; }
+[data-theme="gb"] .rest-go b { color: var(--shell-ink); }
+[data-theme="gb"] .rest-time { font-size: 20px; margin-top: 4px; }
+[data-theme="gb"] .rest-btn { font-size: 10px; background: var(--accent); color: #fff; border: 2px solid #5e1535; border-radius: 50%; width: 48px; min-width: 0; padding: 0; }
+[data-theme="gb"] .rest-btn[data-rest="skip"] { border-radius: 0; width: auto; padding: 0 10px; background: #4a3175; border-color: var(--shell-dark); }
+[data-theme="gb"] .rest-track { background: var(--shell-dark); }
+[data-theme="gb"] .rest-fill { background: #9bbc0f; }
+[data-theme="gb"] .rest.over { background: #9bbc0f; color: var(--ink); }
+[data-theme="gb"] .rest.over .rest-label { color: var(--ink); }
+[data-theme="gb"] .toast { border-radius: 0; border: 3px solid var(--bg); font-family: var(--display); font-size: 10px; line-height: 1.6; }
+/* Logros como cuadro de diálogo de RPG */
+[data-theme="gb"] .flashy { background: none; color: var(--ink); filter: none; animation: none; font-style: normal; }
+[data-theme="gb"] .flashy::after { content: " ▼"; font-size: 0.7em; animation: blink 0.8s steps(2, start) infinite; }
+@keyframes blink { to { visibility: hidden; } }
+[data-theme="gb"] .trophy { background: #e3efc0; border: 4px double var(--ink); border-radius: 0; box-shadow: 4px 4px 0 var(--line); }
+[data-theme="gb"] .tr-text small { font-family: var(--display); font-size: 8px; color: var(--muted); }
+[data-theme="gb"] .tr-text b { font-size: 12px; line-height: 1.5; margin-top: 4px; }
+[data-theme="gb"] .party { background: rgba(15, 56, 15, 0.88); }
+[data-theme="gb"] .party-box { background: #9bbc0f; color: var(--ink); border: 4px double var(--ink); box-shadow: 6px 6px 0 #0f380f; margin: 16px; }
+[data-theme="gb"] .party-title { font-size: 20px; line-height: 1.4; }
+[data-theme="gb"] .party-frase { font-size: 15px; }
+[data-theme="gb"] .party small { color: var(--muted); font-family: var(--display); font-size: 8px; }
+[data-theme="gb"] .confetti i { border-radius: 0; width: 8px; height: 8px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
