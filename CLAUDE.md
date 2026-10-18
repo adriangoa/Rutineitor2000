@@ -90,6 +90,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Rachas (`streakDays`/`streakWeeks`): días L–V seguidos con ≥ 80 % de series (`STREAK_PCT`); hoy no rompe
   la racha mientras no termine; semanas completas = los 5 días cumplidos. Se calculan del registro (no se guardan).
   En 📅 y en la celebración del día (desde 2 días; destacada en 3, 5, 10, 15…).
+- Recordatorio de respaldo (`r2k.backup.v1` = { last, nag }): al abrir, si pasaron 28 días desde el último
+  respaldo (o desde el primer registro), toast con botón para exportar; máximo uno al día y sin tapar el de
+  actualización. ⋮ Opciones muestra la fecha del último respaldo.
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -107,5 +110,3 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 ## Ideas pendientes
 - Logros con emojis animados: Noto Animated Emoji de Google (CC BY 4.0, dar crédito), WebP/GIF sin fondo.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
-- Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
-  en el celular.

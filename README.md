@@ -38,7 +38,7 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
   foto del ejercicio. Las notas van en **Exportar respaldo**: pásale ese archivo a Claude para ajustar la rutina.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:
-  el registro vive solo en tu celular.
+  el registro vive solo en tu celular. Si pasan 4 semanas sin respaldar, la app te lo recuerda al abrirla.
 
 ## Cambiar la rutina
 

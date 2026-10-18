@@ -9,6 +9,7 @@ const SFX_KEY = 'r2k.sfx';
 const AB_KEY = 'r2k.ab.v1';
 const NOTES_KEY = 'r2k.notes.v1';
 const TIMES_KEY = 'r2k.times.v1';
+const BACKUP_KEY = 'r2k.backup.v1';
 const DEFAULT_REST = 90; // segundos
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
@@ -368,6 +369,28 @@ function renderWeek() {
 }
 
 /* ---------- Respaldo ---------- */
+/* Recordatorio: el registro vive solo en el celular. Si pasan 4 semanas sin exportar (o desde el
+   primer registro si nunca has exportado), al abrir sale un aviso, máximo uno al día (r2k.backup.v1). */
+const BACKUP_DAYS = 28;
+let backupInfo = (() => { try { return JSON.parse(localStorage.getItem(BACKUP_KEY)) || {}; } catch { return {}; } })();
+function saveBackupInfo() { try { localStorage.setItem(BACKUP_KEY, JSON.stringify(backupInfo)); } catch {} }
+const daysSince = (key) => Math.round((parseYmd(ymd(new Date())) - parseYmd(key)) / 86400000);
+function renderBackupBtn() {
+  const last = backupInfo.last;
+  const txt = !last ? 'Aún no has exportado ninguno' : daysSince(last) === 0 ? 'Último respaldo: hoy' : `Último respaldo: hace ${plural(daysSince(last), 'día', 'días')}`;
+  $('#exportBtn small').textContent = `${txt} · descarga todo tu registro`;
+}
+function checkBackupReminder() {
+  const first = Object.keys(log).sort()[0];
+  const ref = backupInfo.last || first;
+  const today = ymd(new Date());
+  if (!ref || daysSince(ref) < BACKUP_DAYS || backupInfo.nag === today) return;
+  if (!$('#toast').hidden) return; // no tapes el aviso de actualización
+  backupInfo.nag = today; saveBackupInfo();
+  const weeks = Math.floor(daysSince(ref) / 7);
+  toast(`📦 ${backupInfo.last ? `Hace ${weeks} semanas que no respaldas` : 'Aún no respaldas'} tu registro · Toca para exportar`, exportBackup, 10000);
+}
+
 function exportBackup() {
   const blob = new Blob([JSON.stringify({ app: 'rutineitor2000', exported: new Date().toISOString(), log, ab: abOverrides, notas: notes, tiempos: times }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -376,6 +399,7 @@ function exportBackup() {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   toast('Respaldo descargado');
+  backupInfo.last = ymd(new Date()); saveBackupInfo(); renderBackupBtn();
 }
 async function importBackup(file) {
   try {
@@ -825,6 +849,8 @@ async function init() {
   renderSfxBtn();
   renderDay();
   renderRest();
+  renderBackupBtn();
   registerSW();
+  setTimeout(checkBackupReminder, 2500);
 }
 init();
