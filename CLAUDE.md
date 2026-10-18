@@ -82,6 +82,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - Notas por ejercicio (`r2k.notes.v1`): `{ id: { s: "ok"|"adapt"|"no", note, name, inv, fecha } }`. Botón 📝
   en el modal; puntito ámbar/rojo en la foto si es 🔧/❌. Van en el respaldo como `notas`: si Adrián pasa un
   respaldo, léelo y usa las notas para quitar o adaptar ejercicios (y a futuro proponer fuera del inventario).
+- Saltar al siguiente (`jumpToNext()`): al completar un ejercicio desde la lista, destello en la tarjeta
+  (`.just-done`), scroll suave al siguiente pendiente y entrada con barrido de luz + etiqueta "SIGUE ▶" (`.up-next`).
+  Desde el modal no salta. Con `prefers-reduced-motion` salta sin animación.
 - Semana A/B: `weekLetter(w)` cuenta desde `routine.abInicio`; los cambios manuales se guardan en `r2k.ab.v1`
   (`{ lunes: "A"|"B" }`) y la alternancia sigue desde el último; semanas anteriores no cambian. Todo el código
   lee los ejercicios con `dayView(día, semana)`, nunca `day.exercises` directo. El respaldo incluye `ab`.
@@ -101,8 +104,5 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   ~10–15 pesan 0.5–1 MB; precachear solo los que se usen. Hoy son emojis del sistema + CSS.
 - Rachas 🔥: días/semanas seguidas completadas, en 📅 Semana y como logro ("Racha de 5 días"). Sale del registro.
 - Duración real del entreno: de la primera a la última serie del día ("Hoy: 72 min"), visible en el historial.
-- Saltar al siguiente ejercicio pendiente al completar uno, **con una transición vistosa** (Adrián pidió
-  "algo que se vea chingón"): p. ej. la tarjeta completada se encoge/brilla y la lista se desliza a la siguiente,
-  que entra con un destello. Respetar `prefers-reduced-motion`.
 - Recordatorio de respaldo cada ~4 semanas ("Exporta tu respaldo") con botón directo; el registro vive solo
   en el celular.

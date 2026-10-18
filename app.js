@@ -617,6 +617,30 @@ function toast(msg, onClick, ms = 2600) {
   if (ms) toastTimer = setTimeout(() => { t.hidden = true; }, ms);
 }
 
+/* ---------- Saltar al siguiente ejercicio ----------
+   Al completar un ejercicio desde la lista: la tarjeta destella, la lista se desliza al
+   siguiente pendiente y este entra con un barrido de luz y la etiqueta "SIGUE". */
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flashClass(el, cls, ms) {
+  el.classList.remove(cls); void el.offsetWidth; // reinicia la animación si ya estaba
+  el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), ms);
+}
+function jumpToNext(day, ex, dateKey) {
+  const list = day.exercises, k = list.indexOf(ex);
+  const pending = (e) => marks(dateKey, e).filter(Boolean).length < setsOf(e);
+  const next = [...list.slice(k + 1), ...list.slice(0, k)].find(pending);
+  const card = (e) => $('#list').querySelector(`.sets [data-ex="${e.id}"]`)?.closest('.card');
+  const from = card(ex), to = next && card(next);
+  if (from) flashClass(from, 'just-done', 700);
+  if (!to) return;
+  const still = reduceMotion();
+  setTimeout(() => {
+    to.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' });
+    setTimeout(() => flashClass(to, 'up-next', 1800), still ? 0 : 250);
+  }, still ? 0 : 550);
+}
+
 /* ---------- Eventos ---------- */
 function onSetClick(e) {
   const b = e.target.closest('.set');
@@ -631,7 +655,10 @@ function onSetClick(e) {
   const p = dayProgress(day, dateKey);
   sfx(!on ? 'unmark' : p.done >= p.total ? 'day' : exDone ? 'exercise' : 'mark');
   if (on && p.done >= p.total) celebrate('dia');
-  else if (exDone) celebrate('ejercicio');
+  else if (exDone) {
+    celebrate('ejercicio');
+    if (b.closest('#list')) jumpToNext(day, ex, dateKey);
+  }
   afterMark(day, ex, on);
   // En el modal de una superserie, resalta el botón para cambiar de ejercicio.
   const nx = b.closest('#sheetBody')?.querySelector('.s-next.ss');

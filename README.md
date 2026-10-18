@@ -28,6 +28,7 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
 - Al completar un ejercicio baja un aviso de **logro desbloqueado** con una frase al azar; al completar
   el día, celebración con confeti. Las frases y emojis están en [`data/logros.json`](data/logros.json):
   agrega las tuyas.
+- Al completar un ejercicio en la lista, esta se desliza sola al siguiente que te falta.
 - En el modal de cada ejercicio, el botón 📝 sirve para anotar si lo pudiste hacer: ✅ Lo hice ·
   🔧 Lo adapté · ❌ No se puede (con nota de qué cambiaste o por qué). Los 🔧/❌ dejan un puntito en la
   foto del ejercicio. Las notas van en **Exportar respaldo**: pásale ese archivo a Claude para ajustar la rutina.

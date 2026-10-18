@@ -189,6 +189,28 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* Saltar al siguiente ejercicio */
+.card.just-done { animation: doneFlash 0.6s ease-out; }
+@keyframes doneFlash {
+  35% { transform: scale(0.96); box-shadow: 0 0 0 6px var(--accent-soft), 0 0 30px var(--accent); }
+}
+.card.up-next { position: relative; overflow: hidden; border-color: var(--accent); animation: upNext 0.7s cubic-bezier(0.2, 1.3, 0.4, 1); }
+@keyframes upNext { from { transform: translateX(32px) scale(0.96); opacity: 0.35; } }
+.card.up-next::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.32) 50%, transparent 70%);
+  transform: translateX(-110%); animation: sweep 0.9s 0.2s ease-out forwards;
+}
+@keyframes sweep { to { transform: translateX(110%); } }
+.card.up-next::before {
+  content: "SIGUE ▶"; position: absolute; top: 8px; right: 10px; z-index: 1; padding: 3px 8px; border-radius: 8px;
+  background: var(--accent); color: var(--accent-ink); font: 700 11px var(--display); letter-spacing: 0.08em;
+  animation: tagIn 1.8s ease forwards;
+}
+@keyframes tagIn { 0% { opacity: 0; transform: translateY(-6px); } 15%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+[data-theme="gb"] .card.up-next::before { border-radius: 0; font-size: 8px; padding: 4px 6px; }
+[data-theme="synth"] .card.up-next { box-shadow: 0 0 18px rgba(34, 228, 255, 0.45); border-color: var(--cyan); }
+
 /* Notas: ¿lo pude hacer? */
 .s-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .s-head .s-name { flex: 1; }
