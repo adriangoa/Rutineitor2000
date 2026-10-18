@@ -263,7 +263,9 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 [data-theme="hc"] .card { border-width: 2px; }
 [data-theme="hc"] .card.done { border-color: var(--accent); }
 [data-theme="hc"] .c-name, [data-theme="hc"] .tips li { font-weight: 600; }
-[data-theme="hc"] .set { width: 48px; height: 48px; border-color: var(--muted); }
+[data-theme="hc"] .set { border-color: var(--muted); }
+[data-theme="hc"] .set:not(.wide) { width: 48px; height: 48px; }
+[data-theme="hc"] .set.wide { height: 48px; }
 [data-theme="hc"] .group { border: 2px dashed var(--accent); }
 [data-theme="hc"] .top { background: var(--bg); backdrop-filter: none; }
 
