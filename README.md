@@ -16,6 +16,7 @@ Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la 
 - Abre directo en el día de hoy (sábado y domingo muestra la semana que viene).
 - Toca **1, 2, 3, 4** para marcar cada serie. El cardio se marca con un solo botón.
 - Toca la foto o el nombre para ver cómo se hace (imagen de inicio y final) y tips de técnica.
+- ⋮ → **Tema**: Automático, Alto contraste o Synthwave.
 - ☀ mantiene la pantalla encendida mientras entrenas.
 - 📅 muestra el avance de la semana y de las 8 semanas anteriores.
 - ⋮ → **Exportar respaldo** guarda tu registro en un archivo. Hazlo de vez en cuando:

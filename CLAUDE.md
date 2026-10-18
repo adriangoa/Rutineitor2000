@@ -62,7 +62,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - `BUILD` en `app.js` también lo reemplaza el build (se ve en ⋮ Opciones).
 - Rutas siempre relativas (el sitio vive en `/rutineitor2000/`, no en la raíz).
 - Fuentes del sistema (`sans-serif-condensed` en Android) para no descargar fuentes.
-- Tema oscuro por defecto y claro con `prefers-color-scheme`; colores en variables de `:root`.
+- Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
+  contraste y `data-theme="synth"` synthwave en `<html>`. Colores en variables de `:root`. Se guarda en
+  `r2k.theme` y un script en línea en `index.html` lo aplica antes de pintar (sin parpadeo).
 
 ## Probar
 - Rápido: `python3 -m http.server 8000` en la raíz y abrir http://localhost:8000

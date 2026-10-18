@@ -3,6 +3,7 @@
 
 const BUILD = 'dev'; // lo reemplaza scripts/build.mjs al publicar
 const LOG_KEY = 'r2k.log.v1';
+const THEME_KEY = 'r2k.theme';
 const DAY_SHORT = ['L', 'M', 'Mi', 'J', 'V'];
 
 const $ = (s) => document.querySelector(s);
@@ -223,6 +224,21 @@ async function importBackup(file) {
   } catch { toast('Ese archivo no es un respaldo válido'); }
 }
 
+/* ---------- Tema ---------- */
+const THEME_BG = { hc: '#000000', synth: '#12061f' };
+function applyTheme(t) {
+  const root = document.documentElement;
+  if (THEME_BG[t]) root.dataset.theme = t; else delete root.dataset.theme;
+  const metas = document.querySelectorAll('meta[name="theme-color"]');
+  metas[0].content = THEME_BG[t] || '#0d0e0b';
+  metas[1].content = THEME_BG[t] || '#f3f3ee';
+  document.querySelectorAll('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.themeSet === (THEME_BG[t] ? t : 'auto')));
+}
+function setTheme(t) {
+  try { localStorage.setItem(THEME_KEY, t); } catch {}
+  applyTheme(t);
+}
+
 /* ---------- Pantalla encendida ---------- */
 let wakeLock = null;
 async function toggleWake() {
@@ -271,6 +287,7 @@ function bind() {
     const o = e.target.closest('[data-open]'); if (o) openExercise(o.dataset.open);
   });
   $('#sheetBody').addEventListener('click', onSetClick);
+  $('#themePick').addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) setTheme(b.dataset.themeSet); });
   $('#weekBody').addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
     state.dayIdx = +g.dataset.goto; $('#week').close(); renderDay();
@@ -324,6 +341,7 @@ async function init() {
   state.dayIdx = wd <= 4 ? wd : 0;
   $('#versionText').textContent = `Rutina v${state.routine.version} · build ${BUILD}`;
   bind();
+  try { applyTheme(localStorage.getItem(THEME_KEY) || 'auto'); } catch { applyTheme('auto'); }
   renderDay();
   registerSW();
 }

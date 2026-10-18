@@ -8,6 +8,7 @@
   --accent: #d2fa3c;
   --accent-ink: #141800;
   --accent-soft: rgba(210, 250, 60, 0.14);
+  --accent-text: #d2fa3c;
   --danger: #ff7a6b;
   --img-bg: #f4f4f0;
   --display: "sans-serif-condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
@@ -16,7 +17,7 @@
   color-scheme: dark;
 }
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme]) {
     --bg: #f3f3ee;
     --surface: #ffffff;
     --surface-2: #ebece4;
@@ -26,6 +27,7 @@
     --accent: #c4ee22;
     --accent-ink: #141800;
     --accent-soft: rgba(120, 160, 0, 0.14);
+    --accent-text: #4a5f00;
     --danger: #c0392b;
     --img-bg: #ffffff;
     color-scheme: light;
@@ -57,7 +59,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .top-row { display: flex; align-items: center; justify-content: space-between; height: 44px; }
 .brand { font-family: var(--display); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 15px; color: var(--muted); }
 .brand b { color: var(--accent); margin-left: 3px; }
-@media (prefers-color-scheme: light) { .brand b { color: #5a7300; } }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) .brand b { color: #5a7300; } }
 .top-actions { display: flex; gap: 4px; }
 .icon-btn {
   width: 44px; height: 44px; display: grid; place-items: center;
@@ -110,7 +112,7 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb.cardio { display: grid; place-items: center; background: var(--surface-2); color: var(--accent); }
 .thumb.cardio svg { width: 34px; height: 34px; }
-@media (prefers-color-scheme: light) { .thumb.cardio { color: #5a7300; } }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) .thumb.cardio { color: #5a7300; } }
 .c-body { min-width: 0; }
 .c-top { display: flex; align-items: baseline; gap: 8px; background: none; border: 0; padding: 0; text-align: left; width: 100%; cursor: pointer; }
 .c-num { font-family: var(--display); font-weight: 700; color: var(--muted); font-size: 14px; }
@@ -186,5 +188,79 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
   padding: 14px 16px; border-radius: 14px; font-weight: 600; text-align: center; cursor: pointer;
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
+
+/* Menú: selector de tema */
+.menu-label { font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 18px; }
+.seg button { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 11px 4px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* Tema: alto contraste (negro OLED, texto blanco hueso, bordes sólidos) */
+:root[data-theme="hc"] {
+  --bg: #000000;
+  --surface: #0b0b0b;
+  --surface-2: #1c1c1c;
+  --line: #4a4a4a;
+  --ink: #e6e6e6;
+  --muted: #bdbdbd;
+  --accent: #ffc94a;
+  --accent-ink: #000000;
+  --accent-soft: rgba(255, 201, 74, 0.16);
+  --accent-text: #ffc94a;
+  --danger: #ff8a80;
+  --img-bg: #ececec;
+  color-scheme: dark;
+}
+[data-theme="hc"] body { font-size: 17px; }
+[data-theme="hc"] .card { border-width: 2px; }
+[data-theme="hc"] .card.done { border-color: var(--accent); }
+[data-theme="hc"] .c-name, [data-theme="hc"] .tips li { font-weight: 600; }
+[data-theme="hc"] .set { width: 48px; height: 48px; border-color: var(--muted); }
+[data-theme="hc"] .group { border: 2px dashed var(--accent); }
+[data-theme="hc"] .top { background: var(--bg); backdrop-filter: none; }
+
+/* Tema: synthwave (morado nocturno, magenta y cian neón) */
+:root[data-theme="synth"] {
+  --bg: #12061f;
+  --surface: #1c0b31;
+  --surface-2: #2a1149;
+  --line: rgba(255, 60, 220, 0.22);
+  --ink: #f8ecff;
+  --muted: #b9a1d6;
+  --accent: #ff2bd6;
+  --accent-text: #ff7ae6;
+  --accent-ink: #1a0020;
+  --accent-soft: rgba(255, 43, 214, 0.16);
+  --cyan: #22e4ff;
+  --sunset: linear-gradient(90deg, #ffb13c, #ff2bd6 55%, #8b3dff);
+  --danger: #ff6b8a;
+  --img-bg: #f6f0fb;
+  color-scheme: dark;
+}
+[data-theme="synth"] body { background: radial-gradient(120% 60% at 50% 0%, #2b0d4a 0%, var(--bg) 60%) fixed var(--bg); }
+[data-theme="synth"] .top {
+  background:
+    linear-gradient(rgba(34, 228, 255, 0.07) 1px, transparent 1px) 0 0 / 100% 14px,
+    linear-gradient(90deg, rgba(34, 228, 255, 0.07) 1px, transparent 1px) 0 0 / 22px 100%,
+    color-mix(in srgb, var(--bg) 90%, transparent);
+  border-bottom-color: rgba(34, 228, 255, 0.35);
+}
+[data-theme="synth"] .brand { color: var(--cyan); text-shadow: 0 0 8px rgba(34, 228, 255, 0.6); }
+[data-theme="synth"] .brand b { color: var(--accent); text-shadow: 0 0 10px rgba(255, 43, 214, 0.8); }
+[data-theme="synth"] .day-title { text-shadow: 0 0 18px rgba(255, 43, 214, 0.5); }
+[data-theme="synth"] .day-date, [data-theme="synth"] .c-num { color: var(--cyan); }
+[data-theme="synth"] .progress-bar span, [data-theme="synth"] .tab .t-bar i,
+[data-theme="synth"] .progress-bar span { box-shadow: 0 0 12px rgba(255, 43, 214, 0.6); }
+[data-theme="synth"] .tab[aria-selected="true"] { background: linear-gradient(135deg, #ff2bd6, #8b3dff); border-color: transparent; color: #fff; box-shadow: 0 0 14px rgba(255, 43, 214, 0.45); }
+[data-theme="synth"] .tab[aria-selected="true"] .t-focus { color: rgba(255, 255, 255, 0.8); }
+[data-theme="synth"] .tab[aria-selected="true"] .t-bar { background: rgba(255, 255, 255, 0.25); }
+[data-theme="synth"] .tab.today::after { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+[data-theme="synth"] .set { border-color: rgba(34, 228, 255, 0.45); }
+[data-theme="synth"] .set[aria-pressed="true"] { box-shadow: 0 0 12px rgba(255, 43, 214, 0.75); color: #fff; }
+[data-theme="synth"] .card.done { border-color: rgba(255, 43, 214, 0.55); box-shadow: 0 0 14px rgba(255, 43, 214, 0.15); }
+[data-theme="synth"] .group { border-color: rgba(34, 228, 255, 0.5); }
+[data-theme="synth"] .thumb.cardio { color: var(--cyan); }
+[data-theme="synth"] .tips li::before { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+[data-theme="synth"] .wk-cell.full { background: var(--sunset); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

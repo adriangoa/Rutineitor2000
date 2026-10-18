@@ -11,6 +11,7 @@
   <link rel="icon" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
+  <script>try { var t = localStorage.getItem('r2k.theme'); if (t && t !== 'auto') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
   <header class="top">
@@ -69,6 +70,12 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
       <h2 class="sheet-title">Opciones</h2>
+      <p class="menu-label">Tema</p>
+      <div class="seg" id="themePick" role="group" aria-label="Tema">
+        <button data-theme-set="auto">Automático</button>
+        <button data-theme-set="hc">Alto contraste</button>
+        <button data-theme-set="synth">Synthwave</button>
+      </div>
       <div class="menu-list">
         <button id="exportBtn" class="menu-item">Exportar respaldo<small>Descarga un archivo con todo tu registro</small></button>
         <label class="menu-item">Importar respaldo<small>Restaura un archivo exportado antes</small>
