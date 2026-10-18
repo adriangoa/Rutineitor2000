@@ -301,6 +301,41 @@ function openExercise(exId) {
   }
 }
 
+/* ---------- Rachas ----------
+   Un día cuenta como cumplido con ≥ 80 % de sus series (saltarte el cardio no rompe la racha).
+   Sábados y domingos no cuentan; hoy no rompe la racha mientras no termine. */
+const STREAK_PCT = 0.8;
+function dayOk(d) {
+  const wd = weekdayIdx(d);
+  const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - wd);
+  const w = Math.round((mon - baseMonday()) / 604800000);
+  return dayProgress(dayView(wd, w), ymd(d)).pct >= STREAK_PCT;
+}
+function streakDays() {
+  const now = new Date();
+  let n = 0;
+  for (let k = 0; k < 400; k++) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - k);
+    if (weekdayIdx(d) > 4) continue;
+    if (dayOk(d)) n++;
+    else if (k === 0) continue; // hoy todavía no termina
+    else break;
+  }
+  return n;
+}
+function streakWeeks() {
+  let n = 0;
+  for (let w = 0; w > -60; w--) {
+    const full = [0, 1, 2, 3, 4].every((i) => dayOk(dateFor(i, w)));
+    if (full) n++;
+    else if (w === 0) continue; // la semana actual todavía no termina
+    else break;
+  }
+  return n;
+}
+const isMilestone = (n) => n === 3 || (n >= 5 && n % 5 === 0);
+const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+
 /* ---------- Semana / historial ---------- */
 function renderWeek() {
   const days = state.routine.days;
@@ -319,7 +354,13 @@ function renderWeek() {
     rows += `<div class="hist-row"><span>${fmtShort(dateFor(0, w))} <small>${weekLetter(w)}</small></span>${cells}</div>`;
   }
   const L = weekLetter(), other = L === 'A' ? 'B' : 'A';
-  $('#weekBody').innerHTML = `<div class="ab-row"><span>Esta semana toca <b class="wk-badge">Semana ${L}</b></span>
+  const sd = streakDays(), sw = streakWeeks();
+  const streak = sd
+    ? `<div class="streak"><span class="streak-fire">🔥</span><div><b>Racha de ${plural(sd, 'día', 'días')}</b>
+        <small>${sw ? `${plural(sw, 'semana completa', 'semanas completas')} seguidas` : 'Días cumplidos con 80 % o más de las series'}</small></div></div>`
+    : `<div class="streak off"><span class="streak-fire">🔥</span><div><b>Empieza tu racha hoy</b>
+        <small>Cuenta cada día que completes el 80 % o más de las series</small></div></div>`;
+  $('#weekBody').innerHTML = `${streak}<div class="ab-row"><span>Esta semana toca <b class="wk-badge">Semana ${L}</b></span>
       <button class="ab-switch" data-ab="${other}">Cambiar a ${other}</button></div>
     <p class="hist-title">Esta semana (desde el ${fmtShort(dateFor(0))})</p>
     <div class="week-now">${now}</div><p class="hist-title">Semanas anteriores</p>${rows}`;
@@ -616,6 +657,7 @@ function celebrate(kind) {
     return;
   }
   hideLayer($('#trophy'));
+  const sd = streakDays();
   const colors = ['#ff2bd6', '#22e4ff', '#ffe259', '#d2fa3c', '#ff7a6b', '#8b3dff'];
   let confetti = '';
   for (let i = 0; i < 48; i++) {
@@ -626,6 +668,7 @@ function celebrate(kind) {
     <div class="party-box"><span class="party-emoji">${emoji}</span>
     <p class="party-title flashy">${esc(L.titulo)}</p><p class="party-frase">${esc(frase)}</p>
     ${workoutMin(ymd(dateFor(state.dayIdx))) ? `<p class="party-time">⏱ en ${workoutMin(ymd(dateFor(state.dayIdx)))} min</p>` : ''}
+    ${sd >= 2 ? `<p class="party-streak">🔥 ${isMilestone(sd) ? `<span class="flashy">¡Racha de ${sd} días!</span>` : `${sd} días seguidos`}</p>` : ''}
     <small>Toca para cerrar</small></div>`;
   showLayer(p);
   setTimeout(() => hideLayer(p), 6000);

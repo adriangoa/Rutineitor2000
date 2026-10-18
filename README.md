@@ -31,6 +31,8 @@ Funciona **sin internet**: se descarga una vez (~2 MB) y después abre desde la 
 - Al completar un ejercicio en la lista, esta se desliza sola al siguiente que te falta.
 - Junto a la fecha ves cuánto llevas entrenando (⏱, de la primera a la última serie que marcas hoy);
   también sale al completar el día y en 📅.
+- 🔥 **Rachas**: días seguidos cumplidos (80 % o más de las series; sábado y domingo no cuentan) y semanas
+  completas. Las ves en 📅 y en la celebración del día.
 - En el modal de cada ejercicio, el botón 📝 sirve para anotar si lo pudiste hacer: ✅ Lo hice ·
   🔧 Lo adapté · ❌ No se puede (con nota de qué cambiaste o por qué). Los 🔧/❌ dejan un puntito en la
   foto del ejercicio. Las notas van en **Exportar respaldo**: pásale ese archivo a Claude para ajustar la rutina.
