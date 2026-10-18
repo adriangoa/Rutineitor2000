@@ -62,6 +62,8 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - `sw.js`: en local `VERSION='dev'` → red primero (ves cambios al recargar). Publicado → caché primero.
   El build inyecta `VERSION` (hash del contenido) y `ASSETS`. Al detectar versión nueva, la app
   muestra un toast "Toca para actualizar" (mensaje `skipWaiting`). En la primera visita no recarga.
+  Al instalar pide cada archivo con `cache: 'reload'` (sin caché HTTP; GitHub Pages pide guardar 10 min y
+  se mezclaban versiones: index.html nuevo con app.js viejo). El hash de versión incluye `sw.js`.
   Busca versión nueva al cargar y también al volver a primer plano (`reg.update()` en `visibilitychange`),
   porque Android reanuda la app desde recientes sin recargarla.
 - `BUILD` en `app.js` también lo reemplaza el build (se ve en ⋮ Opciones).

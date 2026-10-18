@@ -23,6 +23,7 @@ for (const item of INCLUDE) cpSync(join(ROOT, item), join(OUT, item), { recursiv
 const files = walk(OUT).map((f) => relative(OUT, f)).filter((f) => f !== 'sw.js' && !/\.(md|txt)$/.test(f)); // licencias y docs no se precachean
 const hash = createHash('sha256');
 for (const f of files) { hash.update(f); hash.update(readFileSync(join(OUT, f))); }
+hash.update(readFileSync(join(OUT, 'sw.js'))); // también la lógica del service worker (antes de inyectarle la versión)
 const version = hash.digest('hex').slice(0, 10);
 
 const assets = ['./', ...files];

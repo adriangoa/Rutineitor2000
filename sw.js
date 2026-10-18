@@ -6,7 +6,9 @@ const ASSETS = ['./', 'index.html', 'styles.css', 'app.js', 'data/routine.json',
 const CACHE = `r2k-${VERSION}`;
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
+  // cache: 'reload' = pedir cada archivo al servidor, sin la caché HTTP del navegador. Si no, al publicar
+  // dos versiones seguidas (GitHub Pages pide guardar 10 min) se mezclaba el index.html nuevo con el app.js viejo.
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: 'reload' })))));
 });
 
 self.addEventListener('activate', (e) => {
