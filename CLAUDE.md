@@ -40,7 +40,11 @@ Al proponer cambios de ejercicios, respeta estos tiempos de recuperación y el l
 | `sw.js` | Service worker (modo sin internet). |
 | `scripts/build.mjs` | Arma `_site/` para publicar: calcula versión por hash y lista de precache. |
 | `.github/workflows/pages.yml` | Publica `_site/` en Pages en cada push a `main`. |
-| `images/<Id>/0.webp, 1.webp` | Imágenes que **sí** se publican (solo las de la rutina actual). |
+| `data/logros.json` | Frases, títulos y emojis de los logros (normales y por temporada) + lista `animados`. |
+| `data/generador.json` | Huecos por día para "Generar nueva rutina" (ids de routine.json). |
+| `images/<Id>/0.webp, 1.webp` | Imágenes de ejercicios que se publican. **Nunca se quitan** (rutinas generadas). |
+| `images/emoji/<código>.webp` | Emojis animados de Noto (CC BY 4.0), 160 px. |
+| `fonts/` | Press Start 2P (tema Game Boy) y Creepster (Halloween), con sus licencias OFL. |
 | `referencia/inventario.json` | Inventario completo + imagen sugerida (`img`) y alternativas por ejercicio. |
 | `referencia/imagenes/<Id>/` | Imágenes ya convertidas del resto del inventario. **No se publican.** |
 
@@ -143,4 +147,25 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
 - En el celular sin publicar: Chrome DevTools → modo dispositivo (Ctrl+Shift+M), y en
   Application → Service Workers marcar "Offline" para probar sin internet.
 
+## Cómo se probó (para repetirlo)
+Sin dependencias: Node + Chrome instalado (`C:/Program Files/Google/Chrome/Application/chrome.exe`).
+Scripts en el scratchpad (no en el repo): servidor estático con `node:http` + Chrome `--headless=new
+--remote-debugging-port` + `--autoplay-policy=no-user-gesture-required`, manejado por CDP con el WebSocket
+nativo de Node (`Runtime.evaluate`, `Page.captureScreenshot`, `Emulation.setDeviceMetricsOverride`).
+- Tamaños: cel 400×860 (o 411×916, dpr 2.625); pantalla externa del Razr 469×318, dpr 2.25.
+- Fecha falsa con `Page.addScriptToEvaluateOnNewDocument` (subclase de `Date` con desfase) para probar
+  día entre semana, rachas, temporadas, duración y recordatorio de respaldo.
+- Sonidos: envolver `sfx` para registrar qué suena; `audioCtx.state` para ver que no se corte.
+- Producción: `node scripts/build.mjs` y servir `_site/`; probar sin red con
+  `Network.emulateNetworkConditions`; actualización con un servidor que manda `cache-control: max-age=600`
+  (como GitHub Pages) y cambiar `sw.js`/`app.js` en caliente.
+- Ojo: `element.click()` desde CDP no cuenta como gesto del usuario (`beforeinstallprompt.prompt()` falla);
+  un toque real (`Input.dispatchMouseEvent`) sí sirve para probar inercia de modales.
+- Revisa siempre las capturas: varios bugs (botón cardio en alto contraste, texto que parpadeaba en Game Boy,
+  emoji teñido por el degradado) solo se vieron así.
+
 ## Ideas pendientes
+- Semana B: Adrián la va a probar en el gym (desde el 26 oct) y mandará su respaldo exportado con notas
+  (✅/🔧/❌ en `notas`). Usarlas para ajustar routine.json (y generador.json).
+- Tema de temporada de noviembre: propuesta **Día de Muertos** (cempasúchil, papel picado, calaveritas,
+  frases tipo calaverita literaria gym bro). Agregar en `SEASONS` con `months: [11]`.
