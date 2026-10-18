@@ -3,7 +3,7 @@
 Rutina de gimnasio (lunes a viernes) como app web instalable en el celular.
 Funciona **sin internet**: se descarga una vez (~1 MB) y después abre desde la memoria del teléfono.
 
-**App:** https://adriangoa.github.io/rutineitor2000/
+**App:** https://adriangoa.github.io/Rutineitor2000/
 
 ## Instalar en Android
 

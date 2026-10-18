@@ -2,7 +2,7 @@
 
 App personal de rutina de gimnasio de Adrián. PWA estática **sin dependencias ni framework**
 (HTML + CSS + JS puro), publicada en GitHub Pages vía Actions. Interfaz y textos en español (México).
-App en vivo: https://adriangoa.github.io/rutineitor2000/ (instalada en su Android).
+App en vivo: https://adriangoa.github.io/Rutineitor2000/ (instalada en su Android).
 
 ## Cómo trabajar con Adrián
 - Está **aprendiendo**: sigue los cambios archivo por archivo en VS Code. Responde en español.
@@ -60,7 +60,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   El build inyecta `VERSION` (hash del contenido) y `ASSETS`. Al detectar versión nueva, la app
   muestra un toast "Toca para actualizar" (mensaje `skipWaiting`). En la primera visita no recarga.
 - `BUILD` en `app.js` también lo reemplaza el build (se ve en ⋮ Opciones).
-- Rutas siempre relativas (el sitio vive en `/rutineitor2000/`, no en la raíz).
+- Rutas siempre relativas (el sitio vive en `/Rutineitor2000/`, con R mayúscula como el repo, no en la raíz).
 - Fuentes del sistema (`sans-serif-condensed` en Android) para no descargar fuentes. Única excepción:
   `fonts/PressStart2P-latin.woff2` (12.5 KB, OFL, licencia en `fonts/OFL.txt`) solo para el tema Game Boy;
   el navegador la usa solo con ese tema y el build la precachea (los `.md`/`.txt` no se precachean).
