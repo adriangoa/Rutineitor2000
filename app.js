@@ -669,7 +669,8 @@ const SEASONS = {
   halloween: { name: 'Halloween', icon: '🎃', months: [10], bg: '#0f0a14' },
   muertos: { name: 'Día de Muertos', icon: '💀', months: [11], bg: '#170b22' },
 };
-const THEME_BG = { hc: '#000000', synth: '#12061f', gb: '#5b3f8f', ...Object.fromEntries(Object.entries(SEASONS).map(([k, s]) => [k, s.bg])) };
+// 'auto' = Clásico (sin atributo en <html>). Aero es el predeterminado en los meses sin temporada.
+const THEME_BG = { aero: '#1e8fe0', hc: '#000000', synth: '#12061f', gb: '#5b3f8f', ...Object.fromEntries(Object.entries(SEASONS).map(([k, s]) => [k, s.bg])) };
 const seasonForDate = (d = new Date()) => Object.keys(SEASONS).find((k) => SEASONS[k].months.includes(d.getMonth() + 1)) || null;
 const isSeasonChoice = (t) => t === 'season-auto' || !!SEASONS[t];
 let themeChoice = 'auto';
@@ -678,19 +679,19 @@ const activeSeason = () => { const t = themeChoice === 'season-auto' ? seasonFor
 function renderSeasonPick() {
   const now = seasonForDate();
   $('[data-theme-set="season"]').textContent = `${now ? SEASONS[now].icon : '🎃'} Temporada`; // ícono de la temporada actual
-  $('#seasonPick').innerHTML = `<button data-theme-set="season-auto">Automático por fecha<small>${now ? `Ahora: ${SEASONS[now].icon} ${SEASONS[now].name}` : 'Este mes no hay tema; usa el normal'}</small></button>`
+  $('#seasonPick').innerHTML = `<button data-theme-set="season-auto">Automático por fecha<small>${now ? `Ahora: ${SEASONS[now].icon} ${SEASONS[now].name}` : 'Este mes no hay temporada: se ve Aero'}</small></button>`
     + Object.entries(SEASONS).map(([k, s]) => `<button data-theme-set="${k}">${s.icon} ${esc(s.name)}</button>`).join('');
 }
 function applyTheme(t) {
   themeChoice = t;
   const root = document.documentElement;
-  const r = t === 'season-auto' ? seasonForDate() : t; // el tema que de verdad se pinta
+  const r = t === 'season-auto' ? seasonForDate() || 'aero' : t; // el tema que de verdad se pinta
   if (THEME_BG[r]) root.dataset.theme = r; else delete root.dataset.theme;
   // El script del <head> no conoce las fechas: le dejamos resuelto el tema automático de temporada.
   try { localStorage.setItem(THEME_KEY + '.auto', THEME_BG[r] ? r : 'auto'); } catch {}
   const metas = document.querySelectorAll('meta[name="theme-color"]');
-  metas[0].content = THEME_BG[r] || '#0d0e0b';
-  metas[1].content = THEME_BG[r] || '#f3f3ee';
+  metas[0].content = THEME_BG[r] || '#0b0e14';
+  metas[1].content = THEME_BG[r] || '#f0f4fa';
   renderSeasonPick();
   $('#seasonPick').hidden = !isSeasonChoice(t);
   document.querySelectorAll('[data-theme-set]').forEach((b) => {
@@ -764,7 +765,7 @@ function setSfx(on) {
    Vive en dos lugares: en el encabezado del día (ahí se le puede tocar para que hable) y,
    cuando bajas por la lista, en el borde de abajo paseándose (los toques lo atraviesan).
    pose: 'parado' | 'flex' (día completo) | 'agua' (en el descanso).
-   o.traje: disfraz del tema ('halloween' | 'synth' | 'muertos'); en Game Boy se pixela aparte (shamucoInto).
+   o.traje: disfraz del tema ('aero' | 'halloween' | 'synth' | 'muertos'); en Game Boy se pixela aparte (shamucoInto).
    o.acc: accesorios ganados por racha (ver SHAMUCO_ACC). */
 function shamucoSVG(p, pose = 'parado', o = {}) {
   const flex = pose === 'flex';
@@ -999,6 +1000,17 @@ function shamucoSVG(p, pose = 'parado', o = {}) {
     }
     s.push(`<g fill="#ff8c1a" stroke="${ink}" stroke-width="2">${petals}</g><circle cx="${fx}" cy="${fy}" r="6.5" fill="#ffc21a" stroke="${ink}" stroke-width="2"/><circle cx="${fx}" cy="${fy}" r="2.5" fill="#c45a00"/>`);
   }
+  // Aero: goggles de natación (correa azul y micas redondas color agua con brillo)
+  if (traje === 'aero') {
+    const gy = ey, gr = er * 1.3;
+    s.push(`<path d="M${cx - hr * 0.98} ${gy - 3} Q${cx} ${gy - hr * 0.2} ${cx + hr * 0.98} ${gy - 3}" fill="none" stroke="${ink}" stroke-width="7"/><path d="M${cx - hr * 0.98} ${gy - 3} Q${cx} ${gy - hr * 0.2} ${cx + hr * 0.98} ${gy - 3}" fill="none" stroke="#1a9be8" stroke-width="4"/>`);
+    [-1, 1].forEach((d) => {
+      const gx = cx + d * hr * 0.4;
+      s.push(`<circle cx="${gx}" cy="${gy}" r="${gr}" fill="#7fdcff" fill-opacity=".75" stroke="${ink}" stroke-width="2.5"/>
+        <circle cx="${gx}" cy="${gy}" r="${gr - 2.5}" fill="none" stroke="#1a9be8" stroke-width="2.5"/>
+        <ellipse cx="${gx - gr * 0.35}" cy="${gy - gr * 0.4}" rx="${gr * 0.35}" ry="${gr * 0.18}" fill="#fff" opacity=".9" transform="rotate(-30 ${gx - gr * 0.35} ${gy - gr * 0.4})"/>`);
+    });
+  }
   // Synthwave: lentes con micas en degradado rosa → cian
   if (traje === 'synth') {
     const gy = ey - er * 0.15, gw = er * 1.35, gh = er * 1.15;
@@ -1025,7 +1037,7 @@ const SHAMUCO_ACC = [
   { dias: 10, id: 'corona', nombre: 'corona 👑' },
   { dias: 15, id: 'tridente', nombre: 'tridente-barra 🔱' },
 ];
-const SHAMUCO_TRAJE = { halloween: 'halloween', synth: 'synth', muertos: 'muertos' }; // tema → disfraz
+const SHAMUCO_TRAJE = { aero: 'aero', halloween: 'halloween', synth: 'synth', muertos: 'muertos' }; // tema → disfraz
 let shamucoOn = (() => { try { return localStorage.getItem(SHAMUCO_KEY) !== '0'; } catch { return true; } })();
 let shamucoLast = null;     // lo último dibujado (shamucoState), para no redibujar de más y saber si creció
 let shamHeadVisible = true; // ¿se ve el encabezado? Si no, sale el que camina abajo

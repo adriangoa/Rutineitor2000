@@ -79,7 +79,9 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   `fonts/PressStart2P-latin.woff2` (12.5 KB, OFL, licencia en `fonts/OFL-PressStart2P.txt`) solo para el tema Game Boy;
   el navegador la usa solo con ese tema y el build la precachea (los `.md`/`.txt` no se precachean).
   Igual `fonts/Creepster-latin.woff2` (28 KB, OFL en `fonts/OFL-Creepster.txt`) para títulos del tema Halloween.
-- Temas: sin atributo = automático (oscuro, o claro con `prefers-color-scheme`); `data-theme="hc"` alto
+- Temas: `data-theme="aero"` Aero (Frutiger Aero: cielo, pasto, burbujas, vidrio y botones de gel, todo con
+  degradados CSS; el predeterminado en meses sin temporada); sin atributo = Clásico (valor `auto`: oscuro con azul
+  eléctrico, o claro con azul rey si el cel usa `prefers-color-scheme: light`); `data-theme="hc"` alto
   contraste, `data-theme="synth"` synthwave y `data-theme="gb"` Game Boy (pantalla verde, carcasa morada
   "Grape" del Game Boy Color, fuente pixelada) en `<html>`. Colores en variables de `:root`. Se guarda en
   `r2k.theme` y un script en línea en `index.html` lo aplica antes de pintar (sin parpadeo).
@@ -108,7 +110,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   respaldo (o desde el primer registro), toast con botón para exportar; máximo uno al día y sin tapar el de
   actualización. ⋮ Opciones muestra la fecha del último respaldo.
 - Temas de temporada (`SEASONS` en app.js: nombre, ícono, meses, color): botón "🎃 Temporada" en el selector
-  → lista con "Automático por fecha" (`season-auto`, elige por mes; si no hay, el normal) y cada temporada.
+  → lista con "Automático por fecha" (`season-auto`, elige por mes; si no hay, Aero) y cada temporada.
   **Tema por omisión: `season-auto`** (si nunca eligió tema). El script del `<head>` usa `r2k.theme.auto` (tema
   resuelto la vez anterior) para no parpadear. Frases/emojis/títulos de
   temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
@@ -156,7 +158,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   fijo abajo, se pasea de lado a lado (CSS: `.sw-move` posición, `.sw-face` voltea para que la cola vaya atrás,
   `.sw-hop` brinca, `.sw-body` se bambolea), `pointer-events: none` (los toques lo atraviesan). Con descanso se para
   encima de la barra (`--rest-h`) y se detiene a tomar agua (`.drinking`). Oculto en modo portada.
-  Disfraces por tema (`SHAMUCO_TRAJE`, `o.traje`): halloween = capa de vampiro; synth = lentes neón + brillo rosa (CSS);
+  Disfraces por tema (`SHAMUCO_TRAJE`, `o.traje`): aero = goggles de natación; halloween = capa de vampiro; synth = lentes neón + brillo rosa (CSS);
   muertos = calaverita + cempasúchil;
   gb = `shamucoInto` pinta el SVG en un `<canvas>` de 48 px con los 4 verdes y el CSS lo agranda (`image-rendering: pixelated`).
   Accesorios por racha de días (`SHAMUCO_ACC`, se suman): 3 cinta, 5 cinturón de pesas, 10 corona, 15 tridente-barra.
