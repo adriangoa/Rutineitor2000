@@ -258,6 +258,85 @@
           "Otro día que no te llevó la Catrina"
         ]
       }
+    },
+    "muertos": {
+      "ejercicio": {
+        "titulo": "Calaverita desbloqueada",
+        "emojis": ["💀", "🌼", "🕯️", "💐", "🦴", "🔥"],
+        "frases": [
+          "La Catrina vio esa serie y se enamoró",
+          "Ni la Huesuda te alcanza, carnal",
+          "Esa serie va directo a la ofrenda",
+          "Estás más duro que pan de muerto de ayer",
+          "Tus ancestros están orgullosos de ese pump",
+          "Hasta los muertos se levantaron a verte",
+          "Ese ejercicio ya tiene su veladora",
+          "La Calaca quería llevarte, pero no pudo cargarte",
+          "Le pusiste cempasúchil a esa serie",
+          "Músculos de ultratumba, Rey",
+          "Hoy los huesos se ven más fuertes",
+          "Ya te ganaste tu calaverita de azúcar… sin azúcar",
+          "Ese bíceps merece su propio altar",
+          "Hasta el xolo movió la cola",
+          "Cruzaste el río del Mictlán nadando de mariposa",
+          "Más intenso que el olor a copal",
+          "Revivió tu músculo, como en Coco",
+          "Recuérdame… y recuerda hacer pierna",
+          "La Catrina pidió tu rutina",
+          "Ese ejercicio ya descansa en paz",
+          "Huesos de acero, carnal",
+          "Calaca que entrena, calaca que no se quiebra",
+          "Ni las ánimas cargan tanto",
+          "Ese pump está de muerte",
+          "Los de la ofrenda ya te quieren de visita",
+          "Más fierro que la reja del panteón",
+          "Otra serie al altar, y van muchas",
+          "La Muerte se cansó primero que tú"
+        ]
+      },
+      "dia": {
+        "titulo": "Ofrenda completa",
+        "emojis": ["💀", "🌼", "🕯️", "🏆", "🔥"],
+        "frases": [
+          "La Muerte vino por ti, pero no te alcanzó: con tanto fierro encima, mejor se regresó",
+          "Hoy la Catrina lloró, porque tu rutina terminó",
+          "Calaverita del día: entrenaste con valentía",
+          "Ni la Huesuda te gana; nos vemos mañana",
+          "Ofrenda de sudor y fierro: día completo, carnal",
+          "Ya te ganaste tu pan de muerto (uno, no cinco)",
+          "Hasta el Mictlán aplaudió",
+          "Las ánimas te prendieron una veladora",
+          "La Calaca anotó tu nombre… en la lista de los mamados",
+          "Hoy no te llevó la Muerte; tú te llevaste la rutina",
+          "Tu cuerpo es un altar, y hoy le pusiste flores",
+          "En el panteón dicen que eres leyenda",
+          "Cempasúchil para el campeón",
+          "Día completo: ni los muertos descansan tan a gusto",
+          "La Catrina te guiñó el ojo, Rey"
+        ]
+      },
+      "shamuco": {
+        "flaco": [
+          "Ando en los huesos… literal. ¡Dale!",
+          "Parezco calaverita de azúcar: pura glucosa y nada de músculo.",
+          "La Catrina se ríe de mis bracitos."
+        ],
+        "medio": [
+          "Ya no soy calaca, ya tengo carnita.",
+          "Siento el pump hasta en el Mictlán.",
+          "¿Pan de muerto? Es broma: otra serie."
+        ],
+        "mamado": [
+          "¡Ni la Catrina me reconoce de lo mamado!",
+          "Pónganme en la ofrenda, pero en la de los campeones.",
+          "Día completo. Hasta mis ancestros están flexeando."
+        ],
+        "descanso": [
+          "Agüita de jamaica y a darle.",
+          "Descansa, que las ánimas no tienen prisa.",
+          "Estoy hidratando la calaverita."
+        ]
+      }
     }
   }
 }

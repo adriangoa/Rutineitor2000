@@ -760,4 +760,68 @@ body:has(.install-bar:not([hidden])) .toast { bottom: calc(96px + env(safe-area-
 [data-theme="halloween"] .rest.over .rest-time, [data-theme="halloween"] .rest.over .rest-label { color: #fff; }
 [data-theme="halloween"] .streak { background: linear-gradient(120deg, rgba(142, 68, 236, 0.25), rgba(255, 122, 24, 0.18)); }
 
+/* Tema de temporada: Día de Muertos (noviembre). Rosa mexicano, cempasúchil, morado y amarillo.
+   Sin fuentes nuevas: papel picado y flor son SVG dentro del CSS (no se descarga nada). */
+:root[data-theme="muertos"] {
+  --bg: #170b22;
+  --surface: #23122f;
+  --surface-2: #301a3f;
+  --line: rgba(255, 159, 28, 0.2);
+  --ink: #fbeee0;
+  --muted: #b9a2c4;
+  --accent: #ff9f1c;
+  --accent-text: #ffb54d;
+  --accent-ink: #2a1000;
+  --accent-soft: rgba(255, 159, 28, 0.16);
+  --danger: #ff4d6d;
+  --img-bg: #f3e9da;
+  --rosa: #e4007c;
+  --confetti: #e4007c #ff9f1c #8e3bd6 #19c3c9 #ffd23f;
+  color-scheme: dark;
+}
+[data-theme="muertos"] body { background: radial-gradient(110% 55% at 50% 0%, #3a1446 0%, var(--bg) 60%) fixed var(--bg); }
+/* Papel picado colgando arriba del encabezado (por eso el encabezado tiene más espacio arriba) */
+[data-theme="muertos"] .top {
+  overflow: hidden; padding-top: calc(22px + env(safe-area-inset-top)); border-bottom-color: rgba(228, 0, 124, 0.45);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 30'%3E%3Cpath d='M0 2H200' stroke='%23f3e9da' stroke-width='1' opacity='.5'/%3E%3Cpath fill='%23e4007c' fill-rule='evenodd' d='M3 2h34v22l-4 5-4-5-5 5-4-5-4 5-5-5-4 5-4-5Z M15 11a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z M11 15l3 3-3 3-3-3Z M29 15l3 3-3 3-3-3Z M20 18l2 2-2 2-2-2Z'/%3E%3Cpath fill='%23ff9f1c' fill-rule='evenodd' d='M43 2h34v22l-4 5-4-5-5 5-4-5-4 5-5-5-4 5-4-5Z M55 11a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z M51 15l3 3-3 3-3-3Z M69 15l3 3-3 3-3-3Z M60 18l2 2-2 2-2-2Z'/%3E%3Cpath fill='%238e3bd6' fill-rule='evenodd' d='M83 2h34v22l-4 5-4-5-5 5-4-5-4 5-5-5-4 5-4-5Z M95 11a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z M91 15l3 3-3 3-3-3Z M109 15l3 3-3 3-3-3Z M100 18l2 2-2 2-2-2Z'/%3E%3Cpath fill='%2319c3c9' fill-rule='evenodd' d='M123 2h34v22l-4 5-4-5-5 5-4-5-4 5-5-5-4 5-4-5Z M135 11a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z M131 15l3 3-3 3-3-3Z M149 15l3 3-3 3-3-3Z M140 18l2 2-2 2-2-2Z'/%3E%3Cpath fill='%23ffd23f' fill-rule='evenodd' d='M163 2h34v22l-4 5-4-5-5 5-4-5-4 5-5-5-4 5-4-5Z M175 11a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z M171 15l3 3-3 3-3-3Z M189 15l3 3-3 3-3-3Z M180 18l2 2-2 2-2-2Z'/%3E%3C/svg%3E")
+    repeat-x 0 env(safe-area-inset-top, 0px) / 130px auto,
+    color-mix(in srgb, #1e0f2b 94%, transparent);
+}
+/* Pétalos de cempasúchil cayendo por el encabezado */
+[data-theme="muertos"] .top::before, [data-theme="muertos"] .top::after {
+  content: "🌼"; position: absolute; left: 18%; top: -24px; font-size: 14px; pointer-events: none;
+  animation: petal 9s linear infinite;
+}
+[data-theme="muertos"] .top::after { left: 68%; font-size: 11px; animation-duration: 12s; animation-delay: 4s; }
+@keyframes petal {
+  0% { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate(-30px, 90px) rotate(200deg); }
+  90% { opacity: 1; }
+  100% { transform: translate(10px, 180px) rotate(400deg); opacity: 0; }
+}
+[data-theme="muertos"] .brand b { color: var(--rosa); text-shadow: 0 0 10px rgba(228, 0, 124, 0.6); }
+[data-theme="muertos"] .day-title { color: var(--accent); text-shadow: 0 2px 0 var(--rosa), 0 0 18px rgba(255, 159, 28, 0.35); }
+[data-theme="muertos"] .tab[aria-selected="true"] { background: linear-gradient(135deg, var(--rosa), #ff9f1c); border-color: transparent; color: #fff; }
+[data-theme="muertos"] .tab[aria-selected="true"] .t-focus { color: rgba(255, 255, 255, 0.85); }
+[data-theme="muertos"] .tab.today::after { background: #19c3c9; box-shadow: 0 0 6px #19c3c9; }
+/* Calaverita montada en la barra de progreso */
+[data-theme="muertos"] .progress-bar { overflow: visible; }
+[data-theme="muertos"] .progress-bar span { position: relative; background: linear-gradient(90deg, #8e3bd6, var(--rosa), #ff9f1c); border-radius: 4px; }
+[data-theme="muertos"] .progress-bar span::after { content: "💀"; position: absolute; right: -11px; top: -8px; font-size: 18px; line-height: 1; }
+[data-theme="muertos"] .tab .t-bar i, [data-theme="muertos"] .rest-fill { background: linear-gradient(90deg, #8e3bd6, var(--rosa), #ff9f1c); }
+[data-theme="muertos"] .set[aria-pressed="true"] { box-shadow: 0 0 12px rgba(228, 0, 124, 0.6); }
+/* Flor de cempasúchil en la esquina de las tarjetas */
+[data-theme="muertos"] .card { position: relative; }
+[data-theme="muertos"] .card:not(.up-next)::before {
+  content: ""; position: absolute; top: -8px; right: -6px; width: 28px; height: 28px; pointer-events: none; opacity: 0.85;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg fill='%23ff8c1a' stroke='%23a84a00' stroke-width='.8'%3E%3Ccircle cx='29.0' cy='20.0' r='6'/%3E%3Ccircle cx='27.3' cy='25.3' r='6'/%3E%3Ccircle cx='22.8' cy='28.6' r='6'/%3E%3Ccircle cx='17.2' cy='28.6' r='6'/%3E%3Ccircle cx='12.7' cy='25.3' r='6'/%3E%3Ccircle cx='11.0' cy='20.0' r='6'/%3E%3Ccircle cx='12.7' cy='14.7' r='6'/%3E%3Ccircle cx='17.2' cy='11.4' r='6'/%3E%3Ccircle cx='22.8' cy='11.4' r='6'/%3E%3Ccircle cx='27.3' cy='14.7' r='6'/%3E%3C/g%3E%3Cg fill='%23ffb21a' stroke='%23a84a00' stroke-width='.6'%3E%3Ccircle cx='25.1' cy='22.0' r='4.5'/%3E%3Ccircle cx='22.2' cy='25.0' r='4.5'/%3E%3Ccircle cx='18.0' cy='25.1' r='4.5'/%3E%3Ccircle cx='15.0' cy='22.2' r='4.5'/%3E%3Ccircle cx='14.9' cy='18.0' r='4.5'/%3E%3Ccircle cx='17.8' cy='15.0' r='4.5'/%3E%3Ccircle cx='22.0' cy='14.9' r='4.5'/%3E%3Ccircle cx='25.0' cy='17.8' r='4.5'/%3E%3C/g%3E%3Ccircle cx='20' cy='20' r='3.5' fill='%23c45a00'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+[data-theme="muertos"] .card.done { border-color: rgba(228, 0, 124, 0.55); }
+[data-theme="muertos"] .group { border-color: rgba(142, 59, 214, 0.6); }
+[data-theme="muertos"] .rest { border-color: var(--rosa); box-shadow: 0 0 18px rgba(228, 0, 124, 0.2); }
+[data-theme="muertos"] .rest.over { background: linear-gradient(90deg, var(--rosa), #ff9f1c); color: #fff; }
+[data-theme="muertos"] .rest.over .rest-time, [data-theme="muertos"] .rest.over .rest-label { color: #fff; }
+[data-theme="muertos"] .streak { background: linear-gradient(120deg, rgba(228, 0, 124, 0.22), rgba(255, 159, 28, 0.18)); }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

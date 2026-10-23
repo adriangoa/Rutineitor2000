@@ -667,6 +667,7 @@ function onCoverClick(e) {
    "season-auto" elige el de la fecha actual según `months`; si no hay, usa el automático normal. */
 const SEASONS = {
   halloween: { name: 'Halloween', icon: '🎃', months: [10], bg: '#0f0a14' },
+  muertos: { name: 'Día de Muertos', icon: '💀', months: [11], bg: '#170b22' },
 };
 const THEME_BG = { hc: '#000000', synth: '#12061f', gb: '#5b3f8f', ...Object.fromEntries(Object.entries(SEASONS).map(([k, s]) => [k, s.bg])) };
 const seasonForDate = (d = new Date()) => Object.keys(SEASONS).find((k) => SEASONS[k].months.includes(d.getMonth() + 1)) || null;
@@ -676,6 +677,7 @@ let themeChoice = 'auto';
 const activeSeason = () => { const t = themeChoice === 'season-auto' ? seasonForDate() : themeChoice; return SEASONS[t] ? t : null; };
 function renderSeasonPick() {
   const now = seasonForDate();
+  $('[data-theme-set="season"]').textContent = `${now ? SEASONS[now].icon : '🎃'} Temporada`; // ícono de la temporada actual
   $('#seasonPick').innerHTML = `<button data-theme-set="season-auto">Automático por fecha<small>${now ? `Ahora: ${SEASONS[now].icon} ${SEASONS[now].name}` : 'Este mes no hay tema; usa el normal'}</small></button>`
     + Object.entries(SEASONS).map(([k, s]) => `<button data-theme-set="${k}">${s.icon} ${esc(s.name)}</button>`).join('');
 }
@@ -1089,7 +1091,9 @@ function shamucoHop() {
 let shamSayTimer;
 function shamucoSay() {
   const s = shamucoLast; if (!s) return;
-  const F = { ...SHAMUCO_DEFAULT, ...state.logros?.shamuco };
+  // En temporada, sus frases (logros.json → temporadas.<id>.shamuco) reemplazan a las normales de esa etapa
+  const season = activeSeason();
+  const F = { ...SHAMUCO_DEFAULT, ...state.logros?.shamuco, ...(season && state.logros?.temporadas?.[season]?.shamuco) };
   const k = s.pose === 'agua' ? 'descanso' : s.p >= 1 ? 'mamado' : s.p >= 0.34 ? 'medio' : 'flaco';
   const b = $('#shamBubble');
   b.hidden = true; void b.offsetWidth; // reinicia la animación de entrada

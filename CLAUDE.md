@@ -113,7 +113,10 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   resuelto la vez anterior) para no parpadear. Frases/emojis/títulos de
   temporada en `logros.json` → `temporadas.<id>` reemplazan a los normales. Confeti con `--confetti` del tema.
   Adrián pedirá uno nuevo cada mes: entrada en `SEASONS` + bloque CSS + (opcional) frases y emojis animados.
-  Hecho: halloween (octubre).
+  Hecho: halloween (octubre, fuente Creepster, murciélagos, telarañas) y muertos (noviembre: papel picado y flor
+  de cempasúchil como SVG dentro del CSS, pétalos cayendo, 💀 en la barra, sin fuente nueva). El botón "Temporada"
+  muestra el ícono de la temporada del mes. Frases de Shamuco por temporada en `temporadas.<id>.shamuco`.
+  Para probar una temporada: fecha falsa en ese mes (ver "Cómo se probó").
 - Instalar como app: si no está en modo standalone, banner abajo (`#installBar`) tras 1.5 s; "Ahora no" lo
   pospone 7 días (`r2k.install.v1`). Con `beforeinstallprompt` (Chrome/Android) instala de un toque; si no, o si
   falla, `showInstallHelp()` muestra pasos para Chrome Android, Samsung Internet, iPhone (con nota: sin vibración
@@ -154,7 +157,7 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   `.sw-hop` brinca, `.sw-body` se bambolea), `pointer-events: none` (los toques lo atraviesan). Con descanso se para
   encima de la barra (`--rest-h`) y se detiene a tomar agua (`.drinking`). Oculto en modo portada.
   Disfraces por tema (`SHAMUCO_TRAJE`, `o.traje`): halloween = capa de vampiro; synth = lentes neón + brillo rosa (CSS);
-  muertos = calaverita + cempasúchil (**el tema de noviembre debe llamarse `muertos` en `SEASONS`** para que lo use);
+  muertos = calaverita + cempasúchil;
   gb = `shamucoInto` pinta el SVG en un `<canvas>` de 48 px con los 4 verdes y el CSS lo agranda (`image-rendering: pixelated`).
   Accesorios por racha de días (`SHAMUCO_ACC`, se suman): 3 cinta, 5 cinturón de pesas, 10 corona, 15 tridente-barra.
   `shamucoState` solo recalcula la racha si cambió el progreso. En la celebración del día sale haciendo flex
@@ -188,7 +191,6 @@ nativo de Node (`Runtime.evaluate`, `Page.captureScreenshot`, `Emulation.setDevi
 ## Ideas pendientes
 - Semana B: Adrián la va a probar en el gym (desde el 26 oct) y mandará su respaldo exportado con notas
   (✅/🔧/❌ en `notas`). Usarlas para ajustar routine.json (y generador.json).
-- Tema de temporada de noviembre: propuesta **Día de Muertos** (cempasúchil, papel picado, calaveritas,
-  frases tipo calaverita literaria gym bro). Agregar en `SEASONS` con `months: [11]`.
+- Tema de temporada de diciembre (Adrián pide uno cada mes): pendiente de proponer. Darle también disfraz a Shamuco.
 - **Mascota "Shamuco"**: fases 1–3 hechas (ver Arquitectura). Al hacer un tema de temporada nuevo, agregarle
   disfraz en `SHAMUCO_TRAJE` + dibujo en `shamucoSVG`, y quizá frases de temporada en `logros.json` → `shamuco`.
