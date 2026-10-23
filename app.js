@@ -6,6 +6,7 @@ const LOG_KEY = 'r2k.log.v1';
 const REST_KEY = 'r2k.rest.v1';
 const THEME_KEY = 'r2k.theme';
 const SFX_KEY = 'r2k.sfx';
+const SHAMUCO_KEY = 'r2k.shamuco';
 const AB_KEY = 'r2k.ab.v1';
 const NOTES_KEY = 'r2k.notes.v1';
 const TIMES_KEY = 'r2k.times.v1';
@@ -187,6 +188,7 @@ function updateProgress() {
   $('#progFill').style.width = `${Math.round(p.pct * 100)}%`;
   $('#progText').textContent = `${p.done}/${p.total} series`;
   $('#doneMsg').hidden = p.done < p.total;
+  renderShamuco(dateKey, p.pct);
   renderTabs();
   renderCover();
 }
@@ -744,6 +746,191 @@ function setSfx(on) {
   sfx('tap');
 }
 
+/* ---------- Shamuco (mascota) ----------
+   Demonio de caricatura dibujado en SVG desde código (sin imágenes ni datos). Recibe el
+   progreso del día p (0 a 1) y de ahí calcula cada medida: de flaquito y kawaii a mamado.
+   Al 100 % hace flex. Se apaga en ⋮ Opciones (r2k.shamuco = "0"). */
+function shamucoSVG(p, flex = false) {
+  const L = (a, b) => +(a + (b - a) * p).toFixed(1);   // de a (0 %) a b (100 %)
+  const C = (x) => Math.max(0, Math.min(1, x));
+  const skin = '#e8392f', shade = '#b8231d', hi = '#ff8a75', ink = '#2a0b0b', horn = '#3b3846';
+  const cx = 100, ground = 214;
+  const legH = L(18, 26), legW = L(10, 22);
+  const hip = ground - legH;
+  const bh = L(44, 80);          // alto del torso
+  const top = hip - bh;          // hombros
+  const sw = L(24, 66);          // medio ancho de hombros
+  const ww = L(22, 32);          // medio ancho de cintura
+  const hr = L(40, 26);          // radio de la cabeza (grande de chiquito = kawaii)
+  const hy = top - hr * 0.6;
+  const at = L(7, 20);           // grosor de brazos
+  const bulge = L(0, 10);        // bíceps
+  const er = L(13, 8);           // ojos
+  const hl = L(10, 30);          // largo de cuernos
+  const m = C((p - 0.35) / 0.65); // qué tan marcados se ven los músculos
+  const s = [];
+
+  // Junta piezas en una silueta con contorno: primero todas en negro más gruesas, luego el color encima.
+  const lump = (parts, fill) => {
+    const draw = (color, extra) => parts.map(([tag, a, w]) => w
+      ? `<${tag} ${a} fill="none" stroke="${color}" stroke-width="${w + extra}" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<${tag} ${a} fill="${color}"${extra ? ` stroke="${color}" stroke-width="${extra}" stroke-linejoin="round"` : ''}/>`).join('');
+    return draw(ink, 6) + draw(fill, 0);
+  };
+
+  // Sombra en el piso
+  s.push(`<ellipse cx="${cx}" cy="${ground + 2}" rx="${L(34, 60)}" ry="6" fill="#000" opacity=".18"/>`);
+
+  // Cola con punta de flecha (detrás del cuerpo)
+  const tx = cx + ww * 0.6, ty = hip - 6, px = tx + 46, py = ty - 38;
+  s.push(lump([['path', `d="M${tx} ${ty} C${tx + 40} ${ty + 20} ${tx + 58} ${ty - 10} ${px} ${py}"`, L(4, 6)]], skin));
+  s.push(lump([['path', `d="M${px} ${py - 14} Q${px + 13} ${py - 2} ${px + 9} ${py + 6} L${px} ${py + 1} L${px - 9} ${py + 6} Q${px - 13} ${py - 2} ${px} ${py - 14} Z"`]], skin));
+
+  // Cuernos (antes de la cabeza para que la base quede tapada)
+  [-1, 1].forEach((d) => {
+    const bx = cx + d * hr * 0.5, by = hy - hr * 0.72;
+    s.push(`<path d="M${bx + d * 8} ${by + 4} Q${bx + d * (8 + hl * 0.6)} ${by - hl * 0.4} ${bx + d * hl * 0.35} ${by - hl} Q${bx + d * hl * 0.15} ${by - hl * 0.45} ${bx - d * 6} ${by + 4} Z" fill="${horn}" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`);
+    s.push(`<path d="M${bx + d * 2} ${by - 1} Q${bx + d * hl * 0.3} ${by - hl * 0.4} ${bx + d * hl * 0.3} ${by - hl * 0.75}" fill="none" stroke="#77738a" stroke-width="2" stroke-linecap="round"/>`);
+  });
+
+  // Piernas y pies
+  s.push(lump([-1, 1].flatMap((d) => {
+    const lx = cx + d * ww * 0.5;
+    return [['rect', `x="${lx - legW / 2}" y="${hip - 8}" width="${legW}" height="${legH + 6}" rx="${legW / 2}"`],
+            ['ellipse', `cx="${lx + d * 4}" cy="${ground - 3}" rx="${legW * 0.75 + 3}" ry="${L(5, 7)}"`]];
+  }), skin));
+
+  // Torso + cuello + orejas + cabeza, como una sola silueta
+  const ew = L(20, 12);
+  s.push(lump([
+    ['polygon', `points="${cx - hr * 0.55},${hy + hr * 0.4} ${cx + hr * 0.55},${hy + hr * 0.4} ${cx + sw * 0.55},${top + 6} ${cx - sw * 0.55},${top + 6}"`],
+    ['path', `d="M${cx - sw} ${top + 12} Q${cx - sw} ${top} ${cx - sw + 16} ${top} L${cx + sw - 16} ${top} Q${cx + sw} ${top} ${cx + sw} ${top + 12} Q${cx + ww + 6} ${hip - 14} ${cx + ww} ${hip} Q${cx} ${hip + 10} ${cx - ww} ${hip} Q${cx - ww - 6} ${hip - 14} ${cx - sw} ${top + 12} Z"`],
+    ...[-1, 1].map((d) => {
+      const ox = cx + d * hr * 0.9, oy = hy;
+      return ['path', `d="M${ox} ${oy - 9} Q${ox + d * ew * 0.7} ${oy - 12} ${ox + d * ew} ${oy - 20} Q${ox + d * ew * 0.55} ${oy + 6} ${ox} ${oy + 10} Z"`];
+    }),
+    ['ellipse', `cx="${cx}" cy="${hy}" rx="${hr}" ry="${hr * 0.92}"`],
+  ], skin));
+  // Brillos (estilo caricatura)
+  s.push(`<ellipse cx="${cx - hr * 0.4}" cy="${hy - hr * 0.55}" rx="${hr * 0.28}" ry="${hr * 0.12}" fill="${hi}" transform="rotate(-25 ${cx - hr * 0.4} ${hy - hr * 0.55})"/>`);
+  [-1, 1].forEach((d) => s.push(`<ellipse cx="${cx + d * sw * 0.62}" cy="${top + 6}" rx="${sw * 0.18}" ry="3.5" fill="${hi}" opacity=".8"/>`));
+
+  // Músculos: pecho, línea central y cuadritos (aparecen con el progreso)
+  if (m > 0) {
+    s.push(`<g fill="none" stroke="${ink}" stroke-width="2.2" stroke-linecap="round" opacity="${m}">
+      <path d="M${cx - sw * 0.75} ${top + bh * 0.36} Q${cx - sw * 0.35} ${top + bh * 0.48} ${cx - 1} ${top + bh * 0.34}"/>
+      <path d="M${cx + sw * 0.75} ${top + bh * 0.36} Q${cx + sw * 0.35} ${top + bh * 0.48} ${cx + 1} ${top + bh * 0.34}"/>
+      <path d="M${cx} ${top + bh * 0.14} V${top + bh * 0.36} M${cx} ${top + bh * 0.48} V${hip - 18}"/>
+      ${[0.55, 0.68, 0.8].map((f) => `<path d="M${cx - ww * 0.55} ${top + bh * f} q${ww * 0.27} 3 ${ww * 0.5} 0 M${cx + ww * 0.55} ${top + bh * f} q${-ww * 0.27} 3 ${-ww * 0.5} 0"/>`).join('')}
+    </g>`);
+    [-1, 1].forEach((d) => s.push(`<ellipse cx="${cx + d * sw * 0.38}" cy="${top + bh * 0.24}" rx="${sw * 0.22}" ry="${bh * 0.06}" fill="${hi}" opacity="${m * 0.7}"/>`));
+  }
+
+  // Taparrabo gris de chiquito → cinturón con hebilla y taparrabo de cuero de mamado
+  if (p < 0.7) {
+    s.push(`<path d="M${cx - ww - 3} ${hip - 16} L${cx + ww + 3} ${hip - 16} L${cx + ww + 1} ${hip} Q${cx} ${hip + 10} ${cx - ww - 1} ${hip} Z" fill="#7b7b88" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`);
+    s.push(`<path d="M${cx - ww * 0.4} ${hip - 13} q4 6 2 12 M${cx + ww * 0.3} ${hip - 13} q-3 6 0 12" fill="none" stroke="#55555f" stroke-width="2"/>`);
+  } else {
+    const fl = hip + 22;
+    s.push(`<path d="M${cx - ww * 0.55} ${hip - 8} L${cx + ww * 0.55} ${hip - 8} L${cx + ww * 0.5} ${fl} l-6 -5 l-5 6 l-6 -5 l-5 5 L${cx - ww * 0.5} ${fl} Z" fill="#c9a26b" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`);
+    s.push(`<rect x="${cx - ww - 4}" y="${hip - 20}" width="${ww * 2 + 8}" height="11" rx="3" fill="#5a3a22" stroke="${ink}" stroke-width="3"/>`);
+    s.push(`<rect x="${cx - 7}" y="${hip - 22}" width="14" height="15" rx="2" fill="#e0b33c" stroke="${ink}" stroke-width="2.5"/>`);
+    s.push(`<rect x="${cx - 3}" y="${hip - 18}" width="6" height="7" fill="#5a3a22"/>`);
+  }
+
+  // Brazos: colgando o haciendo flex
+  const arm = (d) => {
+    const shx = cx + d * (sw - at * 0.3), shy = top + at * 0.6;
+    let ex, ey, hx, hy2;
+    if (flex) { ex = shx + d * L(26, 34); ey = shy + 4; hx = ex - d * 2; hy2 = ey - L(36, 54); }
+    else { ex = shx + d * L(4, 12); ey = shy + L(22, 30); hx = ex + d * 2; hy2 = ey + L(20, 26); }
+    const parts = [['path', `d="M${shx} ${shy} L${ex} ${ey} L${hx} ${hy2}"`, at]];
+    let bx, by, br;
+    if (bulge > 1) {
+      bx = flex ? (shx + ex) / 2 : (shx * 0.45 + ex * 0.55);
+      by = flex ? shy - bulge * 1.1 : (shy * 0.45 + ey * 0.55);
+      br = at / 2 + bulge;
+      parts.push(['ellipse', `cx="${bx}" cy="${by}" rx="${br * (flex ? 1 : 0.8)}" ry="${br * (flex ? 0.8 : 1)}"`]);
+    }
+    parts.push(['circle', `cx="${hx}" cy="${hy2}" r="${at / 2 + 3}"`]);
+    s.push(lump(parts, skin));
+    if (bx) s.push(`<ellipse cx="${bx - d * br * 0.2}" cy="${by - br * 0.35}" rx="${br * 0.4}" ry="${br * 0.18}" fill="${hi}" opacity="${m}"/>`);
+    // Nudillos
+    const k = flex ? 1 : -1;
+    s.push(`<path d="M${hx - at * 0.3} ${hy2 + k * at * 0.1} h${at * 0.6} M${hx - at * 0.3} ${hy2 - k * at * 0.2} h${at * 0.6}" stroke="${ink}" stroke-width="1.8" stroke-linecap="round"/>`);
+    // Muñequeras de cuero (mamado): banda corta justo antes del puño, con extremos rectos para no tapar la mano
+    if (p >= 0.7) {
+      const len = Math.hypot(hx - ex, hy2 - ey), ux = (hx - ex) / len, uy = (hy2 - ey) / len;
+      const e2 = len - (at / 2 + 3), e1 = e2 - 7;
+      const seg = `d="M${ex + ux * e1} ${ey + uy * e1} L${ex + ux * e2} ${ey + uy * e2}"`;
+      s.push(`<path ${seg} stroke="${ink}" stroke-width="${at + 9}"/><path ${seg} stroke="#5a3a22" stroke-width="${at + 3}"/>`);
+    }
+  };
+  arm(-1); arm(1);
+
+  // Cara
+  const ey = hy + hr * 0.02;
+  [-1, 1].forEach((d) => {
+    const ex = cx + d * hr * 0.38;
+    s.push(`<ellipse cx="${ex}" cy="${ey}" rx="${er}" ry="${er * 1.15}" fill="#fff" stroke="${ink}" stroke-width="2.5"/>`);
+    s.push(`<circle cx="${ex - d * er * 0.2 * p}" cy="${ey + er * 0.15}" r="${er * L(0.62, 0.42)}" fill="${ink}"/>`);
+    if (p < 0.6) s.push(`<circle cx="${ex - er * 0.2}" cy="${ey - er * 0.2}" r="${er * 0.22}" fill="#fff"/>`);
+    // Párpado + ceja de enojo: la parte de adentro baja conforme avanza
+    const a = C((p - 0.25) / 0.6), kk = a * er * 1.1;
+    const ix = ex - d * er * 1.35, ox = ex + d * er * 1.35;
+    const yo = ey - er * 1.25 + kk * 0.2, yi = ey - er * 1.25 + kk;
+    if (a > 0) s.push(`<polygon points="${ox},${yo} ${ix},${yi} ${ix},${ey - er * 2.3} ${ox},${ey - er * 2.3}" fill="${skin}"/>`);
+    if (p > 0.15) s.push(`<path d="M${ox} ${yo - 1} L${ix} ${yi - 1}" stroke="${ink}" stroke-width="${L(3, 6)}" stroke-linecap="round" opacity="${C((p - 0.15) * 5)}"/>`);
+  });
+  // Nariz
+  s.push(`<ellipse cx="${cx}" cy="${hy + hr * 0.3}" rx="${L(4, 6)}" ry="${L(3.5, 5)}" fill="${shade}" stroke="${ink}" stroke-width="2"/>`);
+  // Boca: sonrisa traviesa con un colmillo → bocota con dientes de sierra
+  const my = hy + hr * 0.5;
+  if (p < 0.35) {
+    s.push(`<path d="M${cx - 8} ${my - 2} Q${cx} ${my + 6} ${cx + 8} ${my - 2}" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`);
+    s.push(`<path d="M${cx + 2} ${my + 1.5} l2.5 5 l2.5 -5.8 Z" fill="#fff" stroke="${ink}" stroke-width="1.5" stroke-linejoin="round"/>`);
+    s.push([-1, 1].map((d) => `<ellipse cx="${cx + d * hr * 0.62}" cy="${ey + er * 1.45}" rx="7" ry="4" fill="#ff9a8a" opacity="${1 - p * 2.5}"/>`).join(''));
+  } else {
+    const mw = L(6, 17), mh = L(5, 12);
+    s.push(`<path d="M${cx - mw} ${my - 3} Q${cx} ${my + 1} ${cx + mw} ${my - 3} Q${cx + mw * 0.6} ${my + mh} ${cx} ${my + mh} Q${cx - mw * 0.6} ${my + mh} ${cx - mw} ${my - 3} Z" fill="#5a0f12" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`);
+    const n = 5, x0 = cx - mw * 0.8, w = (mw * 1.6) / n, tip = my + L(2, 5);
+    let pts = `${x0},${my - 2}`;
+    for (let i = 0; i < n; i++) pts += ` ${x0 + (i + 0.5) * w},${tip} ${x0 + (i + 1) * w},${my - 2}`;
+    s.push(`<polygon points="${pts}" fill="#fff" stroke="${ink}" stroke-width="1.3" stroke-linejoin="round"/>`);
+    [-1, 1].forEach((d) => s.push(`<path d="M${cx + d * mw * 0.45 - 3} ${my + mh * 0.9} L${cx + d * mw * 0.45} ${my + mh * 0.4} L${cx + d * mw * 0.45 + 3} ${my + mh * 0.9} Z" fill="#fff" stroke="${ink}" stroke-width="1.3" stroke-linejoin="round"/>`));
+  }
+  // Gotita de sudor a media rutina
+  if (p > 0.2 && p < 0.9) s.push(`<path d="M${cx + hr * 0.95} ${hy - hr * 0.6} q-7 10 0 13 q7 -3 0 -13 z" fill="#8fd8ff" stroke="${ink}" stroke-width="2"/>`);
+
+  return `<svg viewBox="-20 20 240 205">${s.join('')}</svg>`;
+}
+let shamucoOn = (() => { try { return localStorage.getItem(SHAMUCO_KEY) !== '0'; } catch { return true; } })();
+let shamucoLast = null; // { key, p } lo último dibujado, para saber si creció
+function renderShamuco(dateKey, p) {
+  const el = $('#shamuco');
+  el.hidden = !shamucoOn;
+  if (!shamucoOn) return;
+  const prev = shamucoLast;
+  shamucoLast = { key: dateKey, p };
+  if (prev && prev.key === dateKey && prev.p === p) return; // nada cambió: no redibujar
+  el.innerHTML = shamucoSVG(p, p >= 1);
+  // Saltito solo cuando crece en el mismo día (no al cambiar de pestaña)
+  if (prev && prev.key === dateKey && p > prev.p && !reduceMotion()) flashClass(el, 'grow', 500);
+}
+function renderShamucoBtn() {
+  const b = $('#shamucoBtn');
+  b.setAttribute('aria-pressed', shamucoOn);
+  b.querySelector('small').textContent = shamucoOn ? 'Activado · crece y se pone mamado conforme haces tus series' : 'Desactivado';
+}
+function setShamuco(on) {
+  shamucoOn = on;
+  try { localStorage.setItem(SHAMUCO_KEY, on ? '1' : '0'); } catch {}
+  shamucoLast = null;
+  renderShamucoBtn();
+  updateProgress();
+  sfx('tap');
+}
+
 /* ---------- Logros ----------
    Al completar un ejercicio baja un aviso tipo "trofeo"; al completar el día, una
    celebración a pantalla completa. Frases y emojis en data/logros.json, al azar.
@@ -915,6 +1102,7 @@ function bind() {
   $('#sheetRest').addEventListener('click', onRestClick);
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
   $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));
+  $('#shamucoBtn').addEventListener('click', () => setShamuco(!shamucoOn));
   $('#trophy').addEventListener('click', () => hideLayer($('#trophy')));
   $('#party').addEventListener('click', () => hideLayer($('#party')));
   $('#weekBody').addEventListener('click', (e) => {
@@ -1186,6 +1374,7 @@ async function init() {
   // Por omisión, tema de temporada según la fecha (si este mes no hay, se ve el normal).
   try { applyTheme(localStorage.getItem(THEME_KEY) || 'season-auto'); } catch { applyTheme('season-auto'); }
   renderSfxBtn();
+  renderShamucoBtn();
   renderDay();
   renderRest();
   renderBackupBtn();

@@ -141,6 +141,14 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   hora de término en `r2k.rest.v1` (sobrevive a que Android congele la página). El aviso es un tono corto
   de Web Audio programado desde el inicio, con 3 bips de cuenta regresiva antes (suena con pantalla apagada y se mezcla con la música; confirmado en su Android) + vibración.
 
+- Shamuco (`shamucoSVG(p, flex)`): mascota, demonio de caricatura rojo con contorno negro (estilo propio, inspirado
+  en Nerdlucks → Monstars de Space Jam y referencias de Adrián, sin copiar ningún diseño). SVG armado en código:
+  cada medida sale de `p` (% de series del día), de flaquito/kawaii (taparrabo gris) a mamado (cinturón, muñequeras);
+  flex al 100 %. `lump()` dibuja piezas en negro más gruesas y luego el color = silueta con contorno. Va en
+  `#shamuco` a la derecha del título (`.day-head` es grid); `renderShamuco` se llama en `updateProgress`, solo redibuja
+  si cambió y da un saltito (`.grow`) al crecer en el mismo día. Interruptor en Opciones (`r2k.shamuco` = "0" apagado).
+  Muestra de etapas para diseñar: generar una página con la función y un `<input type=range>`.
+
 ## Probar
 - Rápido: `python3 -m http.server 8000` en la raíz y abrir http://localhost:8000
 - Como en producción: `node scripts/build.mjs` y servir `_site/`.
@@ -169,3 +177,10 @@ nativo de Node (`Runtime.evaluate`, `Page.captureScreenshot`, `Emulation.setDevi
   (✅/🔧/❌ en `notas`). Usarlas para ajustar routine.json (y generador.json).
 - Tema de temporada de noviembre: propuesta **Día de Muertos** (cempasúchil, papel picado, calaveritas,
   frases tipo calaverita literaria gym bro). Agregar en `SEASONS` con `months: [11]`.
+- **Mascota "Shamuco"** (fase 1 hecha, ver Arquitectura). Siguientes fases:
+  2. Que se pasee por el borde de abajo (animación CSS con `transform`, `pointer-events: none` para no estorbar
+     al marcar series; respetar `prefers-reduced-motion`). Reacciones: saltito al marcar serie; en el descanso
+     se sienta a tomar agua y se para con los bips. Al tocarlo dice una frase gym bro (en `logros.json`).
+  3. Disfraces por tema (calabaza en Halloween, pixelado en Game Boy, calaverita en Día de Muertos) y
+     accesorios por racha (cinta, cinturón de pesas, corona, tridente; quizá un tridente-barra olímpica).
+  Que la celebración del día lo muestre haciendo flex (hoy solo lo hace en el encabezado).
