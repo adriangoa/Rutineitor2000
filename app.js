@@ -695,6 +695,7 @@ function applyTheme(t) {
     const v = b.dataset.themeSet;
     b.setAttribute('aria-pressed', v === 'season' ? isSeasonChoice(t) : v === t || (v === 'auto' && !THEME_BG[t] && !isSeasonChoice(t)));
   });
+  if (state.routine) renderShamuco(); // cambia de disfraz con el tema
 }
 function setTheme(t) {
   if (t === 'season') t = isSeasonChoice(themeChoice) ? themeChoice : 'season-auto';
@@ -760,9 +761,12 @@ function setSfx(on) {
    Al 100 % hace flex. Se apaga en ⋮ Opciones (r2k.shamuco = "0").
    Vive en dos lugares: en el encabezado del día (ahí se le puede tocar para que hable) y,
    cuando bajas por la lista, en el borde de abajo paseándose (los toques lo atraviesan).
-   pose: 'parado' | 'flex' (día completo) | 'agua' (en el descanso). */
-function shamucoSVG(p, pose = 'parado') {
+   pose: 'parado' | 'flex' (día completo) | 'agua' (en el descanso).
+   o.traje: disfraz del tema ('halloween' | 'synth' | 'muertos'); en Game Boy se pixela aparte (shamucoInto).
+   o.acc: accesorios ganados por racha (ver SHAMUCO_ACC). */
+function shamucoSVG(p, pose = 'parado', o = {}) {
   const flex = pose === 'flex';
+  const traje = o.traje, acc = new Set(o.acc || []);
   const L = (a, b) => +(a + (b - a) * p).toFixed(1);   // de a (0 %) a b (100 %)
   const C = (x) => Math.max(0, Math.min(1, x));
   const skin = '#e8392f', shade = '#b8231d', hi = '#ff8a75', ink = '#2a0b0b', horn = '#3b3846';
@@ -793,6 +797,14 @@ function shamucoSVG(p, pose = 'parado') {
   // Sombra en el piso
   s.push(`<ellipse cx="${cx}" cy="${ground + 2}" rx="${L(34, 60)}" ry="6" fill="#000" opacity=".18"/>`);
 
+  // Halloween: capa de vampiro (detrás de todo), morada con orilla de picos
+  if (traje === 'halloween') {
+    const cl = cx - sw - 20, cr = cx + sw + 20, cb = ground - 8;
+    let edge = '';
+    for (let i = 1; i <= 6; i++) edge += ` L${cr - (cr - cl) * (i - 0.5) / 6} ${cb - 8} L${cr - (cr - cl) * i / 6} ${cb}`;
+    s.push(`<path d="M${cx - sw * 0.8} ${top + 4} L${cx + sw * 0.8} ${top + 4} L${cr} ${cb}${edge} Z" fill="#4a1a6b" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`);
+  }
+
   // Cola con punta de flecha (detrás del cuerpo)
   const tx = cx + ww * 0.6, ty = hip - 6, px = tx + 46, py = ty - 38;
   s.push(lump([['path', `d="M${tx} ${ty} C${tx + 40} ${ty + 20} ${tx + 58} ${ty - 10} ${px} ${py}"`, L(4, 6)]], skin));
@@ -811,6 +823,11 @@ function shamucoSVG(p, pose = 'parado') {
     return [['rect', `x="${lx - legW / 2}" y="${hip - 8}" width="${legW}" height="${legH + 6}" rx="${legW / 2}"`],
             ['ellipse', `cx="${lx + d * 4}" cy="${ground - 3}" rx="${legW * 0.75 + 3}" ry="${L(5, 7)}"`]];
   }), skin));
+
+  // Halloween: cuello alto de la capa, forro naranja, asomando a los lados de la cabeza
+  if (traje === 'halloween') [-1, 1].forEach((d) => {
+    s.push(`<path d="M${cx + d * hr * 0.3} ${top + 6} L${cx + d * sw * 0.95} ${top + 8} L${cx + d * hr * 1.15} ${hy - hr * 0.1} Z" fill="#ff7a18" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/>`);
+  });
 
   // Torso + cuello + orejas + cabeza, como una sola silueta
   const ew = L(20, 12);
@@ -848,6 +865,13 @@ function shamucoSVG(p, pose = 'parado') {
     s.push(`<rect x="${cx - ww - 4}" y="${hip - 20}" width="${ww * 2 + 8}" height="11" rx="3" fill="#5a3a22" stroke="${ink}" stroke-width="3"/>`);
     s.push(`<rect x="${cx - 7}" y="${hip - 22}" width="14" height="15" rx="2" fill="#e0b33c" stroke="${ink}" stroke-width="2.5"/>`);
     s.push(`<rect x="${cx - 3}" y="${hip - 18}" width="6" height="7" fill="#5a3a22"/>`);
+  }
+  // Racha de 5 días: cinturón de pesas negro, ancho, con hebilla plateada
+  if (acc.has('cinturon')) {
+    s.push(`<rect x="${cx - ww - 5}" y="${hip - 30}" width="${ww * 2 + 10}" height="17" rx="4" fill="#1d1d24" stroke="${ink}" stroke-width="3"/>`);
+    s.push(`<path d="M${cx - ww - 2} ${hip - 25} H${cx + ww + 2} M${cx - ww - 2} ${hip - 18} H${cx + ww + 2}" stroke="#4a4a58" stroke-width="1.5" stroke-dasharray="2 3"/>`);
+    s.push(`<rect x="${cx - 9}" y="${hip - 32}" width="18" height="21" rx="3" fill="#d6dbe6" stroke="${ink}" stroke-width="2.5"/>`);
+    s.push(`<rect x="${cx - 4}" y="${hip - 27}" width="8" height="11" fill="#1d1d24"/>`);
   }
 
   // Brazos: colgando, haciendo flex o (el derecho) llevando la botella de agua a la boca
@@ -887,27 +911,45 @@ function shamucoSVG(p, pose = 'parado') {
       </g>`);
       s.push(lump([['circle', `cx="${hx}" cy="${hy2}" r="${at / 2 + 3}"`]], skin));
     }
+    // Racha de 15 días: tridente-barra (barra plateada con disco) en la mano izquierda
+    if (d === -1 && acc.has('tridente')) {
+      const y1 = Math.min(ground - 4, hy2 + 45), y2 = Math.max(48, hy2 - 115), w = 12;
+      const bar = `d="M${hx} ${y1} V${y2 + 10}"`;
+      s.push(`<path ${bar} stroke="${ink}" stroke-width="8" stroke-linecap="round"/><path ${bar} stroke="#c3c8d4" stroke-width="4" stroke-linecap="round"/>`);
+      s.push(`<path d="M${hx - w} ${y2 + 4} V${y2 + 14} H${hx + w} V${y2 + 4} M${hx} ${y2 + 14} V${y2 - 4}" fill="none" stroke="${ink}" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M${hx - w} ${y2 + 4} V${y2 + 14} H${hx + w} V${y2 + 4} M${hx} ${y2 + 14} V${y2 - 4}" fill="none" stroke="#c3c8d4" stroke-width="3.5" stroke-linejoin="round"/>`);
+      [hx - w, hx, hx + w].forEach((x) => s.push(`<path d="M${x - 5} ${(x === hx ? y2 - 4 : y2 + 4) + 1} L${x} ${(x === hx ? y2 - 4 : y2 + 4) - 10} L${x + 5} ${(x === hx ? y2 - 4 : y2 + 4) + 1} Z" fill="#c3c8d4" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`));
+      s.push(`<ellipse cx="${hx}" cy="${y2 + 34}" rx="15" ry="5" fill="#2b2b33" stroke="${ink}" stroke-width="2.5"/>`); // disco
+      s.push(lump([['circle', `cx="${hx}" cy="${hy2}" r="${at / 2 + 3}"`]], skin)); // el puño encima de la barra
+    }
   };
   const drinking = pose === 'agua';
   arm(-1);
   if (!drinking) arm(1);
 
-  // Cara
+  // Cara (en Día de Muertos: pintada de calaverita, con cuencas negras y orilla de pétalos)
   const ey = hy + hr * 0.02;
+  const muertos = traje === 'muertos', bone = '#f4efe6', lidFill = muertos ? bone : skin;
+  if (muertos) s.push(`<ellipse cx="${cx}" cy="${ey + er * 0.4}" rx="${hr * 0.88}" ry="${hr * 0.7}" fill="${bone}"/>`);
   [-1, 1].forEach((d) => {
     const ex = cx + d * hr * 0.38;
-    s.push(`<ellipse cx="${ex}" cy="${ey}" rx="${er}" ry="${er * 1.15}" fill="#fff" stroke="${ink}" stroke-width="2.5"/>`);
-    s.push(`<circle cx="${ex - d * er * 0.2 * p}" cy="${ey + er * 0.15}" r="${er * L(0.62, 0.42)}" fill="${ink}"/>`);
-    if (p < 0.6) s.push(`<circle cx="${ex - er * 0.2}" cy="${ey - er * 0.2}" r="${er * 0.22}" fill="#fff"/>`);
+    if (muertos) {
+      s.push(`<ellipse cx="${ex}" cy="${ey}" rx="${er * 1.1}" ry="${er * 1.2}" fill="${ink}" stroke="#ff9f1c" stroke-width="3" stroke-dasharray="4 2"/>`);
+      s.push(`<circle cx="${ex - d * er * 0.2 * p}" cy="${ey + er * 0.1}" r="${er * 0.3}" fill="#fff"/>`);
+    } else {
+      s.push(`<ellipse cx="${ex}" cy="${ey}" rx="${er}" ry="${er * 1.15}" fill="#fff" stroke="${ink}" stroke-width="2.5"/>`);
+      s.push(`<circle cx="${ex - d * er * 0.2 * p}" cy="${ey + er * 0.15}" r="${er * L(0.62, 0.42)}" fill="${ink}"/>`);
+      if (p < 0.6) s.push(`<circle cx="${ex - er * 0.2}" cy="${ey - er * 0.2}" r="${er * 0.22}" fill="#fff"/>`);
+    }
     // Párpado + ceja de enojo: la parte de adentro baja conforme avanza
     const a = C((p - 0.25) / 0.6), kk = a * er * 1.1;
     const ix = ex - d * er * 1.35, ox = ex + d * er * 1.35;
     const yo = ey - er * 1.25 + kk * 0.2, yi = ey - er * 1.25 + kk;
-    if (a > 0) s.push(`<polygon points="${ox},${yo} ${ix},${yi} ${ix},${ey - er * 2.3} ${ox},${ey - er * 2.3}" fill="${skin}"/>`);
+    if (a > 0) s.push(`<polygon points="${ox},${yo} ${ix},${yi} ${ix},${ey - er * 2.3} ${ox},${ey - er * 2.3}" fill="${lidFill}"/>`);
     if (p > 0.15) s.push(`<path d="M${ox} ${yo - 1} L${ix} ${yi - 1}" stroke="${ink}" stroke-width="${L(3, 6)}" stroke-linecap="round" opacity="${C((p - 0.15) * 5)}"/>`);
   });
   // Nariz
-  s.push(`<ellipse cx="${cx}" cy="${hy + hr * 0.3}" rx="${L(4, 6)}" ry="${L(3.5, 5)}" fill="${shade}" stroke="${ink}" stroke-width="2"/>`);
+  s.push(`<ellipse cx="${cx}" cy="${hy + hr * 0.3}" rx="${L(4, 6)}" ry="${L(3.5, 5)}" fill="${muertos ? ink : shade}" stroke="${ink}" stroke-width="2"/>`);
   // Boca: sonrisa traviesa con un colmillo → bocota con dientes de sierra
   const my = hy + hr * 0.5;
   if (p < 0.35) {
@@ -925,9 +967,47 @@ function shamucoSVG(p, pose = 'parado') {
   }
   // Gotita de sudor a media rutina
   if (p > 0.2 && p < 0.9) s.push(`<path d="M${cx + hr * 0.95} ${hy - hr * 0.6} q-7 10 0 13 q7 -3 0 -13 z" fill="#8fd8ff" stroke="${ink}" stroke-width="2"/>`);
+  // Día de Muertos: puntadas de calaverita en la boca
+  if (muertos) {
+    const sx = hr * 0.55;
+    s.push(`<path d="M${cx - sx} ${my - 1} H${cx + sx} ${[-2, -1, 1, 2].map((i) => `M${cx + i * sx / 2.6} ${my - 5} v8`).join(' ')}" stroke="${ink}" stroke-width="1.8" stroke-linecap="round"/>`);
+  }
+
+  // Racha de 3 días: cinta para el sudor (blanca con raya roja y nudo al lado)
+  if (acc.has('cinta')) {
+    const t1 = hy - hr * 0.7, t2 = hy - hr * 0.46;
+    s.push(`<path d="M${cx + hr * 0.9} ${t1 + 6} l14 -6 l-3 10 l10 4 l-14 3 Z" fill="#fff" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`);
+    s.push(`<path d="M${cx - hr * 0.94} ${t1 + 4} Q${cx} ${t1 - hr * 0.14} ${cx + hr * 0.94} ${t1 + 4} L${cx + hr * 0.98} ${t2 + 4} Q${cx} ${t2 - hr * 0.14} ${cx - hr * 0.98} ${t2 + 4} Z" fill="#fff" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`);
+    s.push(`<path d="M${cx - hr * 0.96} ${(t1 + t2) / 2 + 4} Q${cx} ${(t1 + t2) / 2 - hr * 0.14} ${cx + hr * 0.96} ${(t1 + t2) / 2 + 4}" fill="none" stroke="#e8392f" stroke-width="3"/>`);
+  }
+  // Racha de 10 días: corona dorada entre los cuernos
+  if (acc.has('corona')) {
+    const cw = hr * 0.62, cb = hy - hr * 0.8, ch = L(16, 14);
+    s.push(`<path d="M${cx - cw} ${cb} L${cx - cw - 3} ${cb - ch} L${cx - cw / 2} ${cb - ch * 0.55} L${cx} ${cb - ch * 1.25} L${cx + cw / 2} ${cb - ch * 0.55} L${cx + cw + 3} ${cb - ch} L${cx + cw} ${cb} Z" fill="#ffc83d" stroke="${ink}" stroke-width="2.5" stroke-linejoin="round"/>`);
+    s.push(`<circle cx="${cx}" cy="${cb - ch * 0.35}" r="3.2" fill="#e8392f" stroke="${ink}" stroke-width="1.5"/>`);
+    [-1, 1].forEach((d) => s.push(`<circle cx="${cx + d * cw * 0.55}" cy="${cb - ch * 0.25}" r="2.4" fill="#22e4ff" stroke="${ink}" stroke-width="1.2"/>`));
+  }
+  // Día de Muertos: flor de cempasúchil de lado en la cabeza
+  if (muertos) {
+    const fx = cx - hr * 0.72, fy = hy - hr * 0.62;
+    let petals = '';
+    for (let i = 0; i < 10; i++) {
+      const ang = (i / 10) * Math.PI * 2;
+      petals += `<circle cx="${fx + Math.cos(ang) * 7}" cy="${fy + Math.sin(ang) * 7}" r="5.5"/>`;
+    }
+    s.push(`<g fill="#ff8c1a" stroke="${ink}" stroke-width="2">${petals}</g><circle cx="${fx}" cy="${fy}" r="6.5" fill="#ffc21a" stroke="${ink}" stroke-width="2"/><circle cx="${fx}" cy="${fy}" r="2.5" fill="#c45a00"/>`);
+  }
+  // Synthwave: lentes con micas en degradado rosa → cian
+  if (traje === 'synth') {
+    const gy = ey - er * 0.15, gw = er * 1.35, gh = er * 1.15;
+    s.push(`<defs><linearGradient id="shamLens" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff2bd6"/><stop offset="1" stop-color="#22e4ff"/></linearGradient></defs>`);
+    s.push(`<path d="M${cx - hr * 0.95} ${gy - 2} H${cx + hr * 0.95}" stroke="${ink}" stroke-width="3.5"/>`);
+    [-1, 1].forEach((d) => s.push(`<rect x="${cx + d * hr * 0.4 - gw}" y="${gy - gh / 2}" width="${gw * 2}" height="${gh}" rx="${gh * 0.4}" fill="url(#shamLens)" stroke="${ink}" stroke-width="3"/>
+      <path d="M${cx + d * hr * 0.4 - gw * 0.6} ${gy - gh * 0.15} l${gw * 0.5} ${-gh * 0.2}" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".8"/>`));
+  }
   if (drinking) arm(1, true); // al final: la botella va encima de la cara
 
-  return `<svg viewBox="-20 20 240 205">${s.join('')}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 20 240 205">${s.join('')}</svg>`;
 }
 // Frases al tocarlo, por etapa. Las de verdad están en data/logros.json → "shamuco".
 const SHAMUCO_DEFAULT = {
@@ -936,14 +1016,53 @@ const SHAMUCO_DEFAULT = {
   mamado: ['¡MAMADÍSIMO! Gracias, carnal.'],
   descanso: ['Shhh… estoy hidratando el músculo.'],
 };
+// Accesorios que gana con la racha de días (streakDays) y se van sumando.
+const SHAMUCO_ACC = [
+  { dias: 3, id: 'cinta', nombre: 'cinta para el sudor' },
+  { dias: 5, id: 'cinturon', nombre: 'cinturón de pesas' },
+  { dias: 10, id: 'corona', nombre: 'corona 👑' },
+  { dias: 15, id: 'tridente', nombre: 'tridente-barra 🔱' },
+];
+const SHAMUCO_TRAJE = { halloween: 'halloween', synth: 'synth', muertos: 'muertos' }; // tema → disfraz
 let shamucoOn = (() => { try { return localStorage.getItem(SHAMUCO_KEY) !== '0'; } catch { return true; } })();
-let shamucoLast = null;     // { key, p, pose } lo último dibujado, para no redibujar de más y saber si creció
+let shamucoLast = null;     // lo último dibujado (shamucoState), para no redibujar de más y saber si creció
 let shamHeadVisible = true; // ¿se ve el encabezado? Si no, sale el que camina abajo
 function shamucoState() {
-  const dateKey = ymd(dateFor(state.dayIdx));
-  const p = dayProgress(dayView(state.dayIdx), dateKey).pct;
+  const key = ymd(dateFor(state.dayIdx));
+  const p = dayProgress(dayView(state.dayIdx), key).pct;
   const drinking = rest && rest.mode === 'rest' && restSecsLeft() > 3; // en los 3 bips ya está listo
-  return { key: dateKey, p, pose: p >= 1 ? 'flex' : drinking ? 'agua' : 'parado' };
+  const theme = document.documentElement.dataset.theme || '';
+  // La racha solo cambia al marcar series: si nada cambió, reusa la anterior (tickRest llama 4 veces por segundo)
+  const L = shamucoLast;
+  const acc = L && L.key === key && L.p === p ? L.acc : SHAMUCO_ACC.filter((a) => streakDays() >= a.dias).map((a) => a.id);
+  return { key, p, pose: p >= 1 ? 'flex' : drinking ? 'agua' : 'parado', theme, acc };
+}
+const shamucoOpts = (s) => ({ traje: SHAMUCO_TRAJE[s.theme], acc: s.acc });
+// Pone el dibujo en el elemento. En Game Boy lo pixela: lo pinta chiquito en un <canvas> con
+// los 4 verdes de la consola y el CSS lo agranda sin suavizar (image-rendering: pixelated).
+function shamucoInto(el, svg, theme) {
+  el._sham = svg;
+  if (theme !== 'gb') { el.innerHTML = svg; return; }
+  const img = new Image();
+  img.onload = () => {
+    if (el._sham !== svg) return; // mientras cargaba ya se pidió otro dibujo
+    const w = 48, h = Math.round((w * 205) / 240);
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const g = c.getContext('2d');
+    g.drawImage(img, 0, 0, w, h);
+    const d = g.getImageData(0, 0, w, h), px = d.data;
+    const pal = [[15, 56, 15], [48, 98, 48], [139, 172, 15], [224, 248, 208]]; // de oscuro a claro
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 3] < 110) { px[i + 3] = 0; continue; } // orillas: o se ve o no se ve, sin medio transparente
+      const lum = (0.3 * px[i] + 0.59 * px[i + 1] + 0.11 * px[i + 2]) / 255;
+      [px[i], px[i + 1], px[i + 2]] = pal[Math.min(3, Math.floor(lum * 4))];
+      px[i + 3] = 255;
+    }
+    g.putImageData(d, 0, 0);
+    el.replaceChildren(c);
+  };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 function renderShamuco() {
   const head = $('#shamuco'), walk = $('#shamWalk');
@@ -954,10 +1073,11 @@ function renderShamuco() {
   const prev = shamucoLast, now = shamucoState();
   shamucoLast = now;
   walk.classList.toggle('drinking', now.pose === 'agua'); // se detiene a tomar agua
-  if (prev && prev.key === now.key && prev.p === now.p && prev.pose === now.pose) return; // nada cambió
-  const svg = shamucoSVG(now.p, now.pose);
-  head.innerHTML = svg;
-  walk.querySelector('.sw-body').innerHTML = svg;
+  const sig = (s) => [s.key, s.p, s.pose, s.theme, s.acc].join('|');
+  if (prev && sig(prev) === sig(now)) return; // nada cambió
+  const svg = shamucoSVG(now.p, now.pose, shamucoOpts(now));
+  shamucoInto(head, svg, now.theme);
+  shamucoInto(walk.querySelector('.sw-body'), svg, now.theme);
   // Saltito solo cuando crece en el mismo día (no al cambiar de pestaña)
   if (prev && prev.key === now.key && now.p > prev.p) shamucoHop();
 }
@@ -983,7 +1103,14 @@ function shamucoSay() {
 function renderShamucoBtn() {
   const b = $('#shamucoBtn');
   b.setAttribute('aria-pressed', shamucoOn);
-  b.querySelector('small').textContent = shamucoOn ? 'Activado · crece y se pone mamado conforme haces tus series' : 'Desactivado';
+  let txt = 'Desactivado';
+  if (shamucoOn) {
+    // Qué lleva puesto por tu racha y qué sigue
+    const sd = streakDays(), has = SHAMUCO_ACC.filter((a) => sd >= a.dias), next = SHAMUCO_ACC.find((a) => sd < a.dias);
+    txt = 'Activado · ' + (has.length ? `lleva: ${has.map((a) => a.nombre).join(', ')}` : 'crece conforme haces tus series');
+    txt += next ? ` · a los ${next.dias} días de racha: ${next.nombre}` : ' · ¡ya tiene todo!';
+  }
+  b.querySelector('small').textContent = txt;
 }
 function setShamuco(on) {
   shamucoOn = on;
@@ -1055,12 +1182,17 @@ function celebrate(kind) {
     confetti += `<i style="left:${Math.random() * 100}%;background:${colors[i % colors.length]};animation-delay:${(Math.random() * 0.6).toFixed(2)}s;animation-duration:${(1.8 + Math.random() * 1.6).toFixed(2)}s;--x:${Math.round(Math.random() * 120 - 60)}px;--r:${Math.round(Math.random() * 720)}deg"></i>`;
   }
   const p = $('#party');
+  // Shamuco haciendo flex junto al emoji; si con este día ganó un accesorio, se avisa
+  const sham = shamucoOn ? (shamucoLast || shamucoState()) : null;
+  const nuevo = sham && SHAMUCO_ACC.find((a) => a.dias === sd);
   p.innerHTML = `<div class="confetti">${confetti}</div>
-    <div class="party-box"><span class="party-emoji">${emojiHTML(emoji)}</span>
+    <div class="party-box"><div class="party-hero"><span class="party-emoji">${emojiHTML(emoji)}</span>${sham ? '<span class="party-sham"></span>' : ''}</div>
     <p class="party-title flashy">${esc(L.titulo)}</p><p class="party-frase">${esc(frase)}</p>
     ${workoutMin(ymd(dateFor(state.dayIdx))) ? `<p class="party-time">⏱ en ${workoutMin(ymd(dateFor(state.dayIdx)))} min</p>` : ''}
     ${sd >= 2 ? `<p class="party-streak">🔥 ${isMilestone(sd) ? `<span class="flashy">¡Racha de ${sd} días!</span>` : `${sd} días seguidos`}</p>` : ''}
+    ${nuevo ? `<p class="party-unlock">🆕 Shamuco desbloqueó: <b>${esc(nuevo.nombre)}</b></p>` : ''}
     <small>Toca para cerrar</small></div>`;
+  if (sham) shamucoInto(p.querySelector('.party-sham'), shamucoSVG(1, 'flex', shamucoOpts(sham)), sham.theme);
   showLayer(p);
   setTimeout(() => hideLayer(p), 6000);
 }
@@ -1191,6 +1323,7 @@ function bind() {
   $('#menuBtn').addEventListener('click', () => {
     // Tamaño útil de pantalla: sirve para ajustar el modo de la pantalla externa del Razr.
     $('#screenText').textContent = `Pantalla: ${innerWidth} × ${innerHeight} · densidad ${devicePixelRatio}x`;
+    renderShamucoBtn(); // la racha pudo cambiar
     $('#menu').showModal(); sfx('open');
   });
   $('#exportBtn').addEventListener('click', exportBackup);

@@ -95,7 +95,10 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
 
 /* Shamuco (mascota): a la derecha de la fecha y el título; crece con el progreso del día */
 .shamuco { grid-column: 2; grid-row: 1 / 3; width: 96px; align-self: end; margin-bottom: 4px; transform-origin: 50% 100%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.shamuco svg, .sw-body svg { display: block; width: 100%; height: auto; overflow: visible; }
+.shamuco svg, .sw-body svg, .party-sham svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* Game Boy: el dibujo llega como <canvas> chiquito; se agranda sin suavizar para que se vean los pixeles */
+.shamuco canvas, .sw-body canvas, .party-sham canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+[data-theme="synth"] .shamuco svg, [data-theme="synth"] .sw-body svg, [data-theme="synth"] .party-sham svg { filter: drop-shadow(0 0 6px rgba(255, 43, 214, 0.7)); }
 .shamuco.grow { animation: shamGrow 0.5s cubic-bezier(0.2, 1.4, 0.4, 1); }
 @keyframes shamGrow { 35% { transform: translateY(-6px) scale(1.12, 0.94); } }
 /* Globo de texto al tocarlo */
@@ -397,6 +400,9 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 @keyframes zoom { from { transform: scale(0.3); opacity: 0; } }
 .party-emoji { display: block; font-size: 110px; line-height: 1; animation: pop 0.8s 0.1s cubic-bezier(0.2, 1.6, 0.4, 1) both, float 1.6s 0.9s ease-in-out infinite; }
 @keyframes float { 50% { transform: translateY(-10px) rotate(-6deg); } }
+.party-hero { display: flex; align-items: flex-end; justify-content: center; gap: 4px; }
+.party-sham { width: 130px; animation: pop 0.8s 0.3s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+.party-unlock { font-size: 16px; font-weight: 700; margin: -12px 0 20px; }
 .party-title { font-size: 44px; line-height: 1; margin: 18px 0 8px; }
 .party-frase { font-size: 20px; font-weight: 700; margin: 0 0 22px; }
 .party small { color: rgba(255, 255, 255, 0.6); }
@@ -623,7 +629,8 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
   .party-emoji { font-size: 64px; }
   .party-title { font-size: 30px; margin: 8px 0 4px; }
   .party-frase { font-size: 16px; margin-bottom: 10px; }
-  .party-time, .party-streak { margin: 0 0 8px; font-size: 14px; }
+  .party-time, .party-streak, .party-unlock { margin: 0 0 8px; font-size: 14px; }
+  .party-sham { width: 76px; }
   .party-box { padding: 12px; }
   [data-theme="gb"] .cv-card, [data-theme="gb"] .cv-nav, [data-theme="gb"] .cv-img { border-radius: 0; border: 3px solid var(--ink); }
   [data-theme="gb"] .cv-head b { font-size: 10px; }

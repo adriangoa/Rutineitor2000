@@ -153,6 +153,13 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   fijo abajo, se pasea de lado a lado (CSS: `.sw-move` posición, `.sw-face` voltea para que la cola vaya atrás,
   `.sw-hop` brinca, `.sw-body` se bambolea), `pointer-events: none` (los toques lo atraviesan). Con descanso se para
   encima de la barra (`--rest-h`) y se detiene a tomar agua (`.drinking`). Oculto en modo portada.
+  Disfraces por tema (`SHAMUCO_TRAJE`, `o.traje`): halloween = capa de vampiro; synth = lentes neón + brillo rosa (CSS);
+  muertos = calaverita + cempasúchil (**el tema de noviembre debe llamarse `muertos` en `SEASONS`** para que lo use);
+  gb = `shamucoInto` pinta el SVG en un `<canvas>` de 48 px con los 4 verdes y el CSS lo agranda (`image-rendering: pixelated`).
+  Accesorios por racha de días (`SHAMUCO_ACC`, se suman): 3 cinta, 5 cinturón de pesas, 10 corona, 15 tridente-barra.
+  `shamucoState` solo recalcula la racha si cambió el progreso. En la celebración del día sale haciendo flex
+  (`.party-sham`) y, si la racha llegó justo a un umbral, "🆕 Shamuco desbloqueó: …". Opciones dice qué lleva y qué sigue.
+  Para diseñar: hoja de muestra con `shamucoSVG(p, pose, { traje, acc })` en varias combinaciones.
   Muestra de etapas para diseñar: generar una página con la función y un `<input type=range>`.
 
 ## Probar
@@ -183,7 +190,5 @@ nativo de Node (`Runtime.evaluate`, `Page.captureScreenshot`, `Emulation.setDevi
   (✅/🔧/❌ en `notas`). Usarlas para ajustar routine.json (y generador.json).
 - Tema de temporada de noviembre: propuesta **Día de Muertos** (cempasúchil, papel picado, calaveritas,
   frases tipo calaverita literaria gym bro). Agregar en `SEASONS` con `months: [11]`.
-- **Mascota "Shamuco"** (fases 1 y 2 hechas, ver Arquitectura). Siguiente:
-  3. Disfraces por tema (calabaza en Halloween, pixelado en Game Boy, calaverita en Día de Muertos) y
-     accesorios por racha (cinta, cinturón de pesas, corona, tridente; quizá un tridente-barra olímpica).
-  Que la celebración del día lo muestre haciendo flex (hoy solo lo hace en el encabezado).
+- **Mascota "Shamuco"**: fases 1–3 hechas (ver Arquitectura). Al hacer un tema de temporada nuevo, agregarle
+  disfraz en `SHAMUCO_TRAJE` + dibujo en `shamucoSVG`, y quizá frases de temporada en `logros.json` → `shamuco`.
