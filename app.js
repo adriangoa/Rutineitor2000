@@ -188,7 +188,7 @@ function updateProgress() {
   $('#progFill').style.width = `${Math.round(p.pct * 100)}%`;
   $('#progText').textContent = `${p.done}/${p.total} series`;
   $('#doneMsg').hidden = p.done < p.total;
-  renderShamuco(dateKey, p.pct);
+  renderShamuco();
   renderTabs();
   renderCover();
 }
@@ -547,7 +547,10 @@ function renderRest() {
   // En la portada la superserie ya cambia sola de ejercicio: el aviso "Ahora: X" sobra.
   if (rest && rest.mode === 'next' && coverMQ.matches) $('#restBar').hidden = true;
   document.body.classList.toggle('resting', !$('#restBar').hidden);
+  // Alto de la barra: Shamuco se para encima de ella
+  if (!$('#restBar').hidden) document.documentElement.style.setProperty('--rest-h', `${$('#restBar').offsetHeight}px`);
   if (rest && rest.mode === 'rest') { tickRest(); restTick = setInterval(tickRest, 250); }
+  renderShamuco();
 }
 function tickRest() {
   const left = restSecsLeft();
@@ -556,6 +559,9 @@ function tickRest() {
     t.classList.toggle('ending', left > 0 && left <= 3);
   });
   document.querySelectorAll('.rest-fill').forEach((f) => { f.style.width = `${(left / rest.total) * 100}%`; });
+  // Shamuco deja el agua en los últimos 3 s y brinca con cada bip
+  renderShamuco();
+  if (left !== tickRest.last) { tickRest.last = left; if (left <= 3) shamucoHop(); }
   if (left > 0) return;
   clearInterval(restTick);
   if (navigator.vibrate) navigator.vibrate([180, 90, 180]);
@@ -707,6 +713,8 @@ const SFX = {
   move: [[1046.5, 0.035], [1318.5, 0.05]],
   open: [[784, 0.04], [1174.7, 0.07]],
   close: [[1174.7, 0.04], [784, 0.07]],
+  sham: [[196, 0.07], [146.8, 0.12]], // gruñido de Shamuco
+
   exercise: [[523.3, 0.07], [659.3, 0.07], [784, 0.07], [1046.5, 0.07], [1318.5, 0.22]],
   day: [[392, 0.09], [523.3, 0.09], [659.3, 0.09], [784, 0.18], [0, 0.05], [659.3, 0.09], [784, 0.09], [1046.5, 0.12], [1318.5, 0.12], [1568, 0.5]],
 };
@@ -749,8 +757,12 @@ function setSfx(on) {
 /* ---------- Shamuco (mascota) ----------
    Demonio de caricatura dibujado en SVG desde código (sin imágenes ni datos). Recibe el
    progreso del día p (0 a 1) y de ahí calcula cada medida: de flaquito y kawaii a mamado.
-   Al 100 % hace flex. Se apaga en ⋮ Opciones (r2k.shamuco = "0"). */
-function shamucoSVG(p, flex = false) {
+   Al 100 % hace flex. Se apaga en ⋮ Opciones (r2k.shamuco = "0").
+   Vive en dos lugares: en el encabezado del día (ahí se le puede tocar para que hable) y,
+   cuando bajas por la lista, en el borde de abajo paseándose (los toques lo atraviesan).
+   pose: 'parado' | 'flex' (día completo) | 'agua' (en el descanso). */
+function shamucoSVG(p, pose = 'parado') {
+  const flex = pose === 'flex';
   const L = (a, b) => +(a + (b - a) * p).toFixed(1);   // de a (0 %) a b (100 %)
   const C = (x) => Math.max(0, Math.min(1, x));
   const skin = '#e8392f', shade = '#b8231d', hi = '#ff8a75', ink = '#2a0b0b', horn = '#3b3846';
@@ -838,11 +850,12 @@ function shamucoSVG(p, flex = false) {
     s.push(`<rect x="${cx - 3}" y="${hip - 18}" width="6" height="7" fill="#5a3a22"/>`);
   }
 
-  // Brazos: colgando o haciendo flex
-  const arm = (d) => {
+  // Brazos: colgando, haciendo flex o (el derecho) llevando la botella de agua a la boca
+  const arm = (d, drink = false) => {
     const shx = cx + d * (sw - at * 0.3), shy = top + at * 0.6;
     let ex, ey, hx, hy2;
     if (flex) { ex = shx + d * L(26, 34); ey = shy + 4; hx = ex - d * 2; hy2 = ey - L(36, 54); }
+    else if (drink) { ex = shx + d * L(14, 22); ey = shy + L(16, 20); hx = cx + 37; hy2 = hy + hr * 0.5 - 14; } // el puño queda a 34 de la boca, inclinado
     else { ex = shx + d * L(4, 12); ey = shy + L(22, 30); hx = ex + d * 2; hy2 = ey + L(20, 26); }
     const parts = [['path', `d="M${shx} ${shy} L${ex} ${ey} L${hx} ${hy2}"`, at]];
     let bx, by, br;
@@ -865,8 +878,19 @@ function shamucoSVG(p, flex = false) {
       const seg = `d="M${ex + ux * e1} ${ey + uy * e1} L${ex + ux * e2} ${ey + uy * e2}"`;
       s.push(`<path ${seg} stroke="${ink}" stroke-width="${at + 9}"/><path ${seg} stroke="#5a3a22" stroke-width="${at + 3}"/>`);
     }
+    if (drink) {
+      // Botella agarrada de abajo, inclinada con la tapa en la boca; el puño se vuelve a pintar encima
+      s.push(`<g transform="translate(${hx} ${hy2}) rotate(-115)">
+        <rect x="-8" y="-28" width="16" height="40" rx="5" fill="#8fd8ff" stroke="${ink}" stroke-width="2.5"/>
+        <rect x="-5" y="-35" width="10" height="8" rx="1.5" fill="#2a6fd6" stroke="${ink}" stroke-width="2"/>
+        <path d="M-3.5 -22 V4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+      </g>`);
+      s.push(lump([['circle', `cx="${hx}" cy="${hy2}" r="${at / 2 + 3}"`]], skin));
+    }
   };
-  arm(-1); arm(1);
+  const drinking = pose === 'agua';
+  arm(-1);
+  if (!drinking) arm(1);
 
   // Cara
   const ey = hy + hr * 0.02;
@@ -901,21 +925,60 @@ function shamucoSVG(p, flex = false) {
   }
   // Gotita de sudor a media rutina
   if (p > 0.2 && p < 0.9) s.push(`<path d="M${cx + hr * 0.95} ${hy - hr * 0.6} q-7 10 0 13 q7 -3 0 -13 z" fill="#8fd8ff" stroke="${ink}" stroke-width="2"/>`);
+  if (drinking) arm(1, true); // al final: la botella va encima de la cara
 
   return `<svg viewBox="-20 20 240 205">${s.join('')}</svg>`;
 }
+// Frases al tocarlo, por etapa. Las de verdad están en data/logros.json → "shamuco".
+const SHAMUCO_DEFAULT = {
+  flaco: ['Todavía estoy flaquito… ¡échale ganas por los dos!'],
+  medio: ['¡Ya se me están marcando los cuadritos!'],
+  mamado: ['¡MAMADÍSIMO! Gracias, carnal.'],
+  descanso: ['Shhh… estoy hidratando el músculo.'],
+};
 let shamucoOn = (() => { try { return localStorage.getItem(SHAMUCO_KEY) !== '0'; } catch { return true; } })();
-let shamucoLast = null; // { key, p } lo último dibujado, para saber si creció
-function renderShamuco(dateKey, p) {
-  const el = $('#shamuco');
-  el.hidden = !shamucoOn;
+let shamucoLast = null;     // { key, p, pose } lo último dibujado, para no redibujar de más y saber si creció
+let shamHeadVisible = true; // ¿se ve el encabezado? Si no, sale el que camina abajo
+function shamucoState() {
+  const dateKey = ymd(dateFor(state.dayIdx));
+  const p = dayProgress(dayView(state.dayIdx), dateKey).pct;
+  const drinking = rest && rest.mode === 'rest' && restSecsLeft() > 3; // en los 3 bips ya está listo
+  return { key: dateKey, p, pose: p >= 1 ? 'flex' : drinking ? 'agua' : 'parado' };
+}
+function renderShamuco() {
+  const head = $('#shamuco'), walk = $('#shamWalk');
+  head.hidden = !shamucoOn;
+  walk.hidden = !shamucoOn || shamHeadVisible;
+  document.body.classList.toggle('sham-on', shamucoOn);
   if (!shamucoOn) return;
-  const prev = shamucoLast;
-  shamucoLast = { key: dateKey, p };
-  if (prev && prev.key === dateKey && prev.p === p) return; // nada cambió: no redibujar
-  el.innerHTML = shamucoSVG(p, p >= 1);
+  const prev = shamucoLast, now = shamucoState();
+  shamucoLast = now;
+  walk.classList.toggle('drinking', now.pose === 'agua'); // se detiene a tomar agua
+  if (prev && prev.key === now.key && prev.p === now.p && prev.pose === now.pose) return; // nada cambió
+  const svg = shamucoSVG(now.p, now.pose);
+  head.innerHTML = svg;
+  walk.querySelector('.sw-body').innerHTML = svg;
   // Saltito solo cuando crece en el mismo día (no al cambiar de pestaña)
-  if (prev && prev.key === dateKey && p > prev.p && !reduceMotion()) flashClass(el, 'grow', 500);
+  if (prev && prev.key === now.key && now.p > prev.p) shamucoHop();
+}
+function shamucoHop() {
+  if (!shamucoOn || reduceMotion()) return;
+  flashClass($('#shamuco'), 'grow', 500);
+  flashClass($('#shamWalk .sw-hop'), 'hop', 500);
+}
+let shamSayTimer;
+function shamucoSay() {
+  const s = shamucoLast; if (!s) return;
+  const F = { ...SHAMUCO_DEFAULT, ...state.logros?.shamuco };
+  const k = s.pose === 'agua' ? 'descanso' : s.p >= 1 ? 'mamado' : s.p >= 0.34 ? 'medio' : 'flaco';
+  const b = $('#shamBubble');
+  b.hidden = true; void b.offsetWidth; // reinicia la animación de entrada
+  b.textContent = pick('sham' + k, F[k]);
+  b.hidden = false;
+  clearTimeout(shamSayTimer);
+  shamSayTimer = setTimeout(() => { b.hidden = true; }, 3500);
+  if (!reduceMotion()) flashClass($('#shamuco'), 'grow', 500);
+  sfx('sham');
 }
 function renderShamucoBtn() {
   const b = $('#shamucoBtn');
@@ -1103,6 +1166,12 @@ function bind() {
   ['#themePick', '#seasonPick'].forEach((s) => $(s).addEventListener('click', (e) => { const b = e.target.closest('[data-theme-set]'); if (b) { setTheme(b.dataset.themeSet); sfx('tap'); } }));
   $('#sfxBtn').addEventListener('click', () => setSfx(!sfxOn));
   $('#shamucoBtn').addEventListener('click', () => setShamuco(!shamucoOn));
+  $('#shamuco').addEventListener('click', shamucoSay);
+  $('#shamBubble').addEventListener('click', () => { $('#shamBubble').hidden = true; });
+  // Cuando el encabezado sale de la pantalla, Shamuco "brinca" al borde de abajo a pasearse
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { shamHeadVisible = e.isIntersecting; renderShamuco(); }).observe($('#shamuco'));
+  }
   $('#trophy').addEventListener('click', () => hideLayer($('#trophy')));
   $('#party').addEventListener('click', () => hideLayer($('#party')));
   $('#weekBody').addEventListener('click', (e) => {

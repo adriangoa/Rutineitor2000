@@ -84,7 +84,7 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 
 /* Day header */
 main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
-.day-head { padding: 20px 0 14px; display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
+.day-head { position: relative; padding: 20px 0 14px; display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
 .day-head .progress { grid-column: 1 / -1; }
 .day-date { margin: 0; color: var(--muted); font-size: 13px; }
 .day-title { margin: 2px 0 12px; font-family: var(--display); font-weight: 700; font-size: 32px; line-height: 1.05; letter-spacing: -0.01em; }
@@ -94,10 +94,41 @@ main { padding: 0 16px; max-width: 640px; margin: 0 auto; }
 .progress-text { font-family: var(--display); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; min-width: 9ch; text-align: right; color: var(--muted); }
 
 /* Shamuco (mascota): a la derecha de la fecha y el título; crece con el progreso del día */
-.shamuco { grid-column: 2; grid-row: 1 / 3; width: 96px; align-self: end; margin-bottom: 4px; transform-origin: 50% 100%; }
-.shamuco svg { display: block; width: 100%; height: auto; overflow: visible; }
+.shamuco { grid-column: 2; grid-row: 1 / 3; width: 96px; align-self: end; margin-bottom: 4px; transform-origin: 50% 100%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.shamuco svg, .sw-body svg { display: block; width: 100%; height: auto; overflow: visible; }
 .shamuco.grow { animation: shamGrow 0.5s cubic-bezier(0.2, 1.4, 0.4, 1); }
 @keyframes shamGrow { 35% { transform: translateY(-6px) scale(1.12, 0.94); } }
+/* Globo de texto al tocarlo */
+.sham-bubble {
+  position: absolute; right: 100px; top: 14px; z-index: 2; margin: 0; max-width: min(62%, 260px);
+  background: var(--surface); color: var(--ink); border: 2px solid var(--accent); border-radius: 14px;
+  padding: 8px 12px; font-size: 14px; line-height: 1.3; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transform-origin: 100% 50%; animation: bubbleIn 0.25s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.sham-bubble::after { /* piquito que apunta a Shamuco */
+  content: ""; position: absolute; right: -9px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+  background: inherit; border: 2px solid var(--accent); border-left: 0; border-bottom: 0; transform: rotate(45deg);
+}
+@keyframes bubbleIn { from { transform: scale(0.6); opacity: 0; } }
+/* Shamuco paseándose en el borde de abajo (cuando el encabezado ya no se ve).
+   Los toques lo atraviesan (pointer-events: none): nunca estorba para marcar series. */
+.sham-walk {
+  position: fixed; left: 0; right: 0; bottom: calc(4px + env(safe-area-inset-bottom)); height: 86px;
+  z-index: 14; pointer-events: none; transition: bottom 0.3s ease;
+}
+.sham-walk[hidden] { display: none; }
+body.resting .sham-walk { bottom: calc(var(--rest-h, 64px) + 14px + env(safe-area-inset-bottom)); } /* encima del descanso */
+body.sham-on main { padding-bottom: 90px; } /* que la última tarjeta pueda subir por encima de él */
+.sw-move { position: absolute; left: 6px; bottom: 0; width: 84px; animation: swWalk 30s linear infinite; }
+.sw-face { animation: swFace 30s step-end infinite; }
+.sw-body { transform-origin: 50% 100%; animation: swWaddle 0.45s ease-in-out infinite alternate; }
+.sw-hop.hop { animation: swHop 0.5s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.sham-walk.drinking .sw-move, .sham-walk.drinking .sw-face { animation-play-state: paused; } /* se queda quieto */
+.sham-walk.drinking .sw-body { animation: none; }
+@keyframes swWalk { 0%, 5% { transform: translateX(0); } 45%, 55% { transform: translateX(calc(100vw - 96px)); } 95%, 100% { transform: translateX(0); } }
+@keyframes swFace { 0% { transform: scaleX(-1); } 50% { transform: scaleX(1); } } /* la cola siempre va atrás */
+@keyframes swWaddle { from { transform: rotate(-6deg); } to { transform: rotate(6deg) translateY(-3px); } }
+@keyframes swHop { 40% { transform: translateY(-22px); } }
 
 /* List */
 .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -543,7 +574,7 @@ body.resting .toast { bottom: calc(96px + env(safe-area-inset-bottom)); }
 /* Modo portada: pantalla externa del Razr (469 × 318). Solo en pantallas muy bajitas. */
 .cover { display: none; }
 @media (max-height: 360px) {
-  .top, main { display: none; }
+  .top, main, .sham-walk { display: none; }
   body, body.resting { padding-bottom: 0; }
   .cover {
     display: flex; flex-direction: column; gap: 8px; height: 100vh; height: 100dvh;

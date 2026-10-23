@@ -147,6 +147,12 @@ conviértela a WebP, máximo 480 px de lado, calidad ~68.
   flex al 100 %. `lump()` dibuja piezas en negro más gruesas y luego el color = silueta con contorno. Va en
   `#shamuco` a la derecha del título (`.day-head` es grid); `renderShamuco` se llama en `updateProgress`, solo redibuja
   si cambió y da un saltito (`.grow`) al crecer en el mismo día. Interruptor en Opciones (`r2k.shamuco` = "0" apagado).
+  Poses (`shamucoState`): 'parado', 'flex' (100 %), 'agua' (descanso con > 3 s; en los 3 bips ya está listo y brinca
+  con cada uno). Tocar el del encabezado → globo `#shamBubble` con frase de `logros.json` → `shamuco.{flaco,medio,mamado,
+  descanso}` + gruñido `sfx('sham')`. Cuando el encabezado sale de pantalla (IntersectionObserver), aparece `#shamWalk`:
+  fijo abajo, se pasea de lado a lado (CSS: `.sw-move` posición, `.sw-face` voltea para que la cola vaya atrás,
+  `.sw-hop` brinca, `.sw-body` se bambolea), `pointer-events: none` (los toques lo atraviesan). Con descanso se para
+  encima de la barra (`--rest-h`) y se detiene a tomar agua (`.drinking`). Oculto en modo portada.
   Muestra de etapas para diseñar: generar una página con la función y un `<input type=range>`.
 
 ## Probar
@@ -177,10 +183,7 @@ nativo de Node (`Runtime.evaluate`, `Page.captureScreenshot`, `Emulation.setDevi
   (✅/🔧/❌ en `notas`). Usarlas para ajustar routine.json (y generador.json).
 - Tema de temporada de noviembre: propuesta **Día de Muertos** (cempasúchil, papel picado, calaveritas,
   frases tipo calaverita literaria gym bro). Agregar en `SEASONS` con `months: [11]`.
-- **Mascota "Shamuco"** (fase 1 hecha, ver Arquitectura). Siguientes fases:
-  2. Que se pasee por el borde de abajo (animación CSS con `transform`, `pointer-events: none` para no estorbar
-     al marcar series; respetar `prefers-reduced-motion`). Reacciones: saltito al marcar serie; en el descanso
-     se sienta a tomar agua y se para con los bips. Al tocarlo dice una frase gym bro (en `logros.json`).
+- **Mascota "Shamuco"** (fases 1 y 2 hechas, ver Arquitectura). Siguiente:
   3. Disfraces por tema (calabaza en Halloween, pixelado en Game Boy, calaverita en Día de Muertos) y
      accesorios por racha (cinta, cinturón de pesas, corona, tridente; quizá un tridente-barra olímpica).
   Que la celebración del día lo muestre haciendo flex (hoy solo lo hace en el encabezado).

@@ -35,7 +35,8 @@
     <section class="day-head">
       <p id="dayDate" class="day-date"></p>
       <h1 id="dayTitle" class="day-title"></h1>
-      <div id="shamuco" class="shamuco" aria-hidden="true"></div>
+      <div id="shamuco" class="shamuco" role="button" aria-label="Shamuco: tócalo para que hable"></div>
+      <p id="shamBubble" class="sham-bubble" role="status" hidden></p>
       <div class="progress">
         <div class="progress-bar"><span id="progFill"></span></div>
         <span id="progText" class="progress-text"></span>
@@ -101,6 +102,8 @@
   </dialog>
 
   <div id="restBar" class="rest rest-bar" role="timer" aria-live="off" hidden></div>
+  <!-- Shamuco paseándose abajo: mover (de lado a lado) › voltear › brincar › cuerpo (bamboleo) -->
+  <div id="shamWalk" class="sham-walk" aria-hidden="true" hidden><div class="sw-move"><div class="sw-face"><div class="sw-hop"><div class="sw-body"></div></div></div></div></div>
   <div id="trophy" class="trophy" popover="manual" role="status"></div>
   <div id="party" class="party" popover="manual" role="status"></div>
   <dialog id="welcome" class="sheet welcome" aria-label="Bienvenida">
